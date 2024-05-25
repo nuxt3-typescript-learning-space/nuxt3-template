@@ -27,11 +27,14 @@
     "lint-staged": "^15.2.5",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
-    "vite-plugin-eslint2": "^4.4.0"
+    "typescript": "^5.4.5",
+    "vite-plugin-eslint2": "^4.4.0",
+    "vue-tsc": "^1.8.27"
   },
   "lint-staged": {
     "**/*.{js,ts,vue}": "npx eslint --fix",
-    "**/*.{js,ts,vue,json}": "npx prettier --write"
+    "**/*.{js,ts,vue,json}": "npx prettier --write",
+    "**/*.{ts,vue}": "npx vue-tsc --noEmit"
   },
   "volta": {
     "node": "20.13.1",
