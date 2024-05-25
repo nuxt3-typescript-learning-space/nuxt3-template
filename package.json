@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "prepare": "husky"
   },
   "dependencies": {
     "nuxt": "^3.11.2",
@@ -22,9 +23,15 @@
     "@nuxt/eslint": "^0.3.13",
     "eslint": "^9.3.0",
     "globals": "^15.3.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.5",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "vite-plugin-eslint2": "^4.4.0"
+  },
+  "lint-staged": {
+    "**/*.{js,ts,vue}": "npx eslint --fix",
+    "**/*.{js,ts,vue,json}": "npx prettier --write"
   },
   "volta": {
     "node": "20.13.1",
