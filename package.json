@@ -15,13 +15,21 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.379.0",
     "nuxt": "^3.11.2",
+    "radix-vue": "^1.8.2",
+    "shadcn-nuxt": "^0.10.4",
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss-animate": "^1.0.7",
     "vue": "^3.4.27",
     "vue-router": "^4.3.2"
   },
   "devDependencies": {
     "@nuxt/eslint": "^0.3.13",
     "@nuxt/types": "^2.17.3",
+    "@nuxtjs/tailwindcss": "^6.12.0",
     "@types/node": "^20.12.12",
     "eslint": "^9.3.0",
     "globals": "^15.3.0",
