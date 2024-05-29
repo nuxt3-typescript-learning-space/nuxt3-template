@@ -28,9 +28,7 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^0.3.13",
-    "@nuxt/types": "^2.17.3",
     "@nuxtjs/tailwindcss": "^6.12.0",
-    "@types/node": "^20.12.12",
     "eslint": "^9.3.0",
     "globals": "^15.3.0",
     "husky": "^9.0.11",
@@ -44,7 +42,7 @@
   "lint-staged": {
     "**/*.{js,ts,vue}": "npx eslint --fix",
     "**/*.{js,ts,vue,json}": "npx prettier --write",
-    "**/*.{ts,vue}": "npx vue-tsc --noEmit --skipLibCheck"
+    "**/*.{ts,vue}": "npx nuxi typecheck ."
   },
   "volta": {
     "node": "20.13.1",
