@@ -3,9 +3,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   srcDir: 'src/',
   ssr: true,
-  modules: ['@nuxt/eslint', '@nuxtjs/tailwindcss', 'shadcn-nuxt'],
+  modules: ['@nuxt/eslint', '@nuxtjs/tailwindcss', 'shadcn-nuxt', '@pinia/nuxt'],
   shadcn: {
     prefix: '',
     componentDir: './src/components/ui/',
+  },
+  pinia: {
+    storesDirs: ['./src/store'],
   },
 });

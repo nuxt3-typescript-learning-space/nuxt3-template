@@ -15,10 +15,12 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.5.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.379.0",
     "nuxt": "^3.11.2",
+    "pinia": "^2.1.7",
     "radix-vue": "^1.8.2",
     "shadcn-nuxt": "^0.10.4",
     "tailwind-merge": "^2.3.0",
