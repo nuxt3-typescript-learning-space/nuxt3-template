@@ -2,11 +2,11 @@
   // https://nuxt.com/docs/guide/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "types": ["@nuxt/types", "@types/node"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }
-  },
-  "exclude": ["node_modules", ".nuxt", "dist"]
+      "@/*": ["src/*"]
+    },
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  }
 }
