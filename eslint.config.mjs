@@ -12,9 +12,11 @@ export default withNuxt({
   rules: {
     'no-console': 'warn',
     'vue/multi-word-component-names': 'off',
-    "@typescript-eslint/ban-ts-comment": "off",
-    "vue/require-default-prop": "off",
-    "@typescript-eslint/ban-types": "off",
+    '@typescript-eslint/ban-ts-comment': 'off',
+    'vue/require-default-prop': 'off',
+    '@typescript-eslint/ban-types': 'off',
+    'vue/no-multiple-template-root': 'off',
+    'vue/html-self-closing': 'off',
     'import/order': [
       'warn',
       {
