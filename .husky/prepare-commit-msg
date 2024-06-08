@@ -1,0 +1,1 @@
+git config commit.template .commit_template && exec < /dev/tty && git cz --hook || true
