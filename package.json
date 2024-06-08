@@ -1,7 +1,6 @@
 {
   "name": "nuxt-app",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev -o",
@@ -11,6 +10,7 @@
     "lint:fix": "eslint . --fix",
     "lint:rules": "npx @eslint/config-inspector@latest",
     "format": "prettier --write .",
+    "commit-msg": "git-cz",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -38,7 +38,10 @@
     "@nuxtjs/tailwindcss": "^6.12.0",
     "@vitest/ui": "^1.6.0",
     "@vue/test-utils": "^2.4.6",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^9.3.0",
+    "git-cz": "^4.9.0",
     "globals": "^15.3.0",
     "happy-dom": "^14.11.4",
     "husky": "^9.0.11",
@@ -55,6 +58,11 @@
     "**/*.{js,ts,vue}": "npx eslint --fix",
     "**/*.{js,ts,vue,json}": "npx prettier --write",
     "**/*.{ts,vue}": "npx nuxi typecheck ."
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   },
   "volta": {
     "node": "20.13.1",
