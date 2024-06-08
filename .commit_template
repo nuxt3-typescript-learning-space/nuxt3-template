@@ -1,0 +1,39 @@
+
+
+# === Format ===
+# [Prefix] : [Emoji] [Message]
+
+# === Example ===
+# feat: ✨ xx機能追加
+
+# ==== Prefix ====
+# feat          新機能の追加
+# improve       コードの構造/ロジックの改善
+# update        軽微なバグ修正
+# fix           バグ修正
+# hotfix        緊急バグ修正
+# refactor      リファクタリング
+# delete        ファイルやコードの削除
+# style         UIやスタイルファイルの追加/更新
+# docs          ドキュメンテーションの追加/更新
+# move          ファイルやディレクトリの移動
+# test          テストの追加/更新/合格
+# chore         設定ファイルの追加/更新
+# package       パッケージの追加/更新
+# WIP           作業途中
+
+# ==== Emojis ====
+# ✨            新機能の追加 (feat)
+# 🎨            コードの構造/ロジックの改善 (improve)
+# 🩹            軽微なバグ修正 (update)
+# 🐛            バグ修正 (fix)
+# 🚑            緊急バグ修正 (hotfix)
+# ♻️             リファクタリング (refactor)
+# 🔥            ファイルやコードの削除 (delete)
+# 💄            UIやスタイルファイルの追加/更新 (style)
+# 📝             ドキュメンテーションの追加/更新 (docs)
+# 🚚            ファイルやディレクトリの移動 (move)
+# ✅            テストの追加/更新/合格 (test)
+# 🔧            設定ファイルの追加/更新 (chore)
+# 📦            パッケージの追加/更新 (package)
+# 🚧            作業途中 (WIP)
