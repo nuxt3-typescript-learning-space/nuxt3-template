@@ -66,7 +66,7 @@ module.exports = {
       value: 'style',
     },
     docs: {
-      emoji: '📝 ',
+      emoji: '📝',
       description: 'ドキュメンテーションの追加/更新',
       value: 'docs',
     },
