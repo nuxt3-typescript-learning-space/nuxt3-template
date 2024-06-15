@@ -31,11 +31,15 @@
     "vue-router": "^4.3.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
     "@nuxt/eslint": "^0.3.13",
     "@nuxt/test-utils": "^3.13.1",
     "@nuxtjs/tailwindcss": "^6.12.0",
     "@vitest/ui": "^1.6.0",
     "@vue/test-utils": "^2.4.6",
+    "commitizen": "^4.3.0",
+    "commitlint-config-gitmoji": "^2.3.1",
+    "cz-customizable": "^7.0.0",
     "eslint": "^9.3.0",
     "globals": "^15.3.0",
     "happy-dom": "^14.11.4",
@@ -53,6 +57,14 @@
     "**/*.{js,ts,vue}": "npx eslint --fix",
     "**/*.{js,ts,vue,json}": "npx prettier --write",
     "**/*.{ts,vue}": "npx nuxi typecheck ."
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": ".cz-config.cts"
+    }
   },
   "volta": {
     "node": "20.13.1",
