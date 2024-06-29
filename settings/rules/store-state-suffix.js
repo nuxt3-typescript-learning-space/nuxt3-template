@@ -9,7 +9,7 @@ export const storeStateSuffix = {
   meta: {
     type: 'suggestion',
     docs: {
-      description: 'stateの値をvueファイルで使用する時は "State" 接尾辞を付ける',
+      description: 'stateの値を使用する時は "State" という接尾辞をつける',
       category: 'Best Practices',
       recommended: false,
     },
