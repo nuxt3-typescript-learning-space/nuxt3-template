@@ -4,8 +4,6 @@ import { safeReadFile } from './utils/file.js';
 import { readJsonFile, writeJsonFile } from './utils/json.js';
 import { logMessage } from './utils/logger.js';
 
-// 定数の宣言
-
 /**
  * stateの値を抽出する関数
  * @param {string} filePath - 抽出するファイルのパス
