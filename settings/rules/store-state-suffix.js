@@ -13,6 +13,7 @@ export const storeStateSuffix = {
       category: 'Best Practices',
       recommended: false,
     },
+    fixable: 'code',
     messages: {
       requireStateSuffix:
         'stateの "{{name}}" には "State" 接尾辞が必要です。"{{name}}: {{name}}State" に変更してください。',
@@ -38,6 +39,11 @@ export const storeStateSuffix = {
                 messageId: 'requireStateSuffix',
                 data: {
                   name: nameToCheck,
+                },
+                fix: (fixer) => {
+                  const newName = `${nameToCheck}State`;
+                  const newPropertySource = aliasName ? `${originalName}: ${newName}` : newName;
+                  return fixer.replaceText(property, newPropertySource);
                 },
               });
             }
