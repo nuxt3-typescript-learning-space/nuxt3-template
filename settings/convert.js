@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { globSync } from 'glob';
+import prettier from 'prettier';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -144,8 +145,16 @@ const readJsonFile = (filePath) => {
  * @param {string} filePath - 書き込むJSONファイルのパス
  * @param {object} json - 書き込むJSONデータ
  */
-const writeJsonFile = (filePath, json) => {
-  safeWriteFile(filePath, JSON.stringify(json, null, 2));
+const writeJsonFile = async (filePath, json) => {
+  try {
+    // JSON文字列を整形するためにprettier.formatを使用
+    const formattedJson = await prettier.format(JSON.stringify(json), { parser: 'json' });
+    // 整形されたJSON文字列をファイルに書き込む
+    safeWriteFile(filePath, formattedJson);
+  } catch (error) {
+    handleError(`JSONファイルの整形中にエラーが発生しました: ${filePath}`, error);
+    throw error;
+  }
 };
 
 // 全てのstoreファイルを取得
