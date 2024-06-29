@@ -13,6 +13,7 @@ export const storeStateSuffix = {
       category: 'Best Practices',
       recommended: false,
     },
+    fixable: 'code',
     messages: {
       requireStateSuffix:
         'stateの "{{name}}" には "State" 接尾辞が必要です。"{{name}}: {{name}}State" に変更してください。',
@@ -32,13 +33,17 @@ export const storeStateSuffix = {
             const originalName = property.key.name;
             const aliasName = property.value.name;
             const nameToCheck = aliasName || originalName;
-
             if (stateList.includes(originalName) && !nameToCheck.endsWith('State')) {
               context.report({
                 node: property,
                 messageId: 'requireStateSuffix',
                 data: {
                   name: nameToCheck,
+                },
+                fix: (fixer) => {
+                  const newName = `${nameToCheck}State`;
+                  const newPropertySource = aliasName ? `${originalName}: ${newName}` : newName;
+                  return fixer.replaceText(property, newPropertySource);
                 },
               });
             }
