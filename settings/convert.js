@@ -7,57 +7,166 @@ import { globSync } from 'glob';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// project-root ディレクトリを基準にパスを解決
-const projectRoot = path.resolve(__dirname, '..');
+// 定数の宣言
+const PROJECT_ROOT = path.resolve(__dirname, '..');
+const STORE_DIR = path.resolve(PROJECT_ROOT, './src/store');
+const STORE_STATE_LIST_PATH = path.resolve(PROJECT_ROOT, './settings/rules/data/store-state-list.json');
 
-// src/storeディレクトリのパス
-const storeDir = path.resolve(projectRoot, './src/store');
+/**
+ * 正規表現パターンの定義
+ * この正規表現は、以下のようなstateオブジェクトの定義をキャプチャするためのものです:
+ * state: (): State => ({
+ *   foo: 'bar',
+ *   baz: 'qux',
+ * })
+ * または
+ * state: () => ({
+ *   foo: 'bar',
+ *   baz: 'qux',
+ * })
+ */
+const STATE_REGEX = /state\s*:\s*\(\)\s*:\s*\w+\s*=>\s*\(\s*{([\s\S]*?)}\s*\)|state\s*:\s*\(\)\s*=>\s*\({([\s\S]*?)}\)/;
 
-// store-state-list.jsonのパス
-const storeStateListPath = path.resolve(projectRoot, './settings/rules/data/store-state-list.json');
+/**
+ * 共通のエラーハンドリング関数
+ * @param {string} message - エラーメッセージ
+ * @param {unknown} error - 発生したエラー
+ */
+const handleError = (message, error) => {
+  console.error(`${message}\n詳細:`, error); // eslint-disable-line no-console
+};
 
-// 全てのstoreファイルを取得
-const storeFiles = globSync(`${storeDir}/**/*.ts`);
+/**
+ * ログ出力関数
+ * @param {string} message - ログメッセージ
+ */
+const logMessage = (message) => {
+  console.log(message); // eslint-disable-line no-console
+};
 
-// stateの値を抽出する関数
+/**
+ * ファイルの存在確認関数
+ * @param {string} filePath - チェックするファイルのパス
+ * @returns {boolean} - ファイルが存在するかどうか
+ */
+const fileExists = (filePath) => fs.existsSync(filePath);
+
+/**
+ * ファイルを読み込む関数
+ * @param {string} filePath - 読み込むファイルのパス
+ * @returns {string} - ファイルの内容
+ * @throws {Error} - ファイルが存在しない場合にエラーをスロー
+ */
+const readFile = (filePath) => {
+  if (!fileExists(filePath)) {
+    throw new Error(`ファイルが存在しません: ${filePath}`);
+  }
+  return fs.readFileSync(filePath, 'utf8');
+};
+
+/**
+ * ファイルを書き込む関数
+ * @param {string} filePath - 書き込むファイルのパス
+ * @param {string} data - 書き込むデータ
+ */
+const writeFile = (filePath, data) => {
+  fs.writeFileSync(filePath, data);
+};
+
+/**
+ * ファイルを安全に読み込む関数（エラーハンドリング込み）
+ * @param {string} filePath - 読み込むファイルのパス
+ * @returns {string} - ファイルの内容
+ */
+const safeReadFile = (filePath) => {
+  try {
+    return readFile(filePath);
+  } catch (error) {
+    handleError(`ファイルの読み込み中にエラーが発生しました: ${filePath}`, error);
+    throw error;
+  }
+};
+
+/**
+ * ファイルを安全に書き込む関数（エラーハンドリング込み）
+ * @param {string} filePath - 書き込むファイルのパス
+ * @param {string} data - 書き込むデータ
+ */
+const safeWriteFile = (filePath, data) => {
+  try {
+    writeFile(filePath, data);
+  } catch (error) {
+    handleError(`ファイルの書き込み中にエラーが発生しました: ${filePath}`, error);
+    throw error;
+  }
+};
+
+/**
+ * stateの値を抽出する関数
+ * @param {string} filePath - 抽出するファイルのパス
+ * @returns {string[]} - 抽出されたstateの値の配列
+ */
 const extractStateValues = (filePath) => {
-  const fileContent = fs.readFileSync(filePath, 'utf8');
-  const stateValues = [];
-  const stateRegex =
-    /state\s*:\s*\(\)\s*:\s*\w+\s*=>\s*\(\s*{([\s\S]*?)}\s*\)|state\s*:\s*\(\)\s*=>\s*\({([\s\S]*?)}\)/;
-
-  const match = stateRegex.exec(fileContent);
-  if (match) {
-    const stateContent = match[1] || match[2];
-    const stateLines = stateContent
-      .split(',')
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0);
-    stateLines.forEach((line) => {
-      const [key] = line.split(':');
-      if (key) {
-        stateValues.push(key.trim());
-      }
-    });
-  } else {
-    // デバッグ: 正規表現に一致しなかった場合
-    // eslint-disable-next-line no-console
-    console.log('ファイルに対する正規表現に一致しませんでした:', filePath);
+  const fileContent = safeReadFile(filePath);
+  const match = STATE_REGEX.exec(fileContent);
+  if (!match) {
+    logMessage(`ファイルに対する正規表現に一致しませんでした: ${filePath}`);
+    return [];
   }
 
-  return stateValues;
+  const stateContent = match[1] || match[2];
+  return stateContent
+    .split(',')
+    .map((line) => line.trim().split(':')[0].trim())
+    .filter(Boolean);
 };
+
+/**
+ * 重複を除去して一意の値を取得する関数
+ * @param {string[]} values - 処理する値の配列
+ * @returns {string[]} - 一意の値の配列
+ */
+const getUniqueValues = (values) => [...new Set(values)];
+
+/**
+ * JSONファイルの内容を読み込む関数
+ * @param {string} filePath - 読み込むJSONファイルのパス
+ * @returns {string[]} - JSONファイルの内容
+ */
+const readJsonFile = (filePath) => {
+  try {
+    return JSON.parse(readFile(filePath));
+  } catch (error) {
+    handleError(`JSONファイルの読み込み中にエラーが発生しました: ${filePath}`, error);
+    throw error;
+  }
+};
+
+/**
+ * JSONファイルの内容を書き込む関数
+ * @param {string} filePath - 書き込むJSONファイルのパス
+ * @param {object} json - 書き込むJSONデータ
+ */
+const writeJsonFile = (filePath, json) => {
+  safeWriteFile(filePath, JSON.stringify(json, null, 2));
+};
+
+// 全てのstoreファイルを取得
+const storeFiles = globSync(`${STORE_DIR}/**/*.ts`);
 
 // 全storeファイルからstateの値を抽出
 const allStateValues = storeFiles.flatMap(extractStateValues);
 
 // 重複を除去して一意の値を取得
-const uniqueStateValues = [...new Set(allStateValues)];
+const uniqueStateValues = getUniqueValues(allStateValues);
 
 // store-state-list.jsonの現在の内容を取得
-const storeStateList = JSON.parse(fs.readFileSync(storeStateListPath, 'utf8'));
+const storeStateList = readJsonFile(STORE_STATE_LIST_PATH);
 
-// 現在のstore-state-list.jsonに含まれているが、最新の抽出されたstate値に含まれていない項目を削除
+/**
+ * 現在のstore-state-list.jsonに含まれているが、最新の抽出されたstate値に含まれていない項目を削除
+ * @type {string[]}
+ */
 const updatedStateList = storeStateList.filter((value) => uniqueStateValues.includes(value));
 
 // 最新の抽出されたstate値でstore-state-list.jsonを更新
@@ -68,7 +177,6 @@ uniqueStateValues.forEach((value) => {
 });
 
 // JSONファイルに書き込み
-fs.writeFileSync(storeStateListPath, JSON.stringify(updatedStateList, null, 2));
+writeJsonFile(STORE_STATE_LIST_PATH, updatedStateList);
 
-// eslint-disable-next-line no-console
-console.log('store-state-list.jsonが更新されました。');
+logMessage('store-state-list.jsonが更新されました。');
