@@ -1,6 +1,7 @@
-// @ts-check
+import prettierConfig from 'eslint-config-prettier';
 import globals from 'globals';
 import withNuxt from './.nuxt/eslint.config.mjs';
+import eslintCustomRulesPlugin from './settings/rules/index.js';
 
 export default withNuxt({
   languageOptions: {
@@ -9,6 +10,7 @@ export default withNuxt({
       ...globals.node,
     },
   },
+  plugins: { 'coding-rules': eslintCustomRulesPlugin },
   rules: {
     'no-console': 'warn',
     'vue/multi-word-component-names': 'off',
@@ -35,5 +37,7 @@ export default withNuxt({
         'newlines-between': 'never',
       },
     ],
+    'coding-rules/store-state-suffix': 'error',
+    ...prettierConfig.rules,
   },
 });
