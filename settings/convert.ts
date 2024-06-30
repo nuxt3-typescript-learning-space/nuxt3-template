@@ -1,17 +1,17 @@
-import updateGetterValues from './updateGetterValues.js';
-import updateStateValues from './updateStateValues.js';
+import updateGetterValues from './updateGetterValues';
+import updateStateValues from './updateStateValues';
 import { logMessage } from './utils/logger.js';
 
 /**
  * ストアデータを更新するメイン処理
  * @returns {Promise<void>}
  */
-const updateStoreData = async () => {
+const updateStoreData = async (): Promise<void> => {
   try {
     await updateStateValues();
     await updateGetterValues();
   } catch (error) {
-    logMessage(`エラーが発生しました: ${error.message}`);
+    logMessage(`エラーが発生しました: ${error}`);
   }
 };
 

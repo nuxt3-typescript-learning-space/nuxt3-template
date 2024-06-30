@@ -1,5 +1,5 @@
-import { safeReadFile } from './file.js';
-import { logMessage } from './logger.js';
+import { safeReadFile } from './file';
+import { logMessage } from './logger';
 
 /**
  * ファイルから正規表現に一致する内容を抽出する関数
@@ -7,7 +7,7 @@ import { logMessage } from './logger.js';
  * @param {RegExp} regex - 正規表現パターン
  * @returns {string} - 抽出された内容
  */
-const extractContentByRegex = (filePath, regex) => {
+const extractContentByRegex = (filePath: string, regex: RegExp): string => {
   const fileContent = safeReadFile(filePath);
   const match = regex.exec(fileContent);
   if (!match) {
@@ -22,7 +22,7 @@ const extractContentByRegex = (filePath, regex) => {
  * @param {string} content - フィルタリングする内容
  * @returns {string[]} - 抽出されたgetterのプロパティ名の配列
  */
-const filterGetterNames = (content) => {
+const filterGetterNames = (content: string): string[] => {
   const lines = content
     .split('\n')
     .map((line) => line.trim())
@@ -36,7 +36,7 @@ const filterGetterNames = (content) => {
       }
       return null;
     })
-    .filter(Boolean);
+    .filter((name): name is string => name !== null);
 
   return getterNames;
 };
@@ -47,7 +47,7 @@ const filterGetterNames = (content) => {
  * @param {RegExp} regex - 正規表現パターン
  * @returns {string[]} - 抽出されたgetterのプロパティ名の配列
  */
-export const extractValuesByRegex = (filePath, regex) => {
+export const extractValuesByRegex = (filePath: string, regex: RegExp): string[] => {
   const content = extractContentByRegex(filePath, regex);
   return filterGetterNames(content);
 };
@@ -57,4 +57,4 @@ export const extractValuesByRegex = (filePath, regex) => {
  * @param {string[]} values - 値の配列
  * @returns {string[]} - 一意の値の配列
  */
-export const getUniqueValues = (values) => [...new Set(values)];
+export const getUniqueValues = (values: string[]): string[] => [...new Set(values)];

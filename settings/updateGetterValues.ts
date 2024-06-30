@@ -7,7 +7,7 @@ import { extractValuesByRegex, getUniqueValues } from './utils/regex.js';
 /**
  * gettersのプロパティ名を抽出してJSONファイルを更新する関数
  */
-const updateGetterValues = async () => {
+const updateGetterValues = async (): Promise<void> => {
   const storeFiles = globSync(`${STORE_DIR}/**/*.ts`);
   const allGetterValues = storeFiles.flatMap((filePath) => extractValuesByRegex(filePath, GETTERS_REGEX));
   const uniqueGetterValues = getUniqueValues(allGetterValues);

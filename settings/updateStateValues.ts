@@ -7,7 +7,7 @@ import { extractValuesByRegex, getUniqueValues } from './utils/regex.js';
 /**
  * stateの値を抽出してJSONファイルを更新する関数
  */
-const updateStateValues = async () => {
+const updateStateValues = async (): Promise<void> => {
   const storeFiles = globSync(`${STORE_DIR}/**/*.ts`);
   const allStateValues = storeFiles.flatMap((filePath) => extractValuesByRegex(filePath, STATE_REGEX));
   const uniqueStateValues = getUniqueValues(allStateValues);
