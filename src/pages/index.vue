@@ -6,6 +6,16 @@ import { useCounterStore } from '@/store/counterStore';
 const counterStore = useCounterStore();
 const { count: countState } = storeToRefs(counterStore);
 const { increment, decrement } = counterStore;
+
+useHead({
+  title: 'Hello Nuxt App',
+  meta: [
+    {
+      name: 'description',
+      content: 'はじめての Nuxt アプリケーション',
+    },
+  ],
+});
 </script>
 <template>
   <section>
