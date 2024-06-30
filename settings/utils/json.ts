@@ -1,13 +1,13 @@
 import prettier from 'prettier';
-import { readFile, safeWriteFile } from './file.js';
-import { handleError } from './logger.js';
+import { readFile, safeWriteFile } from './file';
+import { handleError } from './logger';
 
 /**
  * JSONファイルの内容を読み込む関数
  * @param {string} filePath - 読み込むJSONファイルのパス
- * @returns {object} - JSONファイルの内容
+ * @returns {string[]} - JSONファイルの内容
  */
-export const readJsonFile = (filePath) => {
+export const readJsonFile = (filePath: string): string[] => {
   try {
     return JSON.parse(readFile(filePath));
   } catch (error) {
@@ -21,7 +21,7 @@ export const readJsonFile = (filePath) => {
  * @param {string} filePath - 書き込むJSONファイルのパス
  * @param {object} json - 書き込むJSONデータ
  */
-export const writeJsonFile = async (filePath, json) => {
+export const writeJsonFile = async (filePath: string, json: object) => {
   try {
     // JSON文字列を整形するためにprettier.formatを使用
     const formattedJson = await prettier.format(JSON.stringify(json), { parser: 'json' });
