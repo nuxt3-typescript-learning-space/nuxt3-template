@@ -1,8 +1,8 @@
 import { globSync } from 'glob';
-import { GETTERS_REGEX, STORE_DIR, STORE_GETTERS_LIST_PATH } from './utils/constant.js';
-import { readJsonFile, writeJsonFile } from './utils/json.js';
-import { logMessage } from './utils/logger.js';
-import { extractValuesByRegex, getUniqueValues } from './utils/regex.js';
+import { GETTERS_REGEX, STORE_DIR, STORE_GETTERS_LIST_PATH } from './utils/constant';
+import { readJsonFile, writeJsonFile } from './utils/json';
+import { logMessage } from './utils/logger';
+import { extractValuesByRegex, getUniqueValues } from './utils/regex';
 
 /**
  * gettersのプロパティ名を抽出してJSONファイルを更新する関数

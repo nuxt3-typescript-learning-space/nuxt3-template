@@ -1,6 +1,6 @@
 import updateGetterValues from './updateGetterValues';
 import updateStateValues from './updateStateValues';
-import { logMessage } from './utils/logger.js';
+import { logMessage } from './utils/logger';
 
 /**
  * ストアデータを更新するメイン処理
