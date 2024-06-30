@@ -1,4 +1,4 @@
-import updateGetterNames from './updateGetterNames.js';
+import updateGetterValues from './updateGetterValues.js';
 import updateStateValues from './updateStateValues.js';
 import { logMessage } from './utils/logger.js';
 
@@ -9,7 +9,7 @@ import { logMessage } from './utils/logger.js';
 const updateStoreData = async () => {
   try {
     await updateStateValues();
-    await updateGetterNames();
+    await updateGetterValues();
   } catch (error) {
     logMessage(`エラーが発生しました: ${error.message}`);
   }
