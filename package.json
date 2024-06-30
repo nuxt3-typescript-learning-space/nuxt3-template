@@ -15,7 +15,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "convert": "node settings/convert.js",
+    "convert": "npx vite-node settings/convert.ts",
     "predev": "pnpm run convert",
     "prepare": "husky"
   },
@@ -55,13 +55,14 @@
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "typescript": "^5.4.5",
+    "vite-node": "^1.6.0",
     "vite-plugin-eslint2": "^4.4.0",
     "vitest": "^1.6.0",
     "vue-tsc": "^1.8.27"
   },
   "lint-staged": {
     "**/*.{js,ts,vue}": [
-      "pnpm run convert",
+      "pnpm convert",
       "npx eslint --fix"
     ],
     "**/*.{js,ts,vue,json}": "npx prettier --write",
