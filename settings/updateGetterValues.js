@@ -9,12 +9,12 @@ import { extractValuesByRegex, getUniqueValues } from './utils/regex.js';
  */
 const updateGetterValues = async () => {
   const storeFiles = globSync(`${STORE_DIR}/**/*.ts`);
-  const allGetterNames = storeFiles.flatMap((filePath) => extractValuesByRegex(filePath, GETTERS_REGEX));
-  const uniqueGetterNames = getUniqueValues(allGetterNames);
+  const allGetterValues = storeFiles.flatMap((filePath) => extractValuesByRegex(filePath, GETTERS_REGEX));
+  const uniqueGetterValues = getUniqueValues(allGetterValues);
 
   const storeGettersList = readJsonFile(STORE_GETTERS_LIST_PATH);
-  const updatedGettersList = storeGettersList.filter((value) => uniqueGetterNames.includes(value));
-  uniqueGetterNames.forEach((value) => {
+  const updatedGettersList = storeGettersList.filter((value) => uniqueGetterValues.includes(value));
+  uniqueGetterValues.forEach((value) => {
     if (!updatedGettersList.includes(value)) {
       updatedGettersList.push(value);
     }
