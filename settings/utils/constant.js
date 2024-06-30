@@ -9,4 +9,4 @@ export const STORE_STATE_LIST_PATH = path.resolve(PROJECT_ROOT, '../settings/rul
 export const STORE_GETTERS_LIST_PATH = path.resolve(PROJECT_ROOT, '../settings/rules/data/store-getters-list.json');
 export const STATE_REGEX =
   /state\s*:\s*\(\)\s*:\s*\w+\s*=>\s*\(\s*{([\s\S]*?)}\s*\)|state\s*:\s*\(\)\s*=>\s*\({([\s\S]*?)}\)/;
-export const GETTERS_REGEX = /getters\s*:\s*{([\s\S]*?)\s*},?\s*(?=actions\s*:\s*{|state\s*:\s*{|$)/;
+export const GETTERS_REGEX = /getters\s*:\s*{([\s\S]*?)}\s*(?=,\s*actions|,\s*state|$)/;
