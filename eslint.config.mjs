@@ -37,8 +37,6 @@ export default withNuxt({
         'newlines-between': 'never',
       },
     ],
-    'coding-rules/store-state-suffix': 'error',
-    'coding-rules/reactive-value-suffix': 'error',
     ...prettierConfig.rules,
   },
 });
