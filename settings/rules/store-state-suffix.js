@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 const stateList = JSON.parse(
-  readFileSync(resolve(new URL('.', import.meta.url).pathname, './data/store-state-list.json'), 'utf8'),
+  readFileSync(resolve(new URL('.', import.meta.url).pathname, '../data/store-state-list.json'), 'utf8'),
 );
 
 /**

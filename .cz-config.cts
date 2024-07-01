@@ -53,7 +53,7 @@ const config = {
       value: ':package: package',
     },
     {
-      name: 'WIP:      🚧 作業途中',
+      name: 'wip:      🚧 作業途中',
       value: ':construction: WIP',
     },
   ],

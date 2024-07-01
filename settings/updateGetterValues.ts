@@ -1,15 +1,15 @@
 import { globSync } from 'glob';
-import { GETTERS_REGEX, STORE_DIR, STORE_GETTERS_LIST_PATH } from './utils/constant';
+import { GETTER_PATTERNS, STORE_DIR, STORE_GETTERS_LIST_PATH } from './utils/constant';
 import { readJsonFile, writeJsonFile } from './utils/json';
 import { logMessage } from './utils/logger';
-import { extractValuesByRegex, getUniqueValues } from './utils/regex';
+import { extractValuesByPatterns, getUniqueValues } from './utils/regex';
 
 /**
  * gettersのプロパティ名を抽出してJSONファイルを更新する関数
  */
 const updateGetterValues = async (): Promise<void> => {
   const storeFiles = globSync(`${STORE_DIR}/**/*.ts`);
-  const allGetterValues = storeFiles.flatMap((filePath) => extractValuesByRegex(filePath, GETTERS_REGEX));
+  const allGetterValues = storeFiles.flatMap((filePath) => extractValuesByPatterns(filePath, GETTER_PATTERNS, false));
   const uniqueGetterValues = getUniqueValues(allGetterValues);
 
   const storeGettersList = readJsonFile(STORE_GETTERS_LIST_PATH);

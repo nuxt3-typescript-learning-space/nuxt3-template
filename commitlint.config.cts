@@ -19,7 +19,7 @@ const config = {
         'test',
         'chore',
         'package',
-        'WIP',
+        'wip',
       ],
     ],
   },

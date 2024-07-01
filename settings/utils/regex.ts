@@ -1,55 +1,50 @@
 import { safeReadFile } from './file';
-import { logMessage } from './logger';
 
 /**
  * ファイルから正規表現に一致する内容を抽出する関数
  * @param {string} filePath - ファイルのパス
- * @param {RegExp} regex - 正規表現パターン
- * @returns {string} - 抽出された内容
+ * @param {RegExp[]} patterns - 正規表現パターンのリスト
+ * @param {boolean} isState - stateかgettersかを示すフラグ
+ * @returns {string[]} - 抽出された内容の配列
  */
-const extractContentByRegex = (filePath: string, regex: RegExp): string => {
+export const extractValuesByPatterns = (filePath: string, patterns: RegExp[], isState: boolean): string[] => {
   const fileContent = safeReadFile(filePath);
-  const match = regex.exec(fileContent);
-  if (!match) {
-    logMessage(`パターンがファイルに一致しませんでした: ${filePath}`);
-    return '';
-  }
-  return match[1] || match[2] || '';
+  const matches = patterns.flatMap((pattern) => {
+    const match = pattern.exec(fileContent);
+    return match ? match[1] || '' : '';
+  });
+
+  return matches.filter((match) => match).flatMap((content) => filterTopLevelNames(content, isState));
 };
 
 /**
- * 行をフィルタリングしてgetterのプロパティ名を抽出する関数
+ * 行をフィルタリングしてトップレベルのプロパティ名を抽出する関数
  * @param {string} content - フィルタリングする内容
- * @returns {string[]} - 抽出されたgetterのプロパティ名の配列
+ * @param {boolean} isState - stateかgettersかを示すフラグ
+ * @returns {string[]} - 抽出されたプロパティ名の配列
  */
-const filterGetterNames = (content: string): string[] => {
+const filterTopLevelNames = (content: string, isState: boolean): string[] => {
   const lines = content
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line && !line.startsWith('*') && !line.startsWith('/**') && !line.startsWith('//'));
 
-  const getterNames = lines
+  const values = lines
     .map((line) => {
       const match = line.match(/^(\w+)\s*[:(]/);
-      if (match && match[1] !== 'return') {
-        return match[1];
-      }
-      return null;
+      return match ? match[1] : null;
     })
-    .filter((name): name is string => name !== null);
+    .filter((name): name is string => name !== null && name !== 'return');
 
-  return getterNames;
-};
+  // stateの場合、ネストされたプロパティを除外する
+  if (isState) {
+    return values.filter(
+      (name) => !lines.some((line) => line.startsWith(name + ': {') || line.startsWith(name + ':[')),
+    );
+  }
 
-/**
- * 正規表現パターンを使用してファイルからgetterのプロパティ名を抽出する関数
- * @param {string} filePath - ファイルのパス
- * @param {RegExp} regex - 正規表現パターン
- * @returns {string[]} - 抽出されたgetterのプロパティ名の配列
- */
-export const extractValuesByRegex = (filePath: string, regex: RegExp): string[] => {
-  const content = extractContentByRegex(filePath, regex);
-  return filterGetterNames(content);
+  // gettersの場合、トップレベルのプロパティのみを取得
+  return values.filter((name) => !lines.some((line) => line.startsWith(name + ': {') || line.startsWith(name + ':{')));
 };
 
 /**
