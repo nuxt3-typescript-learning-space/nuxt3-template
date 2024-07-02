@@ -24,42 +24,70 @@ const extractContentByRegex = (filePath: string, patterns: RegExp[]): string => 
  * @param {string} content - ファイルの内容
  * @returns {string[]} - トップレベルのプロパティ名の配列
  */
-const filterPropertyName = (content: string): string[] => {
-  // ファイルの内容を行ごとに分割し、不要な空白を取り除く
+const filterStatePropertyName = (content: string): string[] => {
   const lines = content
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line && !line.startsWith('*') && !line.startsWith('/**') && !line.startsWith('//'));
 
-  const propertyNames: string[] = []; // 抽出したプロパティ名を格納する配列
-  let braceCount = 0; // 中括弧の数をカウントする変数
+  const propertyNames: string[] = [];
+  let braceCount = 0;
 
   lines.forEach((line) => {
-    // braceCountが0のとき、最上位のプロパティ名を抽出
     if (braceCount === 0 && line.includes(':')) {
-      const match = line.match(/^(\w+)\s*:/); // プロパティ名を抽出する正規表現
+      const match = line.match(/^(\w+)\s*:/);
       if (match && match[1] !== 'return') {
-        propertyNames.push(match[1]); // プロパティ名を配列に追加
+        propertyNames.push(match[1]);
       }
     }
 
-    // 中括弧の数をカウントしてbraceCountを調整
-    braceCount += (line.match(/{/g) || []).length; // 開き中括弧の数をカウント
-    braceCount -= (line.match(/}/g) || []).length; // 閉じ中括弧の数をカウント
+    braceCount += (line.match(/{/g) || []).length;
+    braceCount -= (line.match(/}/g) || []).length;
   });
 
-  return propertyNames; // 抽出したプロパティ名の配列を返す
+  return propertyNames;
 };
 
 /**
  * 正規表現に一致する内容からプロパティ名を抽出する関数
  * @param {string} filePath - ファイルのパス
- * @param {RegExp[]} regex - 一致させる正規表現の配列
+ * @param {RegExp[]} regexPattern - 一致させる正規表現の配列
+ * @param {boolean} isGetters - Gettersかどうかを判別するフラグ
  * @returns {string[]} - プロパティ名の配列
  */
-export const extractValuesByRegex = (filePath: string, regex: RegExp[]): string[] => {
-  const content = extractContentByRegex(filePath, regex);
-  return filterPropertyName(content);
+export const extractValuesByRegex = (filePath: string, regexPattern: RegExp[], isGetters: boolean): string[] => {
+  const content = extractContentByRegex(filePath, regexPattern);
+  const propertyNames = isGetters ? filterGetterPropertyName(content) : filterStatePropertyName(content);
+  return propertyNames;
+};
+
+/**
+ * 行をフィルタリングしてgettersのプロパティ名を抽出する関数
+ * @param {string} content - ファイルの内容
+ * @returns {string[]} - トップレベルのプロパティ名の配列
+ */
+const filterGetterPropertyName = (content: string): string[] => {
+  const lines = content
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('*') && !line.startsWith('/**') && !line.startsWith('//'));
+
+  const propertyNames: string[] = [];
+  let braceCount = 0;
+
+  lines.forEach((line) => {
+    if (braceCount === 0 && (line.includes(':') || line.includes('('))) {
+      const match = line.match(/^(\w+)\s*:/) || line.match(/^(\w+)\s*\(/);
+      if (match) {
+        propertyNames.push(match[1]);
+      }
+    }
+
+    braceCount += (line.match(/{/g) || []).length;
+    braceCount -= (line.match(/}/g) || []).length;
+  });
+
+  return propertyNames;
 };
 
 /**
@@ -67,4 +95,7 @@ export const extractValuesByRegex = (filePath: string, regex: RegExp[]): string[
  * @param {string[]} values - 値の配列
  * @returns {string[]} - 一意の値の配列
  */
-export const getUniqueValues = (values: string[]): string[] => [...new Set(values)];
+export const getUniqueValues = (values: string[]): string[] => {
+  const uniqueValues = [...new Set(values)];
+  return uniqueValues;
+};

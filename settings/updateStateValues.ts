@@ -1,15 +1,15 @@
 import { globSync } from 'glob';
-import { STATE_PATTERNS, STORE_DIR, STORE_STATE_LIST_PATH } from './utils/constant';
+import { STATE_REGEX_PATTERN, STORE_DIR, STORE_STATE_LIST_PATH } from './utils/constant';
 import { readJsonFile, writeJsonFile } from './utils/json';
 import { logMessage } from './utils/logger';
-import { extractValuesByPatterns, getUniqueValues } from './utils/regex';
+import { extractValuesByRegex, getUniqueValues } from './utils/regex';
 
 /**
  * stateの値を抽出してJSONファイルを更新する関数
  */
 const updateStateValues = async (): Promise<void> => {
   const storeFiles = globSync(`${STORE_DIR}/**/*.ts`);
-  const allStateValues = storeFiles.flatMap((filePath) => extractValuesByPatterns(filePath, STATE_PATTERNS, true));
+  const allStateValues = storeFiles.flatMap((filePath) => extractValuesByRegex(filePath, STATE_REGEX_PATTERN, false));
   const uniqueStateValues = getUniqueValues(allStateValues);
 
   const storeStateList = readJsonFile(STORE_STATE_LIST_PATH);
