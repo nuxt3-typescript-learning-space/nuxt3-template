@@ -25,27 +25,30 @@ const extractContentByRegex = (filePath: string, patterns: RegExp[]): string => 
  * @returns {string[]} - トップレベルのプロパティ名の配列
  */
 const filterPropertyName = (content: string): string[] => {
+  // ファイルの内容を行ごとに分割し、不要な空白を取り除く
   const lines = content
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line && !line.startsWith('*') && !line.startsWith('/**') && !line.startsWith('//'));
 
-  const propertyNames: string[] = [];
-  let braceCount = 0;
+  const propertyNames: string[] = []; // 抽出したプロパティ名を格納する配列
+  let braceCount = 0; // 中括弧の数をカウントする変数
 
   lines.forEach((line) => {
+    // braceCountが0のとき、最上位のプロパティ名を抽出
     if (braceCount === 0 && line.includes(':')) {
-      const match = line.match(/^(\w+)\s*:/);
+      const match = line.match(/^(\w+)\s*:/); // プロパティ名を抽出する正規表現
       if (match && match[1] !== 'return') {
-        propertyNames.push(match[1]);
+        propertyNames.push(match[1]); // プロパティ名を配列に追加
       }
     }
 
-    braceCount += (line.match(/{/g) || []).length;
-    braceCount -= (line.match(/}/g) || []).length;
+    // 中括弧の数をカウントしてbraceCountを調整
+    braceCount += (line.match(/{/g) || []).length; // 開き中括弧の数をカウント
+    braceCount -= (line.match(/}/g) || []).length; // 閉じ中括弧の数をカウント
   });
 
-  return propertyNames;
+  return propertyNames; // 抽出したプロパティ名の配列を返す
 };
 
 /**
