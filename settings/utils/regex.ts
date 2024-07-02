@@ -8,18 +8,15 @@ import { logMessage } from './logger';
  * @returns {string} - 一致した内容の最初のグループ、または空文字列
  */
 const extractContentByRegex = (filePath: string, patterns: RegExp[]): string => {
-  // ファイルの内容を読み込む
   const fileContent = safeReadFile(filePath);
 
-  // 各正規表現パターンに対して一致する内容を検索
   for (const regex of patterns) {
     const match = regex.exec(fileContent);
     if (match) {
-      // 一致した内容を返す
       return match[1] || match[2] || '';
     }
   }
-  // 一致しなかった場合はログメッセージを出力
+
   logMessage(`パターンがファイルに一致しませんでした: ${filePath}`);
   return '';
 };
@@ -30,7 +27,6 @@ const extractContentByRegex = (filePath: string, patterns: RegExp[]): string => 
  * @returns {string[]} - トップレベルのプロパティ名の配列
  */
 const filterStatePropertyName = (content: string): string[] => {
-  // ファイルの内容を行ごとに分割し、不要な行をフィルタリング
   const lines = content
     .split('\n')
     .map((line) => line.trim())
@@ -40,7 +36,6 @@ const filterStatePropertyName = (content: string): string[] => {
   let braceCount = 0;
 
   lines.forEach((line) => {
-    // braceCountが0のときにトップレベルのプロパティ名を抽出
     if (braceCount === 0 && line.includes(':')) {
       const match = line.match(/^(\w+)\s*:/);
       if (match && match[1] !== 'return') {
@@ -48,7 +43,6 @@ const filterStatePropertyName = (content: string): string[] => {
       }
     }
 
-    // 中括弧の数をカウントしてbraceCountを調整
     braceCount += (line.match(/{/g) || []).length;
     braceCount -= (line.match(/}/g) || []).length;
   });
@@ -64,12 +58,8 @@ const filterStatePropertyName = (content: string): string[] => {
  * @returns {string[]} - プロパティ名の配列
  */
 export const extractValuesByRegex = (filePath: string, regexPattern: RegExp[], isGetters: boolean): string[] => {
-  // ファイルから正規表現に一致する内容を抽出
   const content = extractContentByRegex(filePath, regexPattern);
-
-  // 抽出した内容からプロパティ名をフィルタリング
-  const propertyNames = isGetters ? filterGetterPropertyName(content) : filterStatePropertyName(content);
-  return propertyNames;
+  return isGetters ? filterGetterPropertyName(content) : filterStatePropertyName(content);
 };
 
 /**
@@ -78,7 +68,6 @@ export const extractValuesByRegex = (filePath: string, regexPattern: RegExp[], i
  * @returns {string[]} - トップレベルのプロパティ名の配列
  */
 const filterGetterPropertyName = (content: string): string[] => {
-  // ファイルの内容を行ごとに分割し、不要な行をフィルタリング
   const lines = content
     .split('\n')
     .map((line) => line.trim())
@@ -88,7 +77,6 @@ const filterGetterPropertyName = (content: string): string[] => {
   let braceCount = 0;
 
   lines.forEach((line) => {
-    // braceCountが0のときにトップレベルのプロパティ名を抽出
     if (braceCount === 0 && (line.includes(':') || line.includes('('))) {
       const match = line.match(/^(\w+)\s*:/) || line.match(/^(\w+)\s*\(/);
       if (match) {
@@ -96,7 +84,6 @@ const filterGetterPropertyName = (content: string): string[] => {
       }
     }
 
-    // 中括弧の数をカウントしてbraceCountを調整
     braceCount += (line.match(/{/g) || []).length;
     braceCount -= (line.match(/}/g) || []).length;
   });
@@ -109,8 +96,4 @@ const filterGetterPropertyName = (content: string): string[] => {
  * @param {string[]} values - 値の配列
  * @returns {string[]} - 一意の値の配列
  */
-export const getUniqueValues = (values: string[]): string[] => {
-  // 配列から一意の値を取得して返す
-  const uniqueValues = [...new Set(values)];
-  return uniqueValues;
-};
+export const getUniqueValues = (values: string[]): string[] => [...new Set(values)];
