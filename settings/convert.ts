@@ -1,5 +1,5 @@
-import updateGetterValues from './updateGetterValues';
-import updateStateValues from './updateStateValues';
+import { updateGetterValues } from './updateGetterValues';
+import { updateStateValues } from './updateStateValues';
 import { logMessage } from './utils/logger';
 
 /**
