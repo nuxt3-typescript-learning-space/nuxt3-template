@@ -1,12 +1,12 @@
-import updateGetterValues from './updateGetterValues';
-import updateStateValues from './updateStateValues';
+import { updateGetterValues } from './updateGetterValues';
+import { updateStateValues } from './updateStateValues';
 import { logMessage } from './utils/logger';
 
 /**
- * ストアデータを更新するメイン処理
+ * ストアデータのリストを更新するメイン処理
  * @returns {Promise<void>}
  */
-const updateStoreData = async (): Promise<void> => {
+const updateStoreListData = async (): Promise<void> => {
   try {
     await updateStateValues();
     await updateGetterValues();
@@ -15,4 +15,4 @@ const updateStoreData = async (): Promise<void> => {
   }
 };
 
-updateStoreData();
+updateStoreListData();
