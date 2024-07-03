@@ -142,9 +142,10 @@ export const reactiveValueSuffix = {
             data: {
               name: node.object.name,
             },
-            fix: (fixer) => {
-              return fixer.insertTextAfter(node, '.value');
-            },
+            // NOTE: 自動修正を有効にする場合はコメントアウトを解除してください
+            // fix: (fixer) => {
+            //   return fixer.insertTextAfter(node, '.value');
+            // },
           });
         }
       },
