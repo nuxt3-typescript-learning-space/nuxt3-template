@@ -40,11 +40,12 @@ export const storeStateSuffix = {
           data: {
             name: nameToCheck,
           },
-          fix: (fixer) => {
-            const newName = `${nameToCheck}State`;
-            const newPropertySource = aliasName ? `${originalName}: ${newName}` : newName;
-            return fixer.replaceText(property, newPropertySource);
-          },
+          // NOTE: 自動修正を有効にする場合は以下のコメントアウトを外す
+          // fix: (fixer) => {
+          //   const newName = `${nameToCheck}State`;
+          //   const newPropertySource = aliasName ? `${originalName}: ${newName}` : newName;
+          //   return fixer.replaceText(property, newPropertySource);
+          // },
         });
       }
     }
