@@ -45,9 +45,9 @@ export const storeGettersNotAlias = {
             name: originalName,
           },
           // NOTE: 自動修正を有効にする場合は以下のコメントアウトを外す
-          fix: (fixer) => {
-            return fixer.replaceText(property, originalName);
-          },
+          // fix: (fixer) => {
+          //   return fixer.replaceText(property, originalName);
+          // },
         });
       }
     }
