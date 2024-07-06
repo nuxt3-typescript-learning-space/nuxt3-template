@@ -3,7 +3,6 @@ const reactiveFunctions = ['toRefs', 'storeToRefs', 'computed', 'ref', 'reactive
 /**
  * @fileoverview リアクティブな値に ".value" を付けることを強制するESLintルール
  */
-
 export const reactiveValueSuffix = {
   meta: {
     type: 'suggestion',
@@ -87,7 +86,8 @@ export const reactiveValueSuffix = {
         reactiveVariables.has(node.object.name) &&
         node.property.name !== 'value' &&
         !(node.parent && node.parent.type === 'MemberExpression' && node.parent.property.name === 'value') &&
-        !(node.parent && (node.parent.type === 'VariableDeclarator' || node.parent.type === 'Property'))
+        !(node.parent && (node.parent.type === 'VariableDeclarator' || node.parent.type === 'Property')) &&
+        !(isWatchCallExpression(node.parent) && node.parent.arguments[0] === node)
       );
     }
 
@@ -101,7 +101,14 @@ export const reactiveValueSuffix = {
       return (
         reactiveVariables.has(node.name) &&
         !(node.parent && node.parent.type === 'MemberExpression' && node.parent.property.name === 'value') &&
-        !(node.parent && (node.parent.type === 'VariableDeclarator' || node.parent.type === 'Property'))
+        !(node.parent && (node.parent.type === 'VariableDeclarator' || node.parent.type === 'Property')) &&
+        !(isWatchCallExpression(node.parent) && node.parent.arguments[0] === node)
+      );
+    }
+
+    function isWatchCallExpression(node) {
+      return (
+        node && node.type === 'CallExpression' && node.callee.type === 'Identifier' && node.callee.name === 'watch'
       );
     }
 
