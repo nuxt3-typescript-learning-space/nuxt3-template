@@ -2,57 +2,22 @@
  * @fileoverview リアクティブな値に ".value" を付けることを強制するESLintルール
  */
 
+import {
+  addArgumentsToList,
+  addReactiveVariables,
+  addToVariablesListFromCalleeWithArgument,
+} from './utils/reactiveVariableUtils.js';
+
 /**
  * @typedef {import('eslint').Rule.RuleModule} RuleModule
- * @typedef {import('eslint').Rule.RuleContext} RuleContext
  * @typedef {import('estree').VariableDeclarator} VariableDeclarator
- * @typedef {import('estree').Property} Property
- * @typedef {import('estree').Identifier} Identifier
  * @typedef {import('estree').FunctionDeclaration} FunctionDeclaration
  * @typedef {import('estree').ArrowFunctionExpression} ArrowFunctionExpression
  * @typedef {import('estree').MemberExpression} MemberExpression
  * @typedef {import('estree').CallExpression} CallExpression
+ * @typedef {import('estree').Identifier} Identifier
+ * @typedef {import("estree").Node} Node
  */
-
-/**
- * ASTのノードがFunctionDeclarationまたはArrowFunctionExpressionの型かを確認し、引数のリストに追加する関数
- * @param {FunctionDeclaration | ArrowFunctionExpression} node ASTのノード
- * @param {string[]} list 引数のリスト
- * @returns {void}
- */
-function addArgumentsToList(node, list) {
-  if (node.params.length > 0) {
-    list.push(...node.params.map((param) => param.name).filter(Boolean));
-  }
-}
-
-/**
- * ノードがreactiveFunctionsに含まれる変数かを確認し、リストに追加する関数
- * @param {VariableDeclarator} node ASTのノード
- * @param {string[]} list 変数名リスト
- * @param {string[]} reactiveFunctions リアクティブな関数名のリスト
- * @returns {void}
- */
-function addReactiveVariables(node, list, reactiveFunctions) {
-  const isReactiveCall = node.init?.type === 'CallExpression' && reactiveFunctions.includes(node.init?.callee?.name);
-  if (isReactiveCall && node.id.type === 'Identifier') {
-    list.push(node.id.name);
-  }
-}
-
-/**
- * 変数の初期値がreactiveFunctionsに含まれる関数から取得する場合、その変数名をリストに追加する関数
- * @param {VariableDeclarator} node ASTのノード
- * @param {string[]} list 変数名リスト
- * @param {string[]} reactiveFunctions リアクティブな関数名のリスト
- * @returns {void}
- */
-function addToVariablesListFromCalleeWithArgument(node, list, reactiveFunctions) {
-  const isReactiveCall = node.init?.type === 'CallExpression' && reactiveFunctions.includes(node.init?.callee?.name);
-  if (isReactiveCall && node.id.type === 'ObjectPattern') {
-    list.push(...node.id.properties.map((property) => property.value.name).filter(Boolean));
-  }
-}
 
 /** @type {RuleModule} */
 export const reactiveValueSuffix = {
@@ -70,11 +35,13 @@ export const reactiveValueSuffix = {
   },
   create(context) {
     const reactiveFunctions = ['toRefs', 'storeToRefs', 'computed', 'ref', 'reactive'];
+    /** @type {string[]} */
     const variableFromReactiveFunctions = [];
+    /** @type {string[]} */
     const functionArguments = [];
 
     /**
-     * VariableDeclaratorノードをチェックする関数
+     * リアクティブ関数からの変数をチェックしてリストに追加
      * @param {VariableDeclarator} node
      */
     function checkVariableDeclarator(node) {
@@ -83,7 +50,7 @@ export const reactiveValueSuffix = {
     }
 
     /**
-     * FunctionDeclarationノードをチェックする関数
+     * 関数宣言の引数をリストに追加
      * @param {FunctionDeclaration} node
      */
     function checkFunctionDeclaration(node) {
@@ -91,7 +58,7 @@ export const reactiveValueSuffix = {
     }
 
     /**
-     * ArrowFunctionExpressionノードをチェックする関数
+     * アロー関数の引数をリストに追加
      * @param {ArrowFunctionExpression} node
      */
     function checkArrowFunctionExpression(node) {
@@ -99,56 +66,25 @@ export const reactiveValueSuffix = {
     }
 
     /**
-     * Identifierノードをチェックする関数
+     * 識別子ノードをチェックしてルールを適用
      * @param {Identifier} node
      */
     function checkIdentifier(node) {
-      const parent = /** @type {any} */ (node.parent);
+      /** @type {Node} */
+      const parent = node.parent;
       const parentType = parent?.type;
 
-      // ノードが.valueではないかを確認
-      const parentPropertyWithoutValue = parent?.property?.name !== 'value';
+      // ルールに違反しているかどうかの条件
+      const conditions = [
+        parentType !== 'VariableDeclarator' && parentType !== 'MemberExpression',
+        !(parentType === 'Property' && parent.key.name === node.name),
+        !functionArguments.includes(node.name),
+        parent?.property?.name !== 'value',
+        parentType !== 'MemberExpression' && parentType !== 'Property',
+        !isWatchArguments(node),
+      ];
 
-      // ノードが関数の引数に含まれないかを確認
-      const isNotFunctionArguments = !functionArguments.includes(node.name);
-
-      // ノードが宣言された変数ではないかを確認
-      const isNotOriginalDeclaredVariable = parentType !== 'VariableDeclarator' && parentType !== 'MemberExpression';
-
-      // ノードがオブジェクトのキーではないかを確認
-      const isNotObjectKey = !(parentType === 'Property' && parent.key.name === node.name);
-
-      // ノードが宣言の一部ではないかを確認
-      const isNotOriginalDeclaration = parentType !== 'MemberExpression' && parentType !== 'Property';
-
-      // ノードがwatch関数の引数ではないかを確認
-      let isWatchArguments = false;
-      let ancestor = /** @type {any} */ (parent);
-      while (ancestor && ancestor.type !== 'CallExpression') {
-        ancestor = /** @type {any} */ (ancestor.parent);
-      }
-
-      const isWatch = ancestor?.callee?.name === 'watch';
-      if (isWatch) {
-        const isNormalWatchArguments =
-          parentType === 'CallExpression' && parent.callee?.name === 'watch' && ancestor.arguments?.indexOf(node) === 0;
-        const isArrayWatchArguments =
-          parentType === 'ArrayExpression' &&
-          parent.parent?.type === 'CallExpression' &&
-          parent.parent?.callee?.name === 'watch';
-        isWatchArguments = isNormalWatchArguments || isArrayWatchArguments;
-      }
-
-      // 条件をすべて満たす場合に警告を報告
-      if (
-        isNotOriginalDeclaredVariable &&
-        isNotObjectKey &&
-        !isWatchArguments &&
-        isNotFunctionArguments &&
-        parentPropertyWithoutValue &&
-        isNotOriginalDeclaration &&
-        variableFromReactiveFunctions.includes(node.name)
-      ) {
+      if (conditions.every(Boolean) && variableFromReactiveFunctions.includes(node.name)) {
         context.report({
           node,
           messageId: 'requireValueSuffix',
@@ -158,18 +94,34 @@ export const reactiveValueSuffix = {
     }
 
     /**
-     * MemberExpressionノードをチェックする関数
+     * メンバー式ノードをチェックしてルールを適用
      * @param {MemberExpression} node
      */
     function checkMemberExpression(node) {
-      const propertyWithoutValue = node.property?.name !== 'value';
-      if (propertyWithoutValue && variableFromReactiveFunctions.includes(node.object?.name)) {
+      if (node.property?.name !== 'value' && variableFromReactiveFunctions.includes(node.object?.name)) {
         context.report({
           node,
           messageId: 'requireValueSuffix',
           data: { name: node.object.name },
         });
       }
+    }
+
+    /**
+     * ノードがwatch関数の引数であるかを確認
+     * @param {Identifier} node
+     * @returns {boolean}
+     */
+    function isWatchArguments(node) {
+      let ancestor = node.parent;
+      while (ancestor && ancestor.type !== 'CallExpression') {
+        ancestor = ancestor.parent;
+      }
+      return (
+        ancestor?.callee?.name === 'watch' &&
+        (ancestor.arguments?.indexOf(node) === 0 ||
+          (ancestor.arguments?.[0]?.type === 'ArrayExpression' && ancestor.arguments?.[0]?.elements?.includes(node)))
+      );
     }
 
     return {
