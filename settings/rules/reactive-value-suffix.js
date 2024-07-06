@@ -66,6 +66,24 @@ export const reactiveValueSuffix = {
     }
 
     /**
+     * ノードがwatch関数の引数であるかを確認
+     * @param {Identifier} node
+     * @returns {boolean}
+     */
+    function isWatchArguments(node) {
+      /** @type {Node} */
+      let ancestor = node.parent;
+      while (ancestor && ancestor.type !== 'CallExpression') {
+        ancestor = ancestor.parent;
+      }
+      return (
+        ancestor?.callee?.name === 'watch' &&
+        (ancestor.arguments?.indexOf(node) === 0 ||
+          (ancestor.arguments?.[0]?.type === 'ArrayExpression' && ancestor.arguments?.[0]?.elements?.includes(node)))
+      );
+    }
+
+    /**
      * 識別子ノードをチェックしてルールを適用
      * @param {Identifier} node
      */
@@ -96,6 +114,10 @@ export const reactiveValueSuffix = {
           node,
           messageId: 'requireValueSuffix',
           data: { name: node.name },
+          // NOTE: 自動修正を行う場合はコメントアウトを外す
+          // fix(fixer) {
+          //   return fixer.insertTextAfter(node, '.value');
+          // },
         });
       }
     }
@@ -111,26 +133,12 @@ export const reactiveValueSuffix = {
           node,
           messageId: 'requireValueSuffix',
           data: { name: node.object.name },
+          // NOTE: 自動修正を行う場合はコメントアウトを外す
+          // fix(fixer) {
+          //   return fixer.insertTextAfter(node.object, '.value');
+          // },
         });
       }
-    }
-
-    /**
-     * ノードがwatch関数の引数であるかを確認
-     * @param {Identifier} node
-     * @returns {boolean}
-     */
-    function isWatchArguments(node) {
-      /** @type {Node} */
-      let ancestor = node.parent;
-      while (ancestor && ancestor.type !== 'CallExpression') {
-        ancestor = ancestor.parent;
-      }
-      return (
-        ancestor?.callee?.name === 'watch' &&
-        (ancestor.arguments?.indexOf(node) === 0 ||
-          (ancestor.arguments?.[0]?.type === 'ArrayExpression' && ancestor.arguments?.[0]?.elements?.includes(node)))
-      );
     }
 
     return {
