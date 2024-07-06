@@ -57,9 +57,15 @@ importers:
       '@nuxtjs/tailwindcss':
         specifier: ^6.12.0
         version: 6.12.0(magicast@0.3.4)(rollup@4.18.0)
+      '@types/eslint':
+        specifier: ^8.56.10
+        version: 8.56.10
       '@types/eslint-config-prettier':
         specifier: ^6.11.3
         version: 6.11.3
+      '@types/estree':
+        specifier: ^1.0.5
+        version: 1.0.5
       '@types/node':
         specifier: ^20.14.10
         version: 20.14.10

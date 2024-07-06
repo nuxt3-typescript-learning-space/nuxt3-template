@@ -7,57 +7,53 @@ import { resolve } from 'path';
  * @typedef {import('estree').Property} Property
  */
 
-const stateList = JSON.parse(
-  readFileSync(resolve(new URL('.', import.meta.url).pathname, '../data/store-state-list.json'), 'utf8'),
+const gettersList = JSON.parse(
+  readFileSync(resolve(new URL('.', import.meta.url).pathname, '../data/store-getters-list.json'), 'utf8'),
 );
 
 /**
- * @fileoverview stateの値を使用する時に "State" という接尾辞をつけることを強制するESLintルール
+ * @fileoverview gettersの値を使用する時に別名で参照しないことを強制するESLintルール
  * @type {RuleModule}
  */
-export const storeStateSuffix = {
+export const storeGettersNotAlias = {
   meta: {
     type: 'suggestion',
     docs: {
-      description: 'stateの値を使用する時は "State" という接尾辞をつける',
+      description: 'storeToRefsから分割代入gettersの値を使用する時は別名で参照しない',
       category: 'Best Practices',
       recommended: false,
     },
     fixable: 'code',
     messages: {
-      requireStateSuffix:
-        'stateの "{{name}}" には "State" 接尾辞が必要です。"{{name}}: {{name}}State" に変更してください。',
+      noAlias: 'storeToRefsから分割代入をする時、gettersの "{{name}}" を別名にしないでください。',
     },
     schema: [],
   },
   create(context) {
     /**
-     * プロパティがstateListに含まれるか確認し、必要に応じてエラーを報告する
+     * プロパティがgettersListに含まれるか確認し、必要に応じてエラーを報告する
      * @param {Property} property - チェックするプロパティノード
      */
     function checkProperty(property) {
       const originalName = property.key.name;
       const aliasName = property.value.name;
-      const nameToCheck = aliasName || originalName;
-      if (stateList.includes(originalName) && !nameToCheck.endsWith('State')) {
+      if (gettersList.includes(originalName) && aliasName && originalName !== aliasName) {
         context.report({
           node: property,
-          messageId: 'requireStateSuffix',
+          messageId: 'noAlias',
           data: {
-            name: nameToCheck,
+            name: originalName,
           },
           // NOTE: 自動修正を有効にする場合は以下のコメントアウトを外す
           // fix: (fixer) => {
-          //   const newName = `${nameToCheck}State`;
-          //   const newPropertySource = aliasName ? `${originalName}: ${newName}` : newName;
-          //   return fixer.replaceText(property, newPropertySource);
+          //   return fixer.replaceText(property, originalName);
           // },
         });
       }
     }
 
     /**
-     * VariableDeclaratorノードをチェックし、storeToRefs関数の呼び出しから生成された変数に "State" 接尾辞を付ける。
+     * VariableDeclaratorノードをチェックし、storeToRefs関数の呼び出しから生成された変数が別名で参照されていないか確認する。
      * @param {VariableDeclarator} node - チェックするASTノード
      */
     function checkVariableDeclarator(node) {
