@@ -38,6 +38,7 @@ export default withNuxt({
       },
     ],
     'coding-rules/store-state-suffix': 'error',
+    'coding-rules/store-getters-not-alias': 'error',
     'coding-rules/reactive-value-suffix': 'error',
     ...prettierConfig.rules,
   },

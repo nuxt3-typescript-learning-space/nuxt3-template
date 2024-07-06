@@ -1,4 +1,5 @@
 import { reactiveValueSuffix } from './reactive-value-suffix.js';
+import { storeGettersNotAlias } from './store-getters-not-alias.js';
 import { storeStateSuffix } from './store-state-suffix.js';
 
 const plugin = {
@@ -8,6 +9,7 @@ const plugin = {
   },
   rules: {
     'store-state-suffix': storeStateSuffix,
+    'store-getters-not-alias': storeGettersNotAlias,
     'reactive-value-suffix': reactiveValueSuffix,
   },
 };
