@@ -74,17 +74,24 @@ export const reactiveValueSuffix = {
       const parent = node.parent;
       const parentType = parent?.type;
 
-      // ルールに違反しているかどうかの条件
-      const conditions = [
-        parentType !== 'VariableDeclarator' && parentType !== 'MemberExpression',
-        !(parentType === 'Property' && parent.key.name === node.name),
-        !functionArguments.includes(node.name),
-        parent?.property?.name !== 'value',
-        parentType !== 'MemberExpression' && parentType !== 'Property',
-        !isWatchArguments(node),
-      ];
+      const isVariableDeclarator = parentType === 'VariableDeclarator';
+      const isMemberExpression = parentType === 'MemberExpression';
+      const isProperty = parentType === 'Property';
+      const isPropertyValue = parent?.property?.name === 'value';
+      const isFunctionArgument = functionArguments.includes(node.name);
+      const isObjectKey = isProperty && parent.key.name === node.name;
+      const isOriginalDeclaration = isMemberExpression || isProperty;
 
-      if (conditions.every(Boolean) && variableFromReactiveFunctions.includes(node.name)) {
+      if (
+        !isVariableDeclarator &&
+        !isMemberExpression &&
+        !isObjectKey &&
+        !isFunctionArgument &&
+        !isPropertyValue &&
+        !isOriginalDeclaration &&
+        !isWatchArguments(node) &&
+        variableFromReactiveFunctions.includes(node.name)
+      ) {
         context.report({
           node,
           messageId: 'requireValueSuffix',
@@ -98,7 +105,8 @@ export const reactiveValueSuffix = {
      * @param {MemberExpression} node
      */
     function checkMemberExpression(node) {
-      if (node.property?.name !== 'value' && variableFromReactiveFunctions.includes(node.object?.name)) {
+      const isPropertyValue = node.property?.name === 'value';
+      if (!isPropertyValue && variableFromReactiveFunctions.includes(node.object?.name)) {
         context.report({
           node,
           messageId: 'requireValueSuffix',
@@ -113,6 +121,7 @@ export const reactiveValueSuffix = {
      * @returns {boolean}
      */
     function isWatchArguments(node) {
+      /** @type {Node} */
       let ancestor = node.parent;
       while (ancestor && ancestor.type !== 'CallExpression') {
         ancestor = ancestor.parent;
