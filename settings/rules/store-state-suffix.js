@@ -1,14 +1,20 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
+/**
+ * @typedef {import('eslint').Rule.RuleModule} RuleModule
+ * @typedef {import('estree').VariableDeclarator} VariableDeclarator
+ * @typedef {import('estree').Property} Property
+ */
+
 const stateList = JSON.parse(
   readFileSync(resolve(new URL('.', import.meta.url).pathname, '../data/store-state-list.json'), 'utf8'),
 );
 
 /**
  * @fileoverview stateの値を使用する時に "State" という接尾辞をつけることを強制するESLintルール
+ * @type {RuleModule}
  */
-
 export const storeStateSuffix = {
   meta: {
     type: 'suggestion',
@@ -27,7 +33,7 @@ export const storeStateSuffix = {
   create(context) {
     /**
      * プロパティがstateListに含まれるか確認し、必要に応じてエラーを報告する
-     * @param {ASTNode} property - チェックするプロパティノード
+     * @param {Property} property - チェックするプロパティノード
      */
     function checkProperty(property) {
       const originalName = property.key.name;
@@ -52,7 +58,7 @@ export const storeStateSuffix = {
 
     /**
      * VariableDeclaratorノードをチェックし、storeToRefs関数の呼び出しから生成された変数に "State" 接尾辞を付ける。
-     * @param {ASTNode} node - チェックするASTノード
+     * @param {VariableDeclarator} node - チェックするASTノード
      */
     function checkVariableDeclarator(node) {
       if (
