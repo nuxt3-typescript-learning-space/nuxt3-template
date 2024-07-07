@@ -25,6 +25,7 @@ settings/
 │   ├── ASTNode.md
 │   ├── index.js
 │   ├── reactive-value-suffix.js
+│   ├── store-getters-not-alias.js
 │   └── store-state-suffix.js
 ├── utils/
 │   ├── constant.ts
