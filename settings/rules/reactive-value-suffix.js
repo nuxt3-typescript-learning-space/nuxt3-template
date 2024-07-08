@@ -2,6 +2,7 @@
  * @fileoverview リアクティブな値に ".value" を付けることを強制するESLintルール
  */
 
+import { ESLintUtils } from '@typescript-eslint/utils';
 import {
   addArgumentsToList,
   addReactiveVariables,
@@ -34,11 +35,13 @@ export const reactiveValueSuffix = {
     schema: [],
   },
   create(context) {
-    const reactiveFunctions = ['toRefs', 'storeToRefs', 'computed', 'ref', 'reactive'];
+    const reactiveFunctions = ['toRefs', 'storeToRefs', 'computed', 'ref'];
     /** @type {string[]} */
     const variableFromReactiveFunctions = [];
     /** @type {string[]} */
     const functionArguments = [];
+    const parserServices = ESLintUtils.getParserServices(context);
+    const checker = parserServices.program.getTypeChecker();
 
     /**
      * リアクティブ関数からの変数をチェックしてリストに追加
@@ -110,15 +113,23 @@ export const reactiveValueSuffix = {
         !isWatchArguments(node) &&
         variableFromReactiveFunctions.includes(node.name)
       ) {
-        context.report({
-          node,
-          messageId: 'requireValueSuffix',
-          data: { name: node.name },
-          // NOTE: 自動修正を行う場合はコメントアウトを外す
-          // fix(fixer) {
-          //   return fixer.insertTextAfter(node, '.value');
-          // },
-        });
+        const tsNode = parserServices.esTreeNodeToTSNodeMap.get(node);
+        const type = checker.getTypeAtLocation(tsNode);
+        const typeName = checker.typeToString(type);
+
+        console.log(type);
+
+        if (typeName.includes('Ref') && !typeName.includes('.value')) {
+          context.report({
+            node,
+            messageId: 'requireValueSuffix',
+            data: { name: node.name },
+            // NOTE: 自動修正を行う場合はコメントアウトを外す
+            // fix(fixer) {
+            //   return fixer.insertTextAfter(node, '.value');
+            // },
+          });
+        }
       }
     }
 
@@ -129,15 +140,23 @@ export const reactiveValueSuffix = {
     function checkMemberExpression(node) {
       const isPropertyValue = node.property?.name === 'value';
       if (!isPropertyValue && variableFromReactiveFunctions.includes(node.object?.name)) {
-        context.report({
-          node,
-          messageId: 'requireValueSuffix',
-          data: { name: node.object.name },
-          // NOTE: 自動修正を行う場合はコメントアウトを外す
-          // fix(fixer) {
-          //   return fixer.insertTextAfter(node.object, '.value');
-          // },
-        });
+        const tsNode = parserServices.esTreeNodeToTSNodeMap.get(node);
+        const type = checker.getTypeAtLocation(tsNode);
+        const typeName = checker.typeToString(type);
+
+        console.log(typeName);
+
+        if (typeName.includes('Ref') && !typeName.includes('.value')) {
+          context.report({
+            node,
+            messageId: 'requireValueSuffix',
+            data: { name: node.object.name },
+            // NOTE: 自動修正を行う場合はコメントアウトを外す
+            // fix(fixer) {
+            //   return fixer.insertTextAfter(node.object, '.value');
+            // },
+          });
+        }
       }
     }
 
