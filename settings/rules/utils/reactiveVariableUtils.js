@@ -6,8 +6,8 @@
 
 /**
  * 関数の引数をリストに追加する関数
- * @param {FunctionDeclaration | ArrowFunctionExpression} node ASTのノード
- * @param {string[]} list 引数のリスト
+ * @param {FunctionDeclaration | ArrowFunctionExpression} node - ASTのノード
+ * @param {string[]} list - 引数のリスト
  */
 export function addArgumentsToList(node, list) {
   if (node.params.length > 0) {
@@ -17,9 +17,9 @@ export function addArgumentsToList(node, list) {
 
 /**
  * リアクティブな変数をリストに追加する関数
- * @param {VariableDeclarator} node ASTのノード
- * @param {string[]} list 変数名リスト
- * @param {string[]} reactiveFunctions リアクティブな関数名のリスト
+ * @param {VariableDeclarator} node - ASTのノード
+ * @param {string[]} list - 変数名リスト
+ * @param {string[]} reactiveFunctions - リアクティブな関数名のリスト
  */
 export function addReactiveVariables(node, list, reactiveFunctions) {
   const isReactiveCall = node.init?.type === 'CallExpression' && reactiveFunctions.includes(node.init?.callee?.name);
@@ -30,9 +30,9 @@ export function addReactiveVariables(node, list, reactiveFunctions) {
 
 /**
  * 変数の初期値がリアクティブ関数から取得する場合、その変数名をリストに追加する関数
- * @param {VariableDeclarator} node ASTのノード
- * @param {string[]} list 変数名リスト
- * @param {string[]} reactiveFunctions リアクティブな関数名のリスト
+ * @param {VariableDeclarator} node - ASTのノード
+ * @param {string[]} list - 変数名リスト
+ * @param {string[]} reactiveFunctions - リアクティブな関数名のリスト
  */
 export function addToVariablesListFromCalleeWithArgument(node, list, reactiveFunctions) {
   const isReactiveCall = node.init?.type === 'CallExpression' && reactiveFunctions.includes(node.init?.callee?.name);

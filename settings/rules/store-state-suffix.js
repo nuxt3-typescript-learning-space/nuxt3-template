@@ -23,8 +23,7 @@ export const storeStateSuffix = {
     },
     fixable: 'code',
     messages: {
-      requireStateSuffix:
-        'stateの "{{name}}" には "State" 接尾辞が必要です。"{{name}}: {{name}}State" に変更してください。',
+      requireStateSuffix: 'stateの "{{name}}" には "State" というSuffix(接尾辞)が必要です。',
     },
     schema: [],
   },

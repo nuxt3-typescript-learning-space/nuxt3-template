@@ -23,7 +23,7 @@ export const storeGettersNotAlias = {
     },
     fixable: 'code',
     messages: {
-      noAlias: 'storeToRefsから分割代入をする時、gettersの "{{name}}" を別名にしないでください。',
+      noAlias: 'storeToRefsから分割代入をする時、gettersの "{{name}}" を別名にして参照しないでください。',
     },
     schema: [],
   },
