@@ -4,7 +4,12 @@ import withNuxt from './.nuxt/eslint.config.mjs';
 import eslintCustomRulesPlugin from './settings/rules/index.js';
 
 export default withNuxt({
+  ignores: ['.cz-config.cts', 'prettier.config.mjs', 'eslint.config.mjs', 'settings/rules/**/*'],
   languageOptions: {
+    parserOptions: {
+      parser: '@typescript-eslint/parser',
+      project: './tsconfig.json',
+    },
     globals: {
       ...globals.browser,
       ...globals.node,

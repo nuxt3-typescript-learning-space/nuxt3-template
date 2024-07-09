@@ -7,9 +7,8 @@ import { resolve } from 'path';
  * @typedef {import('estree').Property} Property
  */
 
-const stateList = JSON.parse(
-  readFileSync(resolve(new URL('.', import.meta.url).pathname, '../data/store-state-list.json'), 'utf8'),
-);
+const stateListPath = resolve(new URL(import.meta.url).pathname, '../../data/store-state-list.json');
+const stateList = JSON.parse(readFileSync(stateListPath, 'utf8'));
 
 /**
  * @fileoverview stateの値を使用する時に "State" という接尾辞をつけることを強制するESLintルール
@@ -20,13 +19,11 @@ export const storeStateSuffix = {
     type: 'suggestion',
     docs: {
       description: 'stateの値を使用する時は "State" という接尾辞をつける',
-      category: 'Best Practices',
-      recommended: false,
+      recommended: true,
     },
     fixable: 'code',
     messages: {
-      requireStateSuffix:
-        'stateの "{{name}}" には "State" 接尾辞が必要です。"{{name}}: {{name}}State" に変更してください。',
+      requireStateSuffix: 'stateの "{{name}}" には "State" というSuffix(接尾辞)が必要です。',
     },
     schema: [],
   },
