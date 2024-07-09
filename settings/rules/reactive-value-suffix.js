@@ -9,6 +9,7 @@ import {
   addToVariablesListFromCalleeWithArgument,
 } from './utils/reactiveVariableUtils.js';
 import { REACTIVE_FUNCTIONS } from './utils/constant.js';
+import { isArgumentOfFunction, isWatchArguments } from './utils/astNodeCheckers.js';
 
 /**
  * @typedef {import('eslint').Rule.RuleModule} RuleModule
@@ -50,43 +51,6 @@ function checkNodeAndReport(node, name, context, parserServices, checker) {
 }
 
 /**
- * 引数に`.value`が必要ない関数(composablesなど)の引数かどうかを確認
- * @param {Identifier} node - 識別子ノード
- * @returns {boolean} - ノードが指定された関数の引数であるかどうか
- */
-function isArgumentOfComposableFunction(node) {
-  /** @type {Node} */
-  let ancestor = node.parent;
-  while (ancestor && ancestor.type !== 'CallExpression') {
-    ancestor = ancestor.parent;
-  }
-  return (
-    ancestor?.callee?.type === 'Identifier' &&
-    // NOTE: composablesの関数名は慣習的にuseで始まることが多いため、useで始まる関数名を指定
-    /^use[A-Z]/.test(ancestor.callee.name) &&
-    ancestor.arguments.includes(node)
-  );
-}
-
-/**
- * ノードがwatch関数の引数であるかを確認
- * @param {Identifier} node - 識別子ノード
- * @returns {boolean} - ノードがwatch関数の引数であるかどうか
- */
-function isWatchArguments(node) {
-  /** @type {Node} */
-  let ancestor = node.parent;
-  while (ancestor && ancestor.type !== 'CallExpression') {
-    ancestor = ancestor.parent;
-  }
-  return (
-    ancestor?.callee?.name === 'watch' &&
-    (ancestor.arguments?.indexOf(node) === 0 ||
-      (ancestor.arguments?.[0]?.type === 'ArrayExpression' && ancestor.arguments?.[0]?.elements?.includes(node)))
-  );
-}
-
-/**
  * 識別子ノードをチェックしてルールを適用
  * @param {Identifier} node - 識別子ノード
  * @param {string[]} variableFromReactiveFunctions - リアクティブ関数から取得された変数のリスト
@@ -116,7 +80,7 @@ function checkIdentifier(node, variableFromReactiveFunctions, functionArguments,
     !isPropertyValue &&
     !isOriginalDeclaration &&
     !isWatchArguments(node) &&
-    !isArgumentOfComposableFunction(node) &&
+    !isArgumentOfFunction(node, /^use[A-Z]/) && // NOTE: useから始まる関数名の引数は例外(composablesの関数など)
     variableFromReactiveFunctions.includes(node.name)
   ) {
     checkNodeAndReport(node, node.name, context, parserServices, checker);
