@@ -8,7 +8,7 @@ import {
   addReactiveVariables,
   addToVariablesListFromCalleeWithArgument,
 } from './utils/reactiveVariableUtils.js';
-import { EXCLUDED_FUNCTIONS, REACTIVE_FUNCTIONS } from './utils/constant.js';
+import { REACTIVE_FUNCTIONS } from './utils/constant.js';
 
 /**
  * @typedef {import('eslint').Rule.RuleModule} RuleModule
@@ -50,12 +50,11 @@ function checkNodeAndReport(node, name, context, parserServices, checker) {
 }
 
 /**
- * ノードが指定された関数の引数であるかを確認
+ * 引数に`.value`が必要ない関数(composablesなど)の引数かどうかを確認
  * @param {Identifier} node - 識別子ノード
- * @param {string[]} functionNames - 関数名のリスト
  * @returns {boolean} - ノードが指定された関数の引数であるかどうか
  */
-function isArgumentOfFunctions(node, functionNames) {
+function isArgumentOfComposableFunction(node) {
   /** @type {Node} */
   let ancestor = node.parent;
   while (ancestor && ancestor.type !== 'CallExpression') {
@@ -63,7 +62,8 @@ function isArgumentOfFunctions(node, functionNames) {
   }
   return (
     ancestor?.callee?.type === 'Identifier' &&
-    functionNames.includes(ancestor.callee.name) &&
+    // NOTE: composablesの関数名は慣習的にuseで始まることが多いため、useで始まる関数名を指定
+    /^use[A-Z]/.test(ancestor.callee.name) &&
     ancestor.arguments.includes(node)
   );
 }
@@ -94,17 +94,8 @@ function isWatchArguments(node) {
  * @param {RuleContext} context - ESLintのコンテキスト
  * @param {ReturnType<typeof ESLintUtils.getParserServices>} parserServices - パーササービス
  * @param {TypeChecker} checker - TypeScriptの型チェッカー
- * @param {string[]} excludedFunctions - このカスタムLintの対象から除外したい関数のリスト
  */
-function checkIdentifier(
-  node,
-  variableFromReactiveFunctions,
-  functionArguments,
-  context,
-  parserServices,
-  checker,
-  excludedFunctions,
-) {
+function checkIdentifier(node, variableFromReactiveFunctions, functionArguments, context, parserServices, checker) {
   /** @type {Node} */
   const parent = node.parent;
   const parentType = parent?.type;
@@ -125,7 +116,7 @@ function checkIdentifier(
     !isPropertyValue &&
     !isOriginalDeclaration &&
     !isWatchArguments(node) &&
-    !isArgumentOfFunctions(node, excludedFunctions) &&
+    !isArgumentOfComposableFunction(node) &&
     variableFromReactiveFunctions.includes(node.name)
   ) {
     checkNodeAndReport(node, node.name, context, parserServices, checker);
@@ -181,15 +172,7 @@ export const reactiveValueSuffix = {
         addArgumentsToList(node, functionArguments);
       },
       Identifier(node) {
-        checkIdentifier(
-          node,
-          variableFromReactiveFunctions,
-          functionArguments,
-          context,
-          parserServices,
-          checker,
-          EXCLUDED_FUNCTIONS,
-        );
+        checkIdentifier(node, variableFromReactiveFunctions, functionArguments, context, parserServices, checker);
       },
       MemberExpression(node) {
         checkMemberExpression(node, variableFromReactiveFunctions, context, parserServices, checker);
