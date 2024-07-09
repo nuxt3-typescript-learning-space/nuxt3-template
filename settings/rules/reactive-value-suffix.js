@@ -8,6 +8,7 @@ import {
   addReactiveVariables,
   addToVariablesListFromCalleeWithArgument,
 } from './utils/reactiveVariableUtils.js';
+import { EXCLUDED_FUNCTIONS, REACTIVE_FUNCTIONS } from './utils/constant.js';
 
 /**
  * @typedef {import('eslint').Rule.RuleModule} RuleModule
@@ -93,7 +94,7 @@ function isWatchArguments(node) {
  * @param {RuleContext} context - ESLintのコンテキスト
  * @param {ReturnType<typeof ESLintUtils.getParserServices>} parserServices - パーササービス
  * @param {TypeChecker} checker - TypeScriptの型チェッカー
- * @param {string[]} excludedFunctions - ESLintの対象から除外したい関数のリスト
+ * @param {string[]} excludedFunctions - このカスタムLintの対象から除外したい関数のリスト
  */
 function checkIdentifier(
   node,
@@ -161,8 +162,6 @@ export const reactiveValueSuffix = {
     schema: [],
   },
   create(context) {
-    const reactiveFunctions = ['toRefs', 'storeToRefs', 'computed', 'ref'];
-    const excludedFunctions = []; // ここに除外したい関数名を追加
     /** @type {string[]} */
     const variableFromReactiveFunctions = [];
     /** @type {string[]} */
@@ -172,8 +171,8 @@ export const reactiveValueSuffix = {
 
     return {
       VariableDeclarator(node) {
-        addReactiveVariables(node, variableFromReactiveFunctions, reactiveFunctions);
-        addToVariablesListFromCalleeWithArgument(node, variableFromReactiveFunctions, reactiveFunctions);
+        addReactiveVariables(node, variableFromReactiveFunctions, REACTIVE_FUNCTIONS);
+        addToVariablesListFromCalleeWithArgument(node, variableFromReactiveFunctions, REACTIVE_FUNCTIONS);
       },
       FunctionDeclaration(node) {
         addArgumentsToList(node, functionArguments);
@@ -189,7 +188,7 @@ export const reactiveValueSuffix = {
           context,
           parserServices,
           checker,
-          excludedFunctions,
+          EXCLUDED_FUNCTIONS,
         );
       },
       MemberExpression(node) {
