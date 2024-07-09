@@ -19,7 +19,7 @@ import {
  * @typedef {import('estree').Identifier} Identifier
  * @typedef {import("estree").Node} Node
  * @typedef {import('typescript').TypeChecker} TypeChecker
- * @typedef {import('@typescript-eslint/utils').TSESTree.TSESTreeNode} TSESTreeNode
+ * @typedef {import('@typescript-eslint/utils').TSESTree.Node} TSESTreeNode
  */
 
 /**
@@ -49,6 +49,25 @@ function checkNodeAndReport(node, name, context, parserServices, checker) {
 }
 
 /**
+ * ノードが指定された関数の引数であるかを確認
+ * @param {Identifier} node - 識別子ノード
+ * @param {string[]} functionNames - 関数名のリスト
+ * @returns {boolean} - ノードが指定された関数の引数であるかどうか
+ */
+function isArgumentOfFunctions(node, functionNames) {
+  /** @type {Node} */
+  let ancestor = node.parent;
+  while (ancestor && ancestor.type !== 'CallExpression') {
+    ancestor = ancestor.parent;
+  }
+  return (
+    ancestor?.callee?.type === 'Identifier' &&
+    functionNames.includes(ancestor.callee.name) &&
+    ancestor.arguments.includes(node)
+  );
+}
+
+/**
  * ノードがwatch関数の引数であるかを確認
  * @param {Identifier} node - 識別子ノード
  * @returns {boolean} - ノードがwatch関数の引数であるかどうか
@@ -74,8 +93,18 @@ function isWatchArguments(node) {
  * @param {RuleContext} context - ESLintのコンテキスト
  * @param {ReturnType<typeof ESLintUtils.getParserServices>} parserServices - パーササービス
  * @param {TypeChecker} checker - TypeScriptの型チェッカー
+ * @param {string[]} excludedFunctions - ESLintの対象から除外したい関数のリスト
  */
-function checkIdentifier(node, variableFromReactiveFunctions, functionArguments, context, parserServices, checker) {
+function checkIdentifier(
+  node,
+  variableFromReactiveFunctions,
+  functionArguments,
+  context,
+  parserServices,
+  checker,
+  excludedFunctions,
+) {
+  /** @type {Node} */
   const parent = node.parent;
   const parentType = parent?.type;
 
@@ -95,6 +124,7 @@ function checkIdentifier(node, variableFromReactiveFunctions, functionArguments,
     !isPropertyValue &&
     !isOriginalDeclaration &&
     !isWatchArguments(node) &&
+    !isArgumentOfFunctions(node, excludedFunctions) &&
     variableFromReactiveFunctions.includes(node.name)
   ) {
     checkNodeAndReport(node, node.name, context, parserServices, checker);
@@ -132,6 +162,7 @@ export const reactiveValueSuffix = {
   },
   create(context) {
     const reactiveFunctions = ['toRefs', 'storeToRefs', 'computed', 'ref'];
+    const excludedFunctions = []; // ここに除外したい関数名を追加
     /** @type {string[]} */
     const variableFromReactiveFunctions = [];
     /** @type {string[]} */
@@ -151,7 +182,15 @@ export const reactiveValueSuffix = {
         addArgumentsToList(node, functionArguments);
       },
       Identifier(node) {
-        checkIdentifier(node, variableFromReactiveFunctions, functionArguments, context, parserServices, checker);
+        checkIdentifier(
+          node,
+          variableFromReactiveFunctions,
+          functionArguments,
+          context,
+          parserServices,
+          checker,
+          excludedFunctions,
+        );
       },
       MemberExpression(node) {
         checkMemberExpression(node, variableFromReactiveFunctions, context, parserServices, checker);
