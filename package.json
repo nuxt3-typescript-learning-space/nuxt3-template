@@ -15,7 +15,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "convert": "npx vite-node settings/convert.ts",
+    "convert": "npx vite-node settings/data/convert.ts",
     "predev": "pnpm run convert",
     "prepare": "husky"
   },

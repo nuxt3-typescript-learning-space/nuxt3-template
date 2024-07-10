@@ -7,7 +7,7 @@ import { resolve } from 'path';
  * @typedef {import('estree').Property} Property
  */
 
-const stateListPath = resolve(new URL(import.meta.url).pathname, '../../data/store-state-list.json');
+const stateListPath = resolve(new URL(import.meta.url).pathname, '../../data/json/store-state-list.json');
 const stateList = JSON.parse(readFileSync(stateListPath, 'utf8'));
 
 /**
