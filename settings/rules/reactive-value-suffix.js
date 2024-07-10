@@ -114,7 +114,6 @@ export const reactiveValueSuffix = {
     messages: {
       requireValueSuffix: 'リアクティブな値 "{{name}}" には "{{name}}.value" でアクセスする必要があります。',
     },
-    schema: [],
   },
   create(context) {
     /** @type {string[]} */

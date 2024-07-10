@@ -7,7 +7,7 @@ import { resolve } from 'path';
  * @typedef {import('estree').Property} Property
  */
 
-const gettersListPath = resolve(new URL(import.meta.url).pathname, '../../data/store-getters-list.json');
+const gettersListPath = resolve(new URL(import.meta.url).pathname, '../../data/json/store-getters-list.json');
 const gettersList = JSON.parse(readFileSync(gettersListPath, 'utf8'));
 
 /**
@@ -25,7 +25,6 @@ export const storeGettersNotAlias = {
     messages: {
       noAlias: 'storeToRefsから分割代入をする時、gettersの "{{name}}" を別名にして参照しないでください。',
     },
-    schema: [],
   },
   create(context) {
     /**
