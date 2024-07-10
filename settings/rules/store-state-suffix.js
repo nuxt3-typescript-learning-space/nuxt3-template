@@ -25,7 +25,6 @@ export const storeStateSuffix = {
     messages: {
       requireStateSuffix: 'stateの "{{name}}" には "State" というSuffix(接尾辞)が必要です。',
     },
-    schema: [],
   },
   create(context) {
     /**
