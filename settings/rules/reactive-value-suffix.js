@@ -6,7 +6,7 @@ import { ESLintUtils } from '@typescript-eslint/utils';
 import {
   addArgumentsToList,
   addReactiveVariables,
-  addToComposablesArgumentsList,
+  addComposablesArgumentsToList,
 } from './utils/reactiveVariableUtils.js';
 import { COMPOSABLE_FUNCTION_PATTERN, REACTIVE_FUNCTIONS } from './utils/constant.js';
 import { isArgumentOfFunction, isWatchArguments } from './utils/astNodeCheckers.js';
@@ -143,7 +143,7 @@ export const reactiveValueSuffix = {
     return {
       VariableDeclarator(node) {
         addReactiveVariables(node, variableFromReactiveFunctions, REACTIVE_FUNCTIONS);
-        addToComposablesArgumentsList(node, composablesArguments, COMPOSABLE_FUNCTION_PATTERN);
+        addComposablesArgumentsToList(node, composablesArguments, COMPOSABLE_FUNCTION_PATTERN);
       },
       FunctionDeclaration(node) {
         addArgumentsToList(node, functionArguments);

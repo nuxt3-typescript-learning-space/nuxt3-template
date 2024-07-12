@@ -27,7 +27,7 @@ export function addArgumentsToList(node, list) {
  * @param {string[]} list - 引数リスト
  * @param {RegExp} composableFunctionPattern - composables関数名のパターン
  */
-export function addToComposablesArgumentsList(node, list, composableFunctionPattern) {
+export function addComposablesArgumentsToList(node, list, composableFunctionPattern) {
   const isComposableCall =
     node.init?.type === 'CallExpression' && composableFunctionPattern.test(node.init?.callee?.name);
   if (isComposableCall && node.id.type === 'ObjectPattern') {
