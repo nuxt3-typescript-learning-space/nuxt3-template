@@ -9,7 +9,7 @@ import {
   addToComposablesArgumentsList,
   addToVariablesListFromCalleeWithArgument,
 } from './utils/reactiveVariableUtils.js';
-import { REACTIVE_FUNCTIONS } from './utils/constant.js';
+import { COMPOSABLE_FUNCTION_PATTERN, REACTIVE_FUNCTIONS } from './utils/constant.js';
 import { isArgumentOfFunction, isWatchArguments } from './utils/astNodeCheckers.js';
 
 /**
@@ -96,7 +96,7 @@ function checkIdentifier(
     !isOriginalDeclaration &&
     !isComposablesArgument &&
     !isWatchArguments(node) &&
-    !isArgumentOfFunction(node, /^use[A-Z]/) && // NOTE: useから始まる関数名の引数は例外(composablesの関数など)
+    !isArgumentOfFunction(node, COMPOSABLE_FUNCTION_PATTERN) && // NOTE: useから始まる関数名の引数は例外(composablesの関数など)
     variableFromReactiveFunctions.includes(node.name)
   ) {
     checkNodeAndReport(node, node.name, context, parserServices, checker);
@@ -145,7 +145,7 @@ export const reactiveValueSuffix = {
       VariableDeclarator(node) {
         addReactiveVariables(node, variableFromReactiveFunctions, REACTIVE_FUNCTIONS);
         addToVariablesListFromCalleeWithArgument(node, variableFromReactiveFunctions, REACTIVE_FUNCTIONS);
-        addToComposablesArgumentsList(node, composablesArguments, /^use[A-Z]/);
+        addToComposablesArgumentsList(node, composablesArguments, COMPOSABLE_FUNCTION_PATTERN);
       },
       FunctionDeclaration(node) {
         addArgumentsToList(node, functionArguments);
