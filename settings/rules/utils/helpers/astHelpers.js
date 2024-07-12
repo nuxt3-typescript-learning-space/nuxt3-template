@@ -1,6 +1,5 @@
 /**
  * @typedef {import('estree').Node} Node
- * @typedef {import('estree').Property} Property
  */
 
 /**

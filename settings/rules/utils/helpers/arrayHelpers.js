@@ -1,4 +1,8 @@
 /**
+ * @typedef {import('estree').Property} Property
+ */
+
+/**
  * 配列にアイテムを追加するヘルパー関数
  * @param {string[]} list - 追加先のリスト
  * @param {string[]} items - 追加するアイテムのリスト
