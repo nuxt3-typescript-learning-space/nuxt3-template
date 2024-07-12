@@ -7,7 +7,6 @@ import {
   addArgumentsToList,
   addReactiveVariables,
   addToComposablesArgumentsList,
-  addToVariablesListFromCalleeWithArgument,
 } from './utils/reactiveVariableUtils.js';
 import { COMPOSABLE_FUNCTION_PATTERN, REACTIVE_FUNCTIONS } from './utils/constant.js';
 import { isArgumentOfFunction, isWatchArguments } from './utils/astNodeCheckers.js';
@@ -87,18 +86,18 @@ function checkIdentifier(
     parent.callee.type === 'Identifier' &&
     composablesArguments.includes(parent.callee.name);
 
-  if (
-    !isVariableDeclarator &&
-    !isMemberExpression &&
-    !isObjectKey &&
-    !isFunctionArgument &&
-    !isPropertyValue &&
-    !isOriginalDeclaration &&
-    !isComposablesArgument &&
-    !isWatchArguments(node) &&
-    !isArgumentOfFunction(node, COMPOSABLE_FUNCTION_PATTERN) && // NOTE: useから始まる関数名の引数は例外(composablesの関数など)
-    variableFromReactiveFunctions.includes(node.name)
-  ) {
+  const shouldSkipCheck =
+    isVariableDeclarator ||
+    isMemberExpression ||
+    isObjectKey ||
+    isFunctionArgument ||
+    isPropertyValue ||
+    isOriginalDeclaration ||
+    isComposablesArgument ||
+    isWatchArguments(node) ||
+    isArgumentOfFunction(node, COMPOSABLE_FUNCTION_PATTERN); // NOTE: useから始まる関数名の引数は例外(composablesの関数など)
+
+  if (!shouldSkipCheck && variableFromReactiveFunctions.includes(node.name)) {
     checkNodeAndReport(node, node.name, context, parserServices, checker);
   }
 }
@@ -144,7 +143,6 @@ export const reactiveValueSuffix = {
     return {
       VariableDeclarator(node) {
         addReactiveVariables(node, variableFromReactiveFunctions, REACTIVE_FUNCTIONS);
-        addToVariablesListFromCalleeWithArgument(node, variableFromReactiveFunctions, REACTIVE_FUNCTIONS);
         addToComposablesArgumentsList(node, composablesArguments, COMPOSABLE_FUNCTION_PATTERN);
       },
       FunctionDeclaration(node) {
