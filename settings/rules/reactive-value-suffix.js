@@ -7,8 +7,13 @@ import {
   addArgumentsToList,
   addReactiveVariables,
   addComposablesArgumentsToList,
+  addSkipCheckFunctionsArgumentsToList,
 } from './utils/reactiveVariableUtils.js';
-import { COMPOSABLE_FUNCTION_PATTERN, REACTIVE_FUNCTIONS } from './utils/constant.js';
+import {
+  COMPOSABLE_FUNCTION_PATTERN,
+  REACTIVE_FUNCTIONS,
+  SKIP_CHECK_ARGUMENT_FUNCTION_NAMES,
+} from './utils/constant.js';
 import { isArgumentOfFunction, isWatchArguments } from './utils/astNodeCheckers.js';
 
 /**
@@ -56,6 +61,7 @@ function checkNodeAndReport(node, name, context, parserServices, checker) {
  * @param {string[]} variableFromReactiveFunctions - リアクティブ関数から取得された変数のリスト
  * @param {string[]} functionArguments - 関数の引数のリスト
  * @param {string[]} composablesArguments - Composables関数から取得された引数のリスト
+ * @param {string[]} skipFunctionArgument - スキップする関数の引数のリスト
  * @param {RuleContext} context - ESLintのコンテキスト
  * @param {ReturnType<typeof ESLintUtils.getParserServices>} parserServices - パーササービス
  * @param {TypeChecker} checker - TypeScriptの型チェッカー
@@ -65,6 +71,7 @@ function checkIdentifier(
   variableFromReactiveFunctions,
   functionArguments,
   composablesArguments,
+  skipFunctionArgument,
   context,
   parserServices,
   checker,
@@ -85,6 +92,7 @@ function checkIdentifier(
     parent.arguments.includes(node) &&
     parent.callee.type === 'Identifier' &&
     composablesArguments.includes(parent.callee.name);
+  const isSkipFunctionArgument = skipFunctionArgument.includes(node.name);
 
   const shouldSkipCheck =
     isVariableDeclarator ||
@@ -94,6 +102,7 @@ function checkIdentifier(
     isPropertyValue ||
     isOriginalDeclaration ||
     isComposablesArgument ||
+    isSkipFunctionArgument ||
     isWatchArguments(node) ||
     isArgumentOfFunction(node, COMPOSABLE_FUNCTION_PATTERN); // NOTE: useから始まる関数名の引数は例外(composablesの関数など)
 
@@ -137,6 +146,8 @@ export const reactiveValueSuffix = {
     const functionArguments = [];
     /** @type {string[]} */
     const composablesArguments = [];
+    /** @type {string[]} */
+    const skipFunctionArgument = [];
     const parserServices = ESLintUtils.getParserServices(context);
     const checker = parserServices.program.getTypeChecker();
 
@@ -144,6 +155,7 @@ export const reactiveValueSuffix = {
       VariableDeclarator(node) {
         addReactiveVariables(node, variableFromReactiveFunctions, REACTIVE_FUNCTIONS);
         addComposablesArgumentsToList(node, composablesArguments, COMPOSABLE_FUNCTION_PATTERN);
+        addSkipCheckFunctionsArgumentsToList(node, skipFunctionArgument, SKIP_CHECK_ARGUMENT_FUNCTION_NAMES);
       },
       FunctionDeclaration(node) {
         addArgumentsToList(node, functionArguments);
@@ -157,6 +169,7 @@ export const reactiveValueSuffix = {
           variableFromReactiveFunctions,
           functionArguments,
           composablesArguments,
+          skipFunctionArgument,
           context,
           parserServices,
           checker,

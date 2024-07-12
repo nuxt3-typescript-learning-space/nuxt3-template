@@ -7,36 +7,6 @@ import { addToList, extractPropertyNames } from './helpers/arrayHelpers.js';
  */
 
 /**
- * 関数の引数をリストに追加する関数
- * @param {FunctionDeclaration | ArrowFunctionExpression} node - ASTのノード
- * @param {string[]} list - 引数のリスト
- */
-export function addArgumentsToList(node, list) {
-  const args = node.params.reduce((acc, param) => {
-    if (param.name) {
-      acc.push(param.name);
-    }
-    return acc;
-  }, []);
-  addToList(list, args);
-}
-
-/**
- * composables関数の引数をリストに追加する関数
- * @param {VariableDeclarator} node - ASTのノード
- * @param {string[]} list - 引数リスト
- * @param {RegExp} composableFunctionPattern - composables関数名のパターン
- */
-export function addComposablesArgumentsToList(node, list, composableFunctionPattern) {
-  const isComposableCall =
-    node.init?.type === 'CallExpression' && composableFunctionPattern.test(node.init?.callee?.name);
-  if (isComposableCall && node.id.type === 'ObjectPattern') {
-    const properties = extractPropertyNames(node.id.properties);
-    addToList(list, properties);
-  }
-}
-
-/**
  * リアクティブな関数呼び出しかどうかをチェックするヘルパー関数
  * @param {VariableDeclarator} node - ASTのノード
  * @param {string[]} reactiveFunctions - リアクティブな関数名のリスト
@@ -80,4 +50,48 @@ export function addReactiveVariables(node, list, reactiveFunctions) {
     addReactiveIdentifier(node, list);
     addReactiveObjectPattern(node, list);
   }
+}
+
+/**
+ * composables関数の引数をリストに追加する関数
+ * @param {VariableDeclarator} node - ASTのノード
+ * @param {string[]} list - 引数リスト
+ * @param {RegExp} composableFunctionPattern - composables関数名のパターン
+ */
+export function addComposablesArgumentsToList(node, list, composableFunctionPattern) {
+  const isComposableCall =
+    node.init?.type === 'CallExpression' && composableFunctionPattern.test(node.init?.callee?.name);
+  if (isComposableCall && node.id.type === 'ObjectPattern') {
+    const properties = extractPropertyNames(node.id.properties);
+    addToList(list, properties);
+  }
+}
+
+/**
+ * スキップする関数の引数をリストに追加する関数
+ * @param {VariableDeclarator} node - ASTのノード
+ * @param {string[]} list - 引数リスト
+ * @param {string[]} skipFunctions - スキップする関数名のリスト
+ */
+export function addSkipCheckFunctionsArgumentsToList(node, list, skipFunctions) {
+  const isSkipFunctionCall = node.init?.type === 'CallExpression' && skipFunctions.includes(node.init?.callee?.name);
+  if (isSkipFunctionCall && node.id.type === 'ObjectPattern') {
+    const properties = extractPropertyNames(node.id.properties);
+    addToList(list, properties);
+  }
+}
+
+/**
+ * 関数の引数をリストに追加する関数
+ * @param {FunctionDeclaration | ArrowFunctionExpression} node - ASTのノード
+ * @param {string[]} list - 引数のリスト
+ */
+export function addArgumentsToList(node, list) {
+  const args = node.params.reduce((acc, param) => {
+    if (param.name) {
+      acc.push(param.name);
+    }
+    return acc;
+  }, []);
+  addToList(list, args);
 }
