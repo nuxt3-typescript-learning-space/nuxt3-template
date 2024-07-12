@@ -40,3 +40,17 @@ export function addToVariablesListFromCalleeWithArgument(node, list, reactiveFun
     list.push(...node.id.properties.map((property) => property.value.name).filter(Boolean));
   }
 }
+
+/**
+ * composables関数の引数をリストに追加する関数
+ * @param {VariableDeclarator} node - ASTのノード
+ * @param {string[]} list - 引数リスト
+ * @param {RegExp} composableFunctionPattern - composables関数名のパターン
+ */
+export function addToComposablesArgumentsList(node, list, composableFunctionPattern) {
+  const isComposableCall =
+    node.init?.type === 'CallExpression' && composableFunctionPattern.test(node.init?.callee?.name);
+  if (isComposableCall && node.id.type === 'ObjectPattern') {
+    list.push(...node.id.properties.map((property) => property.value.name).filter(Boolean));
+  }
+}

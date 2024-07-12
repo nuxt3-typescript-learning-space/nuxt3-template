@@ -6,6 +6,7 @@ import { ESLintUtils } from '@typescript-eslint/utils';
 import {
   addArgumentsToList,
   addReactiveVariables,
+  addToComposablesArgumentsList,
   addToVariablesListFromCalleeWithArgument,
 } from './utils/reactiveVariableUtils.js';
 import { REACTIVE_FUNCTIONS } from './utils/constant.js';
@@ -55,11 +56,20 @@ function checkNodeAndReport(node, name, context, parserServices, checker) {
  * @param {Identifier} node - 識別子ノード
  * @param {string[]} variableFromReactiveFunctions - リアクティブ関数から取得された変数のリスト
  * @param {string[]} functionArguments - 関数の引数のリスト
+ * @param {string[]} composablesArguments - Composables関数から取得された引数のリスト
  * @param {RuleContext} context - ESLintのコンテキスト
  * @param {ReturnType<typeof ESLintUtils.getParserServices>} parserServices - パーササービス
  * @param {TypeChecker} checker - TypeScriptの型チェッカー
  */
-function checkIdentifier(node, variableFromReactiveFunctions, functionArguments, context, parserServices, checker) {
+function checkIdentifier(
+  node,
+  variableFromReactiveFunctions,
+  functionArguments,
+  composablesArguments,
+  context,
+  parserServices,
+  checker,
+) {
   /** @type {Node} */
   const parent = node.parent;
   const parentType = parent?.type;
@@ -71,6 +81,11 @@ function checkIdentifier(node, variableFromReactiveFunctions, functionArguments,
   const isFunctionArgument = functionArguments.includes(node.name);
   const isObjectKey = isProperty && parent.key.name === node.name;
   const isOriginalDeclaration = isMemberExpression || isProperty;
+  const isComposablesArgument =
+    parentType === 'CallExpression' &&
+    parent.arguments.includes(node) &&
+    parent.callee.type === 'Identifier' &&
+    composablesArguments.includes(parent.callee.name);
 
   if (
     !isVariableDeclarator &&
@@ -79,6 +94,7 @@ function checkIdentifier(node, variableFromReactiveFunctions, functionArguments,
     !isFunctionArgument &&
     !isPropertyValue &&
     !isOriginalDeclaration &&
+    !isComposablesArgument &&
     !isWatchArguments(node) &&
     !isArgumentOfFunction(node, /^use[A-Z]/) && // NOTE: useから始まる関数名の引数は例外(composablesの関数など)
     variableFromReactiveFunctions.includes(node.name)
@@ -120,6 +136,8 @@ export const reactiveValueSuffix = {
     const variableFromReactiveFunctions = [];
     /** @type {string[]} */
     const functionArguments = [];
+    /** @type {string[]} */
+    const composablesArguments = [];
     const parserServices = ESLintUtils.getParserServices(context);
     const checker = parserServices.program.getTypeChecker();
 
@@ -127,6 +145,7 @@ export const reactiveValueSuffix = {
       VariableDeclarator(node) {
         addReactiveVariables(node, variableFromReactiveFunctions, REACTIVE_FUNCTIONS);
         addToVariablesListFromCalleeWithArgument(node, variableFromReactiveFunctions, REACTIVE_FUNCTIONS);
+        addToComposablesArgumentsList(node, composablesArguments, /^use[A-Z]/);
       },
       FunctionDeclaration(node) {
         addArgumentsToList(node, functionArguments);
@@ -135,7 +154,15 @@ export const reactiveValueSuffix = {
         addArgumentsToList(node, functionArguments);
       },
       Identifier(node) {
-        checkIdentifier(node, variableFromReactiveFunctions, functionArguments, context, parserServices, checker);
+        checkIdentifier(
+          node,
+          variableFromReactiveFunctions,
+          functionArguments,
+          composablesArguments,
+          context,
+          parserServices,
+          checker,
+        );
       },
       MemberExpression(node) {
         checkMemberExpression(node, variableFromReactiveFunctions, context, parserServices, checker);
