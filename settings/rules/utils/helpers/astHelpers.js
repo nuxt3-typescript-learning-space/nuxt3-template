@@ -53,3 +53,14 @@ export function isStoreToRefsCall(node) {
 export function hasStateNameWithoutStateSuffix(originalName, nameToCheck, stateList) {
   return stateList.includes(originalName) && !nameToCheck.endsWith('State');
 }
+
+/**
+ * プロパティがgettersListに含まれるか確認し、別名が設定されているかどうかをチェックするヘルパー関数
+ * @param {string} originalName - 元のプロパティ名
+ * @param {string} aliasName - 別名
+ * @param {string[]} gettersList - gettersのリスト
+ * @returns {boolean} - プロパティがgettersのリストに含まれていて、別名が設定されている場合は true
+ */
+export function isGetterAliasPresent(originalName, aliasName, gettersList) {
+  return gettersList.includes(originalName) && aliasName && originalName !== aliasName;
+}
