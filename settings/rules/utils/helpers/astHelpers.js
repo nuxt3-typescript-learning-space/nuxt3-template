@@ -7,7 +7,7 @@
  * ノードの祖先を探索し、指定されたタイプのノードを見つける
  * @param {Node} node - 開始ノード
  * @param {string} type - 探索するノードのタイプ
- * @returns {Node | null} - 見つかったノード、またはnull
+ * @returns {Node} - 見つかったノード
  */
 export function findAncestorOfType(node, type) {
   let ancestor = node.parent;
