@@ -57,7 +57,7 @@ const createArrowFunctionExpression = (paramNames: string[]): ArrowFunctionExpre
   } as ArrowFunctionExpression;
 };
 
-describe('reactiveVariableUtils', () => {
+describe('settings/rules/utils/reactiveVariableUtils.js', () => {
   describe('addReactiveVariables', () => {
     it('リアクティブな識別子をリストに追加する', () => {
       const list: string[] = [];

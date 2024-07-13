@@ -46,7 +46,7 @@ const createArrayExpressionNode = (
   } as ArrayExpression & NodeWithOptionalParent;
 };
 
-describe('astNodeCheckers', () => {
+describe('settings/rules/utils/astNodeCheckers.js', () => {
   describe('isArgumentOfFunction', () => {
     it('ノードが指定された関数の引数であるかを確認する', () => {
       const callExpressionNode = createCallExpressionNode('testFunction', []);
