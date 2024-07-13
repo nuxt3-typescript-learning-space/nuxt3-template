@@ -1,6 +1,7 @@
+import { findAncestorOfType } from './helpers/astHelpers.js';
+
 /**
  * @typedef {import('estree').Identifier} Identifier
- * @typedef {import('estree').Node} Node
  * @typedef {import('estree').CallExpression} CallExpression
  */
 
@@ -11,13 +12,8 @@
  * @returns {boolean} - ノードが指定された関数の引数であるかどうか
  */
 export function isArgumentOfFunction(node, functionNamePattern) {
-  /** @type {Node} */
-  let ancestor = node.parent;
-  while (ancestor && ancestor.type !== 'CallExpression') {
-    ancestor = ancestor.parent;
-  }
   /** @type {CallExpression} */
-  const callExpression = ancestor;
+  const callExpression = findAncestorOfType(node, 'CallExpression');
   return (
     callExpression?.callee?.type === 'Identifier' &&
     functionNamePattern.test(callExpression.callee.name) &&
@@ -31,13 +27,8 @@ export function isArgumentOfFunction(node, functionNamePattern) {
  * @returns {boolean} - ノードがwatch関数の引数であるかどうか
  */
 export function isWatchArguments(node) {
-  /** @type {Node} */
-  let ancestor = node.parent;
-  while (ancestor && ancestor.type !== 'CallExpression') {
-    ancestor = ancestor.parent;
-  }
   /** @type {CallExpression} */
-  const callExpression = ancestor;
+  const callExpression = findAncestorOfType(node, 'CallExpression');
   return (
     callExpression?.callee?.name === 'watch' &&
     (callExpression.arguments?.indexOf(node) === 0 ||

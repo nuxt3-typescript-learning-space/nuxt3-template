@@ -1,3 +1,6 @@
+import { addToList, extractPropertyNames } from './helpers/arrayHelpers.js';
+import { isSpecificFunctionCall } from './helpers/specificFunctionChecks.js';
+
 /**
  * @typedef {import('estree').VariableDeclarator} VariableDeclarator
  * @typedef {import('estree').FunctionDeclaration} FunctionDeclaration
@@ -5,38 +8,78 @@
  */
 
 /**
+ * リアクティブな識別子をリストに追加する関数
+ * @param {VariableDeclarator} node - ASTのノード
+ * @param {string[]} list - 変数名リスト
+ */
+function addReactiveIdentifier(node, list) {
+  if (node.id.type === 'Identifier') {
+    addToList(list, [node.id.name]);
+  }
+}
+
+/**
+ * リアクティブなオブジェクトパターンをリストに追加する関数
+ * @param {VariableDeclarator} node - ASTのノード
+ * @param {string[]} list - 変数名リスト
+ */
+function addReactiveObjectPattern(node, list) {
+  if (node.id.type === 'ObjectPattern') {
+    const properties = extractPropertyNames(node.id.properties);
+    addToList(list, properties);
+  }
+}
+
+/**
+ * リアクティブ変数をリストに追加する関数
+ * @param {VariableDeclarator} node - ASTのノード
+ * @param {string[]} list - 変数名リスト
+ * @param {string[] | RegExp} reactiveFunctions - リアクティブな関数名のリストまたはパターン
+ */
+export function addReactiveVariables(node, list, reactiveFunctions) {
+  if (isSpecificFunctionCall(node, reactiveFunctions)) {
+    addReactiveIdentifier(node, list);
+    addReactiveObjectPattern(node, list);
+  }
+}
+
+/**
+ * composables関数の引数をリストに追加する関数
+ * @param {VariableDeclarator} node - ASTのノード
+ * @param {string[]} list - 引数リスト
+ * @param {RegExp} composableFunctionPattern - composables関数名のパターン
+ */
+export function addComposablesArgumentsToList(node, list, composableFunctionPattern) {
+  if (isSpecificFunctionCall(node, composableFunctionPattern) && node.id.type === 'ObjectPattern') {
+    const properties = extractPropertyNames(node.id.properties);
+    addToList(list, properties);
+  }
+}
+
+/**
+ * スキップする関数の引数をリストに追加する関数
+ * @param {VariableDeclarator} node - ASTのノード
+ * @param {string[]} list - 引数リスト
+ * @param {string[]} skipFunctions - スキップする関数名のリスト
+ */
+export function addSkipCheckFunctionsArgumentsToList(node, list, skipFunctions) {
+  if (isSpecificFunctionCall(node, skipFunctions) && node.id.type === 'ObjectPattern') {
+    const properties = extractPropertyNames(node.id.properties);
+    addToList(list, properties);
+  }
+}
+
+/**
  * 関数の引数をリストに追加する関数
  * @param {FunctionDeclaration | ArrowFunctionExpression} node - ASTのノード
  * @param {string[]} list - 引数のリスト
  */
 export function addArgumentsToList(node, list) {
-  if (node.params.length > 0) {
-    list.push(...node.params.map((param) => param.name).filter(Boolean));
-  }
-}
-
-/**
- * リアクティブな変数をリストに追加する関数
- * @param {VariableDeclarator} node - ASTのノード
- * @param {string[]} list - 変数名リスト
- * @param {string[]} reactiveFunctions - リアクティブな関数名のリスト
- */
-export function addReactiveVariables(node, list, reactiveFunctions) {
-  const isReactiveCall = node.init?.type === 'CallExpression' && reactiveFunctions.includes(node.init?.callee?.name);
-  if (isReactiveCall && node.id.type === 'Identifier') {
-    list.push(node.id.name);
-  }
-}
-
-/**
- * 変数の初期値がリアクティブ関数から取得する場合、その変数名をリストに追加する関数
- * @param {VariableDeclarator} node - ASTのノード
- * @param {string[]} list - 変数名リスト
- * @param {string[]} reactiveFunctions - リアクティブな関数名のリスト
- */
-export function addToVariablesListFromCalleeWithArgument(node, list, reactiveFunctions) {
-  const isReactiveCall = node.init?.type === 'CallExpression' && reactiveFunctions.includes(node.init?.callee?.name);
-  if (isReactiveCall && node.id.type === 'ObjectPattern') {
-    list.push(...node.id.properties.map((property) => property.value.name).filter(Boolean));
-  }
+  const args = node.params.reduce((acc, param) => {
+    if (param.name) {
+      acc.push(param.name);
+    }
+    return acc;
+  }, []);
+  addToList(list, args);
 }

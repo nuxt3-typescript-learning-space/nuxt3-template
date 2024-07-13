@@ -1,5 +1,7 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+import { isGetterAliasPresent } from './utils/helpers/nameCheckers.js';
+import { isStoreToRefsCall } from './utils/helpers/specificFunctionChecks.js';
 
 /**
  * @typedef {import('eslint').Rule.RuleModule} RuleModule
@@ -28,13 +30,13 @@ export const storeGettersNotAlias = {
   },
   create(context) {
     /**
-     * プロパティがgettersListに含まれるか確認し、必要に応じてエラーを報告する
+     * プロパティがgettersListに含まれるか確認し、別名が設定されていればエラーを報告
      * @param {Property} property - チェックするプロパティノード
      */
     function checkProperty(property) {
       const originalName = property.key.name;
       const aliasName = property.value.name;
-      if (gettersList.includes(originalName) && aliasName && originalName !== aliasName) {
+      if (isGetterAliasPresent(originalName, aliasName, gettersList)) {
         context.report({
           node: property,
           messageId: 'noAlias',
@@ -54,12 +56,7 @@ export const storeGettersNotAlias = {
      * @param {VariableDeclarator} node - チェックするASTノード
      */
     function checkVariableDeclarator(node) {
-      if (
-        node.id.type === 'ObjectPattern' &&
-        node.init &&
-        node.init.type === 'CallExpression' &&
-        node.init.callee.name === 'storeToRefs'
-      ) {
+      if (isStoreToRefsCall(node)) {
         node.id.properties.forEach(checkProperty);
       }
     }
