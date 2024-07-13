@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { hasStateNameWithoutStateSuffix, isStoreToRefsCall } from './utils/helpers/astHelpers.js';
+import { hasStateNameWithoutStateSuffix } from './utils/helpers/nameCheckers.js';
+import { isStoreToRefsCall } from './utils/helpers/specificFunctionChecks.js';
 
 /**
  * @typedef {import('eslint').Rule.RuleModule} RuleModule

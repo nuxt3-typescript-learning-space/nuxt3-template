@@ -1,5 +1,5 @@
 import { addToList, extractPropertyNames } from './helpers/arrayHelpers.js';
-import { isSpecificFunctionCall } from './helpers/astHelpers.js';
+import { isSpecificFunctionCall } from './helpers/specificFunctionChecks.js';
 
 /**
  * @typedef {import('estree').VariableDeclarator} VariableDeclarator
