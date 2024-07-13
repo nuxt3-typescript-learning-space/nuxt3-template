@@ -17,5 +17,5 @@ export function hasStateNameWithoutStateSuffix(originalName, nameToCheck, stateL
  * @returns {boolean} - プロパティがgettersのリストに含まれていて、別名が設定されている場合は true
  */
 export function isGetterAliasPresent(originalName, aliasName, gettersList) {
-  return gettersList.includes(originalName) && aliasName && originalName !== aliasName;
+  return gettersList.includes(originalName) && !!aliasName && originalName !== aliasName;
 }
