@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+import { isStoreToRefsCall } from './utils/helpers/astHelpers.js';
 
 /**
  * @typedef {import('eslint').Rule.RuleModule} RuleModule
@@ -57,12 +58,7 @@ export const storeStateSuffix = {
      * @param {VariableDeclarator} node - チェックするASTノード
      */
     function checkVariableDeclarator(node) {
-      if (
-        node.id.type === 'ObjectPattern' &&
-        node.init &&
-        node.init.type === 'CallExpression' &&
-        node.init.callee.name === 'storeToRefs'
-      ) {
+      if (isStoreToRefsCall(node)) {
         node.id.properties.forEach(checkProperty);
       }
     }
