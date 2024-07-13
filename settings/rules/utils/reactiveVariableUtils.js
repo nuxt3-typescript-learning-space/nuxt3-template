@@ -1,20 +1,11 @@
 import { addToList, extractPropertyNames } from './helpers/arrayHelpers.js';
+import { isSpecificFunctionCall } from './helpers/astHelpers.js';
 
 /**
  * @typedef {import('estree').VariableDeclarator} VariableDeclarator
  * @typedef {import('estree').FunctionDeclaration} FunctionDeclaration
  * @typedef {import('estree').ArrowFunctionExpression} ArrowFunctionExpression
  */
-
-/**
- * リアクティブな関数呼び出しかどうかをチェックするヘルパー関数
- * @param {VariableDeclarator} node - ASTのノード
- * @param {string[]} reactiveFunctions - リアクティブな関数名のリスト
- * @returns {boolean} - リアクティブ関数呼び出しかどうか
- */
-export function isReactiveCall(node, reactiveFunctions) {
-  return node.init?.type === 'CallExpression' && reactiveFunctions.includes(node.init?.callee?.name);
-}
 
 /**
  * リアクティブな識別子をリストに追加する関数
@@ -43,10 +34,10 @@ function addReactiveObjectPattern(node, list) {
  * リアクティブ変数をリストに追加する関数
  * @param {VariableDeclarator} node - ASTのノード
  * @param {string[]} list - 変数名リスト
- * @param {string[]} reactiveFunctions - リアクティブな関数名のリスト
+ * @param {string[] | RegExp} reactiveFunctions - リアクティブな関数名のリストまたはパターン
  */
 export function addReactiveVariables(node, list, reactiveFunctions) {
-  if (isReactiveCall(node, reactiveFunctions)) {
+  if (isSpecificFunctionCall(node, reactiveFunctions)) {
     addReactiveIdentifier(node, list);
     addReactiveObjectPattern(node, list);
   }
@@ -59,9 +50,7 @@ export function addReactiveVariables(node, list, reactiveFunctions) {
  * @param {RegExp} composableFunctionPattern - composables関数名のパターン
  */
 export function addComposablesArgumentsToList(node, list, composableFunctionPattern) {
-  const isComposableCall =
-    node.init?.type === 'CallExpression' && composableFunctionPattern.test(node.init?.callee?.name);
-  if (isComposableCall && node.id.type === 'ObjectPattern') {
+  if (isSpecificFunctionCall(node, composableFunctionPattern) && node.id.type === 'ObjectPattern') {
     const properties = extractPropertyNames(node.id.properties);
     addToList(list, properties);
   }
@@ -74,8 +63,7 @@ export function addComposablesArgumentsToList(node, list, composableFunctionPatt
  * @param {string[]} skipFunctions - スキップする関数名のリスト
  */
 export function addSkipCheckFunctionsArgumentsToList(node, list, skipFunctions) {
-  const isSkipFunctionCall = node.init?.type === 'CallExpression' && skipFunctions.includes(node.init?.callee?.name);
-  if (isSkipFunctionCall && node.id.type === 'ObjectPattern') {
+  if (isSpecificFunctionCall(node, skipFunctions) && node.id.type === 'ObjectPattern') {
     const properties = extractPropertyNames(node.id.properties);
     addToList(list, properties);
   }
