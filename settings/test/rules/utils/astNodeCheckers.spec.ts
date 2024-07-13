@@ -16,7 +16,7 @@ const createIdentifierNode = (
     type: 'Identifier',
     name,
     parent,
-  } as Identifier & NodeWithOptionalParent;
+  };
 };
 
 const createCallExpressionNode = (
@@ -43,7 +43,7 @@ const createArrayExpressionNode = (
     type: 'ArrayExpression',
     elements,
     parent,
-  } as ArrayExpression & NodeWithOptionalParent;
+  };
 };
 
 describe('settings/rules/utils/astNodeCheckers.js', () => {

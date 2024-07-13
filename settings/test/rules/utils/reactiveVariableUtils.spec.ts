@@ -45,7 +45,7 @@ const createFunctionDeclaration = (paramNames: string[]): FunctionDeclaration =>
     id: { type: 'Identifier', name: 'testFunction' },
     params: paramNames.map((name) => ({ type: 'Identifier', name })),
     body: { type: 'BlockStatement', body: [] },
-  } as FunctionDeclaration;
+  };
 };
 
 const createArrowFunctionExpression = (paramNames: string[]): ArrowFunctionExpression => {
@@ -54,7 +54,7 @@ const createArrowFunctionExpression = (paramNames: string[]): ArrowFunctionExpre
     params: paramNames.map((name) => ({ type: 'Identifier', name })),
     body: { type: 'BlockStatement', body: [] },
     expression: false,
-  } as ArrowFunctionExpression;
+  };
 };
 
 describe('settings/rules/utils/reactiveVariableUtils.js', () => {
@@ -68,7 +68,7 @@ describe('settings/rules/utils/reactiveVariableUtils.js', () => {
 
     it('リアクティブなオブジェクトパターンをリストに追加する', () => {
       const list: string[] = [];
-      const properties = [
+      const properties: AssignmentProperty[] = [
         {
           type: 'Property',
           key: { type: 'Identifier', name: 'prop1' },
@@ -78,7 +78,7 @@ describe('settings/rules/utils/reactiveVariableUtils.js', () => {
           shorthand: false,
           computed: false,
         },
-      ] as AssignmentProperty[];
+      ];
       const node = createVariableDeclarator('ObjectPattern', 'reactiveObject', 'CallExpression', 'toRefs', properties);
       addReactiveVariables(node, list, ['toRefs']);
       expect(list).toEqual(['prop1']);
@@ -88,7 +88,7 @@ describe('settings/rules/utils/reactiveVariableUtils.js', () => {
   describe('addComposablesArgumentsToList', () => {
     it('composables関数の引数をリストに追加する', () => {
       const list: string[] = [];
-      const properties = [
+      const properties: AssignmentProperty[] = [
         {
           type: 'Property',
           key: { type: 'Identifier', name: 'arg1' },
@@ -98,7 +98,7 @@ describe('settings/rules/utils/reactiveVariableUtils.js', () => {
           shorthand: false,
           computed: false,
         },
-      ] as AssignmentProperty[];
+      ];
       const node = createVariableDeclarator(
         'ObjectPattern',
         'composablesArg',
@@ -114,7 +114,7 @@ describe('settings/rules/utils/reactiveVariableUtils.js', () => {
   describe('addSkipCheckFunctionsArgumentsToList', () => {
     it('スキップする関数の引数をリストに追加する', () => {
       const list: string[] = [];
-      const properties = [
+      const properties: AssignmentProperty[] = [
         {
           type: 'Property',
           key: { type: 'Identifier', name: 'arg1' },
@@ -124,7 +124,7 @@ describe('settings/rules/utils/reactiveVariableUtils.js', () => {
           shorthand: false,
           computed: false,
         },
-      ] as AssignmentProperty[];
+      ];
       const node = createVariableDeclarator('ObjectPattern', 'skipArg', 'CallExpression', 'skipFunction', properties);
       addSkipCheckFunctionsArgumentsToList(node, list, ['skipFunction']);
       expect(list).toEqual(['arg1']);
