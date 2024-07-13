@@ -19,6 +19,7 @@ const config = {
         'test',
         'chore',
         'package',
+        'type',
         'wip',
       ],
     ],

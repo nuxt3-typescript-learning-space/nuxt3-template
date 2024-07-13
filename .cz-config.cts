@@ -53,6 +53,10 @@ const config = {
       value: ':package: package',
     },
     {
+      name: 'type:     🏷️  型の追加/更新',
+      value: ':label: type',
+    },
+    {
       name: 'wip:      🚧 作業途中',
       value: ':construction: WIP',
     },
