@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { isStoreToRefsCall } from './utils/helpers/astHelpers.js';
+import { hasStateNameWithoutStateSuffix, isStoreToRefsCall } from './utils/helpers/astHelpers.js';
 
 /**
  * @typedef {import('eslint').Rule.RuleModule} RuleModule
@@ -29,14 +29,14 @@ export const storeStateSuffix = {
   },
   create(context) {
     /**
-     * プロパティがstateListに含まれるか確認し、必要に応じてエラーを報告する
+     * プロパティがstateListに含まれるか確認し、 "State" というsuffixがない場合はエラーを報告
      * @param {Property} property - チェックするプロパティノード
      */
     function checkProperty(property) {
       const originalName = property.key.name;
       const aliasName = property.value.name;
       const nameToCheck = aliasName || originalName;
-      if (stateList.includes(originalName) && !nameToCheck.endsWith('State')) {
+      if (hasStateNameWithoutStateSuffix(originalName, nameToCheck, stateList)) {
         context.report({
           node: property,
           messageId: 'requireStateSuffix',

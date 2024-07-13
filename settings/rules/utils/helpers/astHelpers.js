@@ -42,3 +42,14 @@ export function isStoreToRefsCall(node) {
     node.init.callee.name === 'storeToRefs'
   );
 }
+
+/**
+ * 変数名がstateリストに含まれていて、接尾辞が "State" で終わっていないかをチェックするヘルパー関数
+ * @param {string} originalName - 元の変数名
+ * @param {string} nameToCheck - チェックする変数名
+ * @param {string[]} stateList - stateのリスト
+ * @returns {boolean} - 変数名が状態リストに含まれていて、接尾辞が "State" で終わっていない場合は true
+ */
+export function hasStateNameWithoutStateSuffix(originalName, nameToCheck, stateList) {
+  return stateList.includes(originalName) && !nameToCheck.endsWith('State');
+}
