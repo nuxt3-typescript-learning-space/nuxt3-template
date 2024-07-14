@@ -69,6 +69,7 @@ const config = {
   },
   skipQuestions: ['scope', 'breaking', 'footer'],
   subjectLimit: 100,
+  upperCaseSubject: true,
 };
 
 module.exports = config;
