@@ -33,7 +33,11 @@ const config = {
       value: ':lipstick: style',
     },
     {
-      name: 'docs:     📝 ドキュメンテーションの追加/更新',
+      name: 'type:     🏷️  型の追加/更新',
+      value: ':label: type',
+    },
+    {
+      name: 'docs:     📝 ドキュメンテーションやコメントの追加/更新',
       value: ':memo: docs',
     },
     {

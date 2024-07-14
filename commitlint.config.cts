@@ -14,6 +14,7 @@ const config = {
         'refactor',
         'delete',
         'style',
+        'type',
         'docs',
         'move',
         'test',
