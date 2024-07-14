@@ -22,6 +22,7 @@ const config = {
         'WIP',
       ],
     ],
+    'type-case': [0, 'always', 'lower-case'],
   },
 };
 
