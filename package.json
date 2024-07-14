@@ -6,7 +6,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev -o",
     "test": "vitest",
-    "test:ui": "vitest --ui",
+    "test:ui": "vitest --ui --coverage",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:rules": "npx @eslint/config-inspector@latest",
