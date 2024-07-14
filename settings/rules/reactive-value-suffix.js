@@ -17,8 +17,8 @@ import {
 import { isArgumentOfFunction, isWatchArguments } from './utils/astNodeCheckers.js';
 
 /**
- * @typedef {import('eslint').Rule.RuleModule} RuleModule
- * @typedef {import('eslint').Rule.RuleContext} RuleContext
+ * @typedef {import('@typescript-eslint/utils/ts-eslint').RuleModule<'requireValueSuffix', []>} RuleModule
+ * @typedef {import('@typescript-eslint/utils/ts-eslint').RuleContext} RuleContext
  * @typedef {import('estree').VariableDeclarator} VariableDeclarator
  * @typedef {import('estree').FunctionDeclaration} FunctionDeclaration
  * @typedef {import('estree').ArrowFunctionExpression} ArrowFunctionExpression
@@ -139,6 +139,7 @@ export const reactiveValueSuffix = {
       requireValueSuffix: 'リアクティブな値 "{{name}}" には "{{name}}.value" でアクセスする必要があります。',
     },
   },
+  defaultOptions: [],
   create(context) {
     /** @type {string[]} */
     const variableFromReactiveFunctions = [];

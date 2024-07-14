@@ -6,7 +6,7 @@ import { logMessage } from './utils/logger';
  * ストアデータのリストを更新するメイン処理
  * @returns {Promise<void>}
  */
-const updateStoreListData = async (): Promise<void> => {
+export const updateStoreListData = async (): Promise<void> => {
   try {
     await updateStateValues();
     await updateGetterValues();

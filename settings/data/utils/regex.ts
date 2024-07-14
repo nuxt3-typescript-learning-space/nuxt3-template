@@ -7,7 +7,7 @@ import { logMessage } from './logger';
  * @param {RegExp[]} patterns - 一致させる正規表現の配列
  * @returns {string} - 一致した内容の最初のグループ、または空文字列
  */
-const extractContentByRegex = (filePath: string, patterns: RegExp[]): string => {
+export const extractContentByRegex = (filePath: string, patterns: RegExp[]): string => {
   const fileContent = safeReadFile(filePath);
 
   for (const regex of patterns) {
@@ -26,7 +26,7 @@ const extractContentByRegex = (filePath: string, patterns: RegExp[]): string => 
  * @param {string} content - ファイルの内容
  * @returns {string[]} - トップレベルのプロパティ名の配列
  */
-const filterStatePropertyName = (content: string): string[] => {
+export const filterStatePropertyName = (content: string): string[] => {
   const lines = content
     .split('\n')
     .map((line) => line.trim())
@@ -67,7 +67,7 @@ export const extractValuesByRegex = (filePath: string, regexPattern: RegExp[], i
  * @param {string} content - ファイルの内容
  * @returns {string[]} - トップレベルのプロパティ名の配列
  */
-const filterGetterPropertyName = (content: string): string[] => {
+export const filterGetterPropertyName = (content: string): string[] => {
   const lines = content
     .split('\n')
     .map((line) => line.trim())
