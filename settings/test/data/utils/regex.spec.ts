@@ -8,7 +8,7 @@ import {
   extractValuesByRegex,
   filterGetterPropertyName,
   getUniqueValues,
-} from '../../../data/utils/regex'; // 実際のファイルパスに置き換えてください
+} from '../../../data/utils/regex';
 
 vi.mock('../../../data/utils/file', () => ({
   safeReadFile: vi.fn(),

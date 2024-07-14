@@ -1,7 +1,7 @@
 import { format } from 'prettier';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { safeWriteFile } from '../../../data/utils/file';
-import { writeJsonFile } from '../../../data/utils/json'; // 実際のファイルパスに置き換えてください
+import { writeJsonFile } from '../../../data/utils/json';
 import { handleError } from '../../../data/utils/logger';
 import type { MockedFunction } from 'vitest';
 
