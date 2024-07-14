@@ -1,4 +1,4 @@
-import prettier from 'prettier';
+import { format } from 'prettier';
 import { safeWriteFile } from './file';
 import { handleError } from './logger';
 
@@ -10,7 +10,7 @@ import { handleError } from './logger';
 export const writeJsonFile = async (filePath: string, json: string[]) => {
   try {
     // JSON文字列を整形するためにprettier.formatを使用
-    const formattedJson = await prettier.format(JSON.stringify(json), { parser: 'json' });
+    const formattedJson = await format(JSON.stringify(json), { parser: 'json' });
     // 整形されたJSON文字列をファイルに書き込む
     safeWriteFile(filePath, formattedJson);
   } catch (error) {
