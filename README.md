@@ -12,60 +12,15 @@ pnpm install
 pnpm dev
 ```
 
-## ESLintカスタムルールのディレクトリ構造
+## 実装されているESLintカスタムルール
 
-```
-settings/
-├── data/
-│   ├── store-getters-list.json
-│   └── store-state-list.json
-├── rules/
-│   ├── utils/
-│   │   └── reactiveVariableUtils.js
-│   ├── ASTNode.md
-│   ├── index.js
-│   ├── reactive-value-suffix.js
-│   ├── store-getters-not-alias.js
-│   └── store-state-suffix.js
-├── utils/
-│   ├── constant.ts
-│   ├── file.ts
-│   ├── json.ts
-│   ├── list.ts
-│   ├── logger.ts
-│   └── regex.ts
-├── convert.ts
-├── updateGetterValues.ts
-└── updateStateValues.ts
-```
-
-### convert.ts
-
-storeディレクトリに定義されているTypeScriptファイルを取得し、そこに定義されているstate名とgetters名を取得する処理のメインの実行ファイル。
-
-### updateGetterValues.ts
-
-getters名を取得する処理を行うファイル。
-
-### updateStateValues.ts
-
-state名を取得する処理を行うファイル。
-
-### settings/utils/\*\*
-
-convert.ts, updateGetterValues.ts, updateStateValues.tsで使用するユーティリティ関数を定義するディレクトリ。
-
-### settings/rules/ASTNode.md
-
-ASTNodeについて記載したマークダウンファイル。
-
-### settings/rules/index.js
-
-ESLintのカスタムルールを定義するファイル。
+ご自身の環境にあわせてカスタムルールを`off`にしてください。
 
 ### settings/rules/reactive-value-suffix.js
 
 リアクティブな値に対して、`.value`を使用してアクセスすることを強制したルール。
+なお、composablesなどの関数（`useFoo`などのuseから始まる関数）の引数に対してはこのルールはスキップされる。
+また、composablesから分割代入された関数（正確には分割代入されたすべての値）に対してもこのルールはスキップされる。
 
 ### settings/rules/store-state-suffix.js
 
@@ -84,11 +39,18 @@ const { foo: fooState } = storeToRefs(fooStore);
 というように、state名に`State`という接尾辞を付けることを強制したルール。
 （gettersもstoreToRefsを使用して分割代入するので、区別できるように）
 
-### settings/rules/utils/
+### settings/rules/store-getters-not-alias.js
 
-settings/rules/ディレクトリで使用するユーティリティ関数を定義するディレクトリ。
-主にESLintのカスタムルールを定義する際に使用する関数を定義。
+storeに定義されているgettersで、`storeToRefs`を使用して分割代入をする時、
 
-### settings/data/
+```ts
+const { foo: fooGetter } = storeToRefs(fooStore);
+```
 
-convert.tsで自動的にリスト化されたstate名とgetters名を保存するディレクトリ。
+とするのではなく
+
+```ts
+const { foo } = storeToRefs(fooStore);
+```
+
+というように、getters名を他のプロパティ名にエイリアスしないことを強制したルール。
