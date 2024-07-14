@@ -10,7 +10,7 @@ vi.mock('../../../data/utils/logger', () => ({
   handleError: vi.fn(),
 }));
 
-describe('ファイル操作', () => {
+describe('settings/data/utils/file.ts', () => {
   const testFilePath = 'src/store/testStore.ts';
   const testData = 'これはテストデータです';
 

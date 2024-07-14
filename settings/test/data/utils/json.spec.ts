@@ -15,30 +15,32 @@ vi.mock('../../../data/utils/logger', () => ({
   handleError: vi.fn(),
 }));
 
-describe('writeJsonFile', () => {
+describe('settings/data/utils/json.ts', () => {
   const testFilePath = 'test/file/test.json';
   const testJson = ['これはテストデータです'];
   const formattedJson = JSON.stringify(testJson, null, 2); // prettier で整形されることを仮定したフォーマット
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+  describe('writeJsonFile', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
 
-  it('JSONデータを整形してファイルに書き込む', async () => {
-    (format as MockedFunction<typeof format>).mockResolvedValue(formattedJson);
+    it('JSONデータを整形してファイルに書き込む', async () => {
+      (format as MockedFunction<typeof format>).mockResolvedValue(formattedJson);
 
-    await writeJsonFile(testFilePath, testJson);
+      await writeJsonFile(testFilePath, testJson);
 
-    expect(format).toHaveBeenCalledWith(JSON.stringify(testJson), { parser: 'json' });
-    expect(safeWriteFile).toHaveBeenCalledWith(testFilePath, formattedJson);
-  });
+      expect(format).toHaveBeenCalledWith(JSON.stringify(testJson), { parser: 'json' });
+      expect(safeWriteFile).toHaveBeenCalledWith(testFilePath, formattedJson);
+    });
 
-  it('整形中にエラーが発生した場合にエラーハンドリングを行う', async () => {
-    const error = new Error('整形エラー');
-    (format as MockedFunction<typeof format>).mockRejectedValue(error);
+    it('整形中にエラーが発生した場合にエラーハンドリングを行う', async () => {
+      const error = new Error('整形エラー');
+      (format as MockedFunction<typeof format>).mockRejectedValue(error);
 
-    await expect(writeJsonFile(testFilePath, testJson)).rejects.toThrow(error);
+      await expect(writeJsonFile(testFilePath, testJson)).rejects.toThrow(error);
 
-    expect(handleError).toHaveBeenCalledWith(`JSONファイルの整形中にエラーが発生しました: ${testFilePath}`, error);
+      expect(handleError).toHaveBeenCalledWith(`JSONファイルの整形中にエラーが発生しました: ${testFilePath}`, error);
+    });
   });
 });
