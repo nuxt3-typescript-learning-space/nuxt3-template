@@ -14,6 +14,7 @@ const config = {
         'refactor',
         'delete',
         'style',
+        'type',
         'docs',
         'move',
         'test',
@@ -22,6 +23,7 @@ const config = {
         'WIP',
       ],
     ],
+    'type-case': [0, 'always', 'lower-case'],
   },
 };
 
