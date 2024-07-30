@@ -38,6 +38,7 @@
     "@types/node": "^20.14.9",
     "@vitest/ui": "^1.6.0",
     "@vue/test-utils": "^2.4.6",
+    "@zadigetvoltaire/nuxt-gtm": "^0.0.13",
     "commitizen": "^4.3.0",
     "commitlint-config-gitmoji": "^2.3.1",
     "cz-customizable": "^7.0.0",
