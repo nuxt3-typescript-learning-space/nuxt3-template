@@ -38,19 +38,3 @@ const { foo: fooState } = storeToRefs(fooStore);
 
 というように、state名に`State`という接尾辞を付けることを強制したルール。
 （gettersもstoreToRefsを使用して分割代入するので、区別できるように）
-
-### settings/rules/store-getters-not-alias.js
-
-storeに定義されているgettersで、`storeToRefs`を使用して分割代入をする時、
-
-```ts
-const { foo: fooGetter } = storeToRefs(fooStore);
-```
-
-とするのではなく
-
-```ts
-const { foo } = storeToRefs(fooStore);
-```
-
-というように、getters名を他のプロパティ名にエイリアスしないことを強制したルール。
