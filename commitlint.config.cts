@@ -2,6 +2,7 @@ const config = {
   extends: ['gitmoji'],
   rules: {
     'header-max-length': [2, 'always', 100],
+    'type-case': [0, 'always', 'lower-case'],
     'type-enum': [
       2,
       'always',
@@ -20,7 +21,7 @@ const config = {
         'chore',
         'package',
         'type',
-        'wip',
+        'WIP',
       ],
     ],
   },

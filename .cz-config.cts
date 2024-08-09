@@ -57,7 +57,7 @@ const config = {
       value: ':label: type',
     },
     {
-      name: 'wip:      🚧 作業途中',
+      name: 'WIP:      🚧 作業途中',
       value: ':construction: WIP',
     },
   ],
@@ -69,6 +69,7 @@ const config = {
   },
   skipQuestions: ['scope', 'breaking', 'footer'],
   subjectLimit: 100,
+  upperCaseSubject: true,
 };
 
 module.exports = config;
