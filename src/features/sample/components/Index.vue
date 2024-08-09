@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import CounterDisplay from '@/components/CounterDisplay.vue';
-import Title from '@/components/Title.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { useCounterStore } from '@/store/counterStore';
+import CounterDisplay from './CounterDisplay.vue';
+import Title from './Title.vue';
+
 const counterStore = useCounterStore();
 const { count: countState } = storeToRefs(counterStore);
 const { increment, decrement } = counterStore;

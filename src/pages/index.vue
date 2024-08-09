@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Index from '@/components/view/Index.vue';
+await navigateTo('/sample');
 </script>
 <template>
-  <component :is="Index" />
+  <p>Redirecting...</p>
 </template>
