@@ -21,6 +21,8 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
+    "@vanilla-extract/css": "^1.15.3",
+    "@vanilla-extract/vite-plugin": "^4.0.13",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.379.0",
@@ -82,6 +84,6 @@
   },
   "volta": {
     "node": "20.15.0",
-    "pnpm": "9.4.0"
+    "pnpm": "9.7.0"
   }
 }
