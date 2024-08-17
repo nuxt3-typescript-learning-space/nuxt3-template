@@ -20,14 +20,6 @@ jobs:
       - name: ソースコードのチェックアウト
         uses: actions/checkout@v4
 
-      - name: pnpmキャッシュの復元
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: pnpm-cache-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            pnpm-cache-${{ matrix.node-version }}-
-
       - name: pnpmのインストール
         uses: pnpm/action-setup@v4
         with:
@@ -38,6 +30,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
+
+      - name: pnpmキャッシュの復元
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store # 環境に応じてパスを調整
+          key: pnpm-cache-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-cache-${{ matrix.node-version }}-
 
       - name: 依存関係のインストール
         run: pnpm install --frozen-lockfile
