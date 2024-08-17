@@ -61,3 +61,10 @@ jobs:
         with:
           name: coverage-report
           path: logs/coverage
+
+      - name: ビルドキャッシュの保存
+        if: success() || failure() # 常にキャッシュを保存
+        uses: actions/cache@v4
+        with:
+          path: .vitest_cache
+          key: vitest-cache-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}
