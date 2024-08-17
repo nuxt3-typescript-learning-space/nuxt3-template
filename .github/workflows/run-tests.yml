@@ -4,19 +4,21 @@ on:
   pull_request:
     types:
       - labeled
-      - synchronize # コミットが追加された場合にもトリガーされる
-  workflow_dispatch: # 手動でも実行可能
+      - synchronize
+  workflow_dispatch:
 
 jobs:
   test:
-    if: github.event.label.name == 'レビュー待ち' || github.event.label.name == 'Waiting Review'
+    if: |
+      contains(toJSON(github.event.pull_request.labels), 'レビュー待ち') || contains(toJSON(github.event.pull_request.labels), 'Waiting Review')
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [20.15.0]
 
     steps:
-      - uses: actions/checkout@v4
+      - name: ソースコードのチェックアウト
+        uses: actions/checkout@v4
 
       - name: pnpmのインストール
         uses: pnpm/action-setup@v4
@@ -28,6 +30,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
+
+      - name: pnpmキャッシュの復元
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/setup-pnpm/node_modules/.bin/store/v3
+          key: pnpm-cache-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-cache-${{ matrix.node-version }}-
 
       - name: 依存関係のインストール
         run: pnpm install --frozen-lockfile
