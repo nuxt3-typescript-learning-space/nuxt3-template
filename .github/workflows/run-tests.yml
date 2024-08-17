@@ -1,0 +1,45 @@
+name: テスト実行
+
+on:
+  pull_request:
+    types:
+      - labeled
+      - synchronize # コミットが追加された場合にもトリガーされる
+  workflow_dispatch: # 手動でも実行可能
+
+jobs:
+  test:
+    if: github.event.label.name == 'レビュー待ち' || github.event.label.name == 'Waiting Review'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.15.0]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: pnpmのインストール
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.7.0
+
+      - name: Node.jsバージョンの設定 ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: 依存関係のインストール
+        run: pnpm install --frozen-lockfile
+
+      - name: Vitestとカバレッジの実行
+        run: pnpm test:coverage
+        env:
+          CI: true
+
+      - name: カバレッジレポートのアップロード
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: logs/coverage
