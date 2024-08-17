@@ -31,13 +31,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
-      - name: Check pnpm store path
-        run: pnpm store path
-
       - name: pnpmキャッシュの復元
         uses: actions/cache@v4
         with:
-          path: ~/.local/share/pnpm/store # 環境に応じてパスを調整
+          path: /home/runner/setup-pnpm/node_modules/.bin/store/v3
           key: pnpm-cache-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-cache-${{ matrix.node-version }}-
