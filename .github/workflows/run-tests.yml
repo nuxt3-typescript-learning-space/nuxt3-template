@@ -50,6 +50,9 @@ jobs:
           restore-keys: |
             vitest-cache-${{ matrix.node-version }}-
 
+      - name: Debug .vitest_cache path
+        run: ls -la .vitest_cache
+
       - name: Vitestとカバレッジの実行
         run: pnpm test:coverage
         env:
@@ -63,7 +66,7 @@ jobs:
           path: logs/coverage
 
       - name: ビルドキャッシュの保存
-        if: success() || failure() # 常にキャッシュを保存
+        if: success() || failure()
         uses: actions/cache@v4
         with:
           path: .vitest_cache
