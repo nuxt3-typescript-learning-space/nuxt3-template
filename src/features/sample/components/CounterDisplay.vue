@@ -1,10 +1,9 @@
 <script setup lang="ts">
-defineProps({
-  count: {
-    type: Number,
-    required: true,
-  },
-});
+interface Props {
+  count: number;
+}
+
+defineProps<Props>();
 </script>
 <template>
   <div>counter: {{ count }}</div>
