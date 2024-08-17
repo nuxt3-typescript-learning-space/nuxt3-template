@@ -5,7 +5,7 @@ on:
     types:
       - labeled
       - synchronize
-  workflow_dispatch: # 手動でも実行可能
+  workflow_dispatch:
 
 jobs:
   test:
