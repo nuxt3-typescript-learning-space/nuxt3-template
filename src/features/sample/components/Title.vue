@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { TitleApi } from '@/server/api/title';
-import { sampleStyle } from '../style/title.css';
 
 const { data, status } = await useFetch<TitleApi>('/api/title');
 
@@ -12,6 +11,6 @@ const title = computed(() => data.value?.title || 'No title available');
     <p>Loading...</p>
   </template>
   <template v-else>
-    <h1 :class="sampleStyle">{{ title }}</h1>
+    <h1>{{ title }}</h1>
   </template>
 </template>
