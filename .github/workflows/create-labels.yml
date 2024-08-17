@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+
       - name: Create labels if they don't exist
         run: |
           # ラベル名、色、説明文の定義
