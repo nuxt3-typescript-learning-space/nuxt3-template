@@ -2,15 +2,15 @@ name: テスト実行
 
 on:
   pull_request:
+    branches:
+      - main # main ブランチ向けの PR のみを対象とします
     types:
-      - labeled
-      - synchronize
+      - opened # PR がオープンされたとき
+      - synchronize # PR にコミットが追加されたとき
   workflow_dispatch:
 
 jobs:
   test:
-    if: |
-      contains(toJSON(github.event.pull_request.labels), 'レビュー待ち') || contains(toJSON(github.event.pull_request.labels), 'Waiting Review')
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -20,21 +20,21 @@ jobs:
       - name: ソースコードのチェックアウト
         uses: actions/checkout@v4
 
-      - name: pnpmのインストール
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.7.0
-
       - name: Node.jsバージョンの設定 ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
+      - name: pnpmのインストール
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.7.0
+
       - name: pnpmキャッシュの復元
         uses: actions/cache@v4
         with:
-          path: /home/runner/setup-pnpm/node_modules/.bin/store/v3
+          path: ~/.pnpm-store/v3
           key: pnpm-cache-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-cache-${{ matrix.node-version }}-
