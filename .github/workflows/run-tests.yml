@@ -31,13 +31,10 @@ jobs:
         with:
           version: 9.7.0
 
-      - name: pnpmのパスを追加
-        run: echo "::add-path::$(pnpm root -g)/bin"
-
       - name: pnpmキャッシュの復元
         uses: actions/cache@v4
         with:
-          path: ~/.pnpm-store/v3
+          path: /home/runner/setup-pnpm/node_modules/.bin/store/v3
           key: pnpm-cache-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-cache-${{ matrix.node-version }}-
