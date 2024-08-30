@@ -20,16 +20,16 @@ jobs:
       - name: ソースコードのチェックアウト
         uses: actions/checkout@v4
 
+      - name: pnpmのインストール
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.7.0
+
       - name: Node.jsバージョンの設定 ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
-
-      - name: pnpmのインストール
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.7.0
 
       - name: pnpmキャッシュの復元
         uses: actions/cache@v4
