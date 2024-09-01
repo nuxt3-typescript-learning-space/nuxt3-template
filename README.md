@@ -95,6 +95,8 @@ src
 
 ### settings/rules/store-state-suffix.js
 
+**現時点ではoffです**
+
 storeに定義されているstateで、`storeToRefs`を使用して分割代入をする時、
 
 ```ts
