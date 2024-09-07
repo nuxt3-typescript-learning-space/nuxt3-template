@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "Preserve",
+    "moduleResolution": "Bundler",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "removeComments": true
+  },
+  "include": ["src/**/*.ts", "!src/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
