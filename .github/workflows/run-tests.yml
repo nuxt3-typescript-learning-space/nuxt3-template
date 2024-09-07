@@ -2,15 +2,15 @@ name: テスト実行
 
 on:
   pull_request:
+    branches:
+      - main # main ブランチ向けの PR のみを対象とします
     types:
-      - labeled
-      - synchronize
+      - opened # PR がオープンされたとき
+      - synchronize # PR にコミットが追加されたとき
   workflow_dispatch:
 
 jobs:
   test:
-    if: |
-      contains(toJSON(github.event.pull_request.labels), 'レビュー待ち') || contains(toJSON(github.event.pull_request.labels), 'Waiting Review')
     runs-on: ubuntu-latest
     strategy:
       matrix:
