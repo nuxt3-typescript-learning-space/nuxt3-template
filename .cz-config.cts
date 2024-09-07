@@ -57,6 +57,10 @@ const config = {
       value: ':label: type',
     },
     {
+      name: 'update:   🙈  .gitignoreの追加/更新',
+      value: ':see_no_evil: update',
+    },
+    {
       name: 'WIP:      🚧 作業途中',
       value: ':construction: WIP',
     },
