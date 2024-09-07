@@ -116,3 +116,14 @@ export function isDestructuredFunctionArgument(parent, grandParent, destructured
       destructuredFunctions.includes(grandParent.callee.name))
   );
 }
+export function isStoreToRefsCall(node) {
+  return (
+    node.init &&
+    node.init.type === 'CallExpression' &&
+    node.init.callee.type === 'Identifier' &&
+    node.init.callee.name === 'storeToRefs'
+  );
+}
+export function hasStateNameWithoutStateSuffix(originalName, nameToCheck, stateList) {
+  return stateList.includes(originalName) && !nameToCheck.endsWith('State');
+}
