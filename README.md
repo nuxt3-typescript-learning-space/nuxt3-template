@@ -95,8 +95,6 @@ src
 
 ### settings/rules/store-state-suffix.js
 
-**現時点ではoffです**
-
 storeに定義されているstateで、`storeToRefs`を使用して分割代入をする時、
 
 ```ts
@@ -111,3 +109,8 @@ const { foo: fooState } = storeToRefs(fooStore);
 
 というように、state名に`State`という接尾辞を付けることを強制したルール。
 （gettersもstoreToRefsを使用して分割代入するので、区別できるように）
+
+### ルールの追加方法
+
+`settings/rules/src`配下にルール用のファイルを作成し、`pnpm build:custom-lint`したものが`settings/rules/dist`に出力されます。
+それを`settings/rules/index.js`で読み込み、`eslint.config.mjs`で有効にしてください。

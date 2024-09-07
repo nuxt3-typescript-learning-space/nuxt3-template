@@ -1,5 +1,5 @@
-import { reactiveValueSuffix } from './reactive-value-suffix.js';
-import { storeStateSuffix } from './store-state-suffix.js';
+import { reactiveValueSuffix } from './dist/reactive-value-suffix.js';
+import { storeStateSuffix } from './dist/store-state-suffix.js';
 
 const plugin = {
   meta: {

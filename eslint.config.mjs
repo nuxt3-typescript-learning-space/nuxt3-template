@@ -42,8 +42,19 @@ export default withNuxt({
         'newlines-between': 'never',
       },
     ],
-    'coding-rules/store-state-suffix': 'off',
-    'coding-rules/reactive-value-suffix': 'error',
+    'coding-rules/store-state-suffix': 'error',
+    'coding-rules/reactive-value-suffix': [
+      'error',
+      {
+        /**
+         * 関数名の引数で、.value チェックをスキップしたい関数名のリスト
+         *
+         * 例） fooFunc(reactiveValue)のとき、fooFunc内でreactiveValue.valueを参照している場合は、チェックされない方がいいため追加
+         * @type {string[]}
+         */
+        functionNamesToIgnoreValueCheck: [],
+      },
+    ],
     ...prettierConfig.rules,
   },
 });
