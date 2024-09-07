@@ -13,6 +13,7 @@ import {
   isObjectKey,
   isOriginalDeclaration,
   isDestructuredFunctionArgument,
+  isIdentifier,
 } from './helpers/astHelpers.js';
 function checkNodeAndReport(node, name, context, parserServices, checker) {
   const tsNode = parserServices.esTreeNodeToTSNodeMap.get(node);
@@ -54,12 +55,8 @@ function checkIdentifier(
   }
 }
 function checkMemberExpression(node, variableFromReactiveFunctions, context, parserServices, checker) {
-  const isPropertyValue = node.property.type === 'Identifier' && node.property.name === 'value';
-  if (
-    !isPropertyValue &&
-    node.object.type === 'Identifier' &&
-    variableFromReactiveFunctions.includes(node.object.name)
-  ) {
+  const isPropertyValue = isIdentifier(node.property) && node.property.name === 'value';
+  if (!isPropertyValue && isIdentifier(node.object) && variableFromReactiveFunctions.includes(node.object.name)) {
     checkNodeAndReport(node.object, node.object.name, context, parserServices, checker);
   }
 }
@@ -67,7 +64,7 @@ export const reactiveValueSuffix = {
   meta: {
     type: 'problem',
     docs: {
-      description: 'Rule to enforce accessing reactive values with `.value`',
+      description: 'リアクティブな値に対して`.value`をつけてアクセスすることを強制するカスタムルール',
       recommended: 'recommended',
     },
     schema: [
@@ -86,7 +83,7 @@ export const reactiveValueSuffix = {
       },
     ],
     messages: {
-      requireValueSuffix: 'Reactive value "{{name}}" should be accessed with {{name}}.value',
+      requireValueSuffix: 'リアクティブな値 "{{name}}" には {{name}}.value でアクセスしてください',
     },
   },
   defaultOptions: [{}],

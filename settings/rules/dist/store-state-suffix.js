@@ -1,6 +1,13 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { isStoreToRefsCall, hasStateNameWithoutStateSuffix } from './helpers/astHelpers.js';
+import {
+  isStoreToRefsCall,
+  hasStateNameWithoutStateSuffix,
+  isIdentifier,
+  isProperty,
+  isAssignmentPattern,
+  isObjectPattern,
+} from './helpers/astHelpers.js';
 const stateListPath = resolve(new URL(import.meta.url).pathname, '../../../data/json/store-state-list.json');
 const stateList = JSON.parse(readFileSync(stateListPath, 'utf8'));
 export const storeStateSuffix = {
@@ -38,20 +45,17 @@ export const storeStateSuffix = {
       }
     }
     function getPropertyName(node) {
-      if (node.type === 'Identifier') {
+      if (isIdentifier(node)) {
         return node.name;
-      } else if (node.type === 'AssignmentPattern' && node.left.type === 'Identifier') {
+      } else if (isAssignmentPattern(node) && isIdentifier(node.left)) {
         return node.left.name;
       }
       return '';
     }
-    function isPropertyNode(prop) {
-      return prop?.type === 'Property';
-    }
     function checkVariableDeclaratorForStateSuffix(node) {
-      if (isStoreToRefsCall(node) && node.id.type === 'ObjectPattern') {
+      if (isStoreToRefsCall(node) && isObjectPattern(node.id)) {
         node.id.properties.forEach((prop) => {
-          if (isPropertyNode(prop)) {
+          if (isProperty(prop)) {
             checkPropertyWithStateSuffix(prop);
           }
         });
