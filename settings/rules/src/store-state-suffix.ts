@@ -1,8 +1,19 @@
+/**
+ * @fileoverview stateの値を使用する時に "State" という接尾辞をつけることを強制するESLintルール
+ */
+
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import type { TSESLint } from '@typescript-eslint/utils';
-import { isStoreToRefsCall, hasStateNameWithoutStateSuffix } from './helpers/astHelpers.js';
-import type { VariableDeclarator, Property, RestElement, Node } from './types/eslint.js';
+import {
+  isStoreToRefsCall,
+  hasStateNameWithoutStateSuffix,
+  isIdentifier,
+  isProperty,
+  isAssignmentPattern,
+  isObjectPattern,
+} from './helpers/astHelpers.js';
+import type { VariableDeclarator, Property, Node } from './types/eslint.js';
 
 type MessageId = 'requireStateSuffix';
 type RuleModule = TSESLint.RuleModule<MessageId>;
@@ -10,10 +21,6 @@ type RuleModule = TSESLint.RuleModule<MessageId>;
 const stateListPath = resolve(new URL(import.meta.url).pathname, '../../../data/json/store-state-list.json');
 const stateList: string[] = JSON.parse(readFileSync(stateListPath, 'utf8'));
 
-/**
- * @fileoverview stateの値を使用する時に "State" という接尾辞をつけることを強制するESLintルール
- * @type {RuleModule}
- */
 export const storeStateSuffix: RuleModule = {
   meta: {
     type: 'suggestion',
@@ -73,21 +80,12 @@ export const storeStateSuffix: RuleModule = {
      * @returns {string} - プロパティ名（Identifierの場合）
      */
     function getPropertyName(node: Node): string {
-      if (node.type === 'Identifier') {
+      if (isIdentifier(node)) {
         return node.name;
-      } else if (node.type === 'AssignmentPattern' && node.left.type === 'Identifier') {
+      } else if (isAssignmentPattern(node) && isIdentifier(node.left)) {
         return node.left.name;
       }
       return '';
-    }
-
-    /**
-     * プロパティが Property 型かどうかを判定する型ガード関数
-     * @param {Property | RestElement} prop - チェックするプロパティ
-     * @returns {prop is Property} - Property 型であれば true を返す
-     */
-    function isPropertyNode(prop: Property | RestElement): prop is Property {
-      return prop?.type === 'Property';
     }
 
     /**
@@ -95,9 +93,9 @@ export const storeStateSuffix: RuleModule = {
      * @param {VariableDeclarator} node - チェックするASTノード
      */
     function checkVariableDeclaratorForStateSuffix(node: VariableDeclarator) {
-      if (isStoreToRefsCall(node) && node.id.type === 'ObjectPattern') {
+      if (isStoreToRefsCall(node) && isObjectPattern(node.id)) {
         node.id.properties.forEach((prop) => {
-          if (isPropertyNode(prop)) {
+          if (isProperty(prop)) {
             checkPropertyWithStateSuffix(prop);
           }
         });

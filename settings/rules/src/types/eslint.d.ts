@@ -10,6 +10,8 @@ type MemberExpression = TSESTree.MemberExpression;
 type ASTNodeType = TSESTree.AST_NODE_TYPES;
 type Property = TSESTree.Property;
 type RestElement = TSESTree.RestElement;
+type ObjectPattern = TSESTree.ObjectPattern;
+type AssignmentPattern = TSESTree.AssignmentPattern;
 
 type RuleListener = TSESLint.RuleListener;
 
@@ -25,4 +27,6 @@ export type {
   ASTNodeType,
   Property,
   RestElement,
+  ObjectPattern,
+  AssignmentPattern,
 };
