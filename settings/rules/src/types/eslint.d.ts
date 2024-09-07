@@ -8,6 +8,8 @@ type FunctionDeclaration = TSESTree.FunctionDeclaration;
 type CallExpression = TSESTree.CallExpression;
 type MemberExpression = TSESTree.MemberExpression;
 type ASTNodeType = TSESTree.AST_NODE_TYPES;
+type Property = TSESTree.Property;
+type RestElement = TSESTree.RestElement;
 
 type RuleListener = TSESLint.RuleListener;
 
@@ -21,4 +23,6 @@ export type {
   MemberExpression,
   RuleListener,
   ASTNodeType,
+  Property,
+  RestElement,
 };
