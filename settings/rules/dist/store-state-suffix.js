@@ -15,7 +15,6 @@ export const storeStateSuffix = {
     type: 'suggestion',
     docs: {
       description: 'stateの値を使用する時は "State" という接尾辞をつける',
-      recommended: 'recommended',
     },
     fixable: 'code',
     messages: {

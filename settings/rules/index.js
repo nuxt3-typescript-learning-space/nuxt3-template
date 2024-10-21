@@ -1,4 +1,3 @@
-import { reactiveValueSuffix } from './dist/reactive-value-suffix.js';
 import { storeStateSuffix } from './dist/store-state-suffix.js';
 
 const plugin = {
@@ -8,7 +7,6 @@ const plugin = {
   },
   rules: {
     'store-state-suffix': storeStateSuffix,
-    'reactive-value-suffix': reactiveValueSuffix,
   },
 };
 export default plugin;
