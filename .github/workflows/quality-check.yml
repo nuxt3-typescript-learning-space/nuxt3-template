@@ -49,6 +49,7 @@ jobs:
 
   eslint:
     runs-on: ubuntu-latest
+    needs: type-check
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
