@@ -2,6 +2,7 @@ import prettierConfig from 'eslint-config-prettier';
 import globals from 'globals';
 import withNuxt from './.nuxt/eslint.config.mjs';
 import eslintCustomRulesPlugin from './settings/rules/index.js';
+import eslintReactiveValueSuffix from 'eslint-plugin-reactive-value-suffix';
 
 export default withNuxt({
   ignores: ['.cz-config.cts', 'prettier.config.mjs', 'eslint.config.mjs', 'settings/rules/**/*'],
@@ -15,7 +16,10 @@ export default withNuxt({
       ...globals.node,
     },
   },
-  plugins: { 'coding-rules': eslintCustomRulesPlugin },
+  plugins: {
+    'coding-rules': eslintCustomRulesPlugin,
+    'reactive-value-suffix': eslintReactiveValueSuffix,
+  },
   rules: {
     'no-console': 'warn',
     'vue/multi-word-component-names': 'off',
@@ -43,7 +47,7 @@ export default withNuxt({
       },
     ],
     'coding-rules/store-state-suffix': 'error',
-    'coding-rules/reactive-value-suffix': [
+    'reactive-value-suffix/suffix': [
       'error',
       {
         /**
