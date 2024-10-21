@@ -19,6 +19,10 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "convert": "pnpm dlx vite-node settings/data/convert.ts",
+    "ci:typecheck": "pnpm dlx nuxi typecheck .",
+    "ci:test": "vitest",
+    "ci:lint": "eslint .",
+    "ci:format": "prettier --check .",
     "predev": "pnpm run convert",
     "prepare": "husky"
   },
