@@ -126,7 +126,6 @@ export const reactiveValueSuffix: RuleModule = {
     type: 'problem',
     docs: {
       description: 'リアクティブな値に対して`.value`をつけてアクセスすることを強制するカスタムルール',
-      recommended: 'recommended',
     },
     schema: [
       {
