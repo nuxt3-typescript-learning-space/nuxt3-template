@@ -2,12 +2,10 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import Index from '@/features/sample/components/Index.vue';
 import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
 import type { TestingPinia } from '@pinia/testing';
-import type { VueWrapper } from '@vue/test-utils'; // VueWrapper 型のインポート
 
 describe('src/features/sample/components/Index.vue', () => {
   let pinia: TestingPinia;
   let sampleStore: ReturnType<typeof useSampleStore>;
-  let wrapper: VueWrapper<ReturnType<typeof mountSuspendedComponent>>; // wrapperを後で破棄するための変数
 
   beforeEach(() => {
     pinia = bindTestingPinia();
@@ -17,9 +15,6 @@ describe('src/features/sample/components/Index.vue', () => {
   });
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.unmount(); // wrapperインスタンスの破棄
-    }
     vi.resetAllMocks();
   });
 
@@ -28,7 +23,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<h1></h1>',
     };
     const stubs = { Title };
-    wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
+    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
     expect(wrapper.findComponent(Title).exists()).toBe(true);
   });
 
@@ -37,7 +32,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<button></button>',
     };
     const stubs = { Button };
-    wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
+    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
     const incrementButton = wrapper.findAllComponents(Button)[0];
     const decrementButton = wrapper.findAllComponents(Button)[1];
 
@@ -52,7 +47,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<button></button>',
     };
     const stubs = { Button };
-    wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
+    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
     const incrementButton = wrapper.findAllComponents(Button)[0];
     await incrementButton.trigger('click');
     expect(sampleStore.count).toBe(1);
@@ -63,7 +58,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<button></button>',
     };
     const stubs = { Button };
-    wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
+    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
     const decrementButton = wrapper.findAllComponents(Button)[1];
     await decrementButton.trigger('click');
     expect(sampleStore.count).toBe(-1);
@@ -75,7 +70,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<button></button>',
     };
     const stubs = { CounterDisplay };
-    wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
+    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
     expect(wrapper.findComponent(CounterDisplay).props('count')).toBe(sampleStore.count);
   });
 });
