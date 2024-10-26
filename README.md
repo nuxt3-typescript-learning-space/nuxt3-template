@@ -47,7 +47,7 @@ src
 │   │   └── title.ts
 │   └── tsconfig.json
 ├── store                         # 状態管理（Pinia）用のディレクトリ
-│   └── counterStore.ts
+│   └── sampleStore.ts
 ├── test                          # テスト用のディレクトリ
 │   ├── e2e                       # E2Eテスト用のディレクトリ
 │   ├── integration               # 統合テスト用のディレクトリ

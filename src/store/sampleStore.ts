@@ -1,9 +1,15 @@
+import type { TitleApi } from '@/server/api/title';
+
 type State = {
+  title?: string;
+  isFetching: boolean;
   count: number;
 };
 
-export const useCounterStore = defineStore('counter', {
+export const useSampleStore = defineStore('sample', {
   state: (): State => ({
+    title: '',
+    isFetching: false,
     count: 0,
   }),
   getters: {
@@ -27,6 +33,13 @@ export const useCounterStore = defineStore('counter', {
     },
   },
   actions: {
+    async fetchTitle() {
+      const { data, status } = await useFetch<TitleApi>('api/title');
+      const title = data.value?.title || 'No title available';
+      const isFetching = status.value === 'pending';
+      this.title = title;
+      this.isFetching = isFetching;
+    },
     increment() {
       this.count++;
     },

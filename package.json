@@ -11,15 +11,15 @@
     "test:coverage": "vitest --coverage",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "lint:rules": "pnpm dlx @eslint/config-inspector@latest",
+    "lint:rules": "npx @eslint/config-inspector@latest",
     "format:check": "prettier . --check",
     "format:fix": "prettier . --write",
     "lint-and-format": "pnpm run lint:fix && pnpm run format:fix",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "convert": "pnpm dlx vite-node settings/data/convert.ts",
-    "ci:typecheck": "pnpm dlx nuxi typecheck .",
+    "convert": "npx vite-node settings/data/convert.ts",
+    "ci:typecheck": "npx nuxi typecheck .",
     "ci:test": "vitest",
     "ci:lint": "eslint .",
     "ci:format": "prettier --check .",
@@ -45,6 +45,7 @@
     "@nuxt/eslint": "^0.6.0",
     "@nuxt/test-utils": "^3.14.4",
     "@nuxtjs/tailwindcss": "^6.12.2",
+    "@pinia/testing": "^0.1.6",
     "@types/eslint": "^8.56.12",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/estree": "^1.0.6",
@@ -78,10 +79,10 @@
   "lint-staged": {
     "**/*.{js,ts,vue}": [
       "pnpm convert",
-      "pnpm dlx eslint --fix"
+      "npx eslint --fix"
     ],
-    "**/*.{js,ts,vue,json}": "pnpm dlx prettier --write",
-    "**/*.{ts,vue}": "pnpm dlx nuxi typecheck ."
+    "**/*.{js,ts,vue,json}": "npx prettier --write",
+    "**/*.{ts,vue}": "npx nuxi typecheck ."
   },
   "config": {
     "commitizen": {

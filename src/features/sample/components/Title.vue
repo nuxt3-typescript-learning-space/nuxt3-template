@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import type { TitleApi } from '@/server/api/title';
+import { useSampleStore } from '@/store/sampleStore';
 
-const { data, status } = await useFetch<TitleApi>('/api/title');
+const sampleStore = useSampleStore();
+const { isFetching: isFetchingState, title: titleState } = storeToRefs(sampleStore);
+const { fetchTitle } = sampleStore;
 
-const isFetching = computed(() => status.value === 'pending');
-const title = computed(() => data.value?.title || 'No title available');
+await fetchTitle();
 </script>
 <template>
-  <template v-if="isFetching">
+  <template v-if="isFetchingState">
     <p>Loading...</p>
   </template>
   <template v-else>
-    <h1>{{ title }}</h1>
+    <h1>{{ titleState }}</h1>
   </template>
 </template>
