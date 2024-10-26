@@ -34,22 +34,11 @@ export const useSampleStore = defineStore('sample', {
   },
   actions: {
     async fetchTitle() {
-      try {
-        this.isFetching = true;
-        const { data, error } = await useFetch<TitleApi>('api/title');
-
-        if (error.value) {
-          throw new Error('タイトルの取得に失敗しました');
-        }
-
-        this.title = data.value?.title || 'タイトルがありません';
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(error);
-        this.title = 'エラーが発生しました';
-      } finally {
-        this.isFetching = false;
-      }
+      const { data, status } = await useFetch<TitleApi>('api/title');
+      const title = data.value?.title || 'No title available';
+      const isFetching = status.value === 'pending';
+      this.title = title;
+      this.isFetching = isFetching;
     },
     increment() {
       this.count++;
