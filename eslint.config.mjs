@@ -23,8 +23,11 @@ export default withNuxt([
     },
     rules: {
       'no-console': 'warn',
-      'vue/html-self-closing': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/ban-types': 'off',
       'vue/multi-word-component-names': 'off',
+      'vue/no-multiple-template-root': 'off',
+      'vue/html-self-closing': 'off',
       'import/order': [
         'warn',
         {
