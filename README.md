@@ -17,59 +17,79 @@ pnpm dev
 ## ディレクトリ構造の例
 
 ```bash
-src
-├── assets                        # 画像やCSSなどの静的ファイル用のディレクトリ
-│   ├── css                       # CSSファイル用のディレクトリ
-│   │   └── tailwind.css          # TailwindCSSの設定ファイル
-│   └── image                     # 画像ファイル用のディレクトリ
-├── components                    # 共通のコンポーネント用のディレクトリ
-│   ├── layout                    # レイアウト用のコンポーネント用のディレクトリ
-│   └── ui                        # UIコンポーネント用のディレクトリ
-│       └── button                # ボタンコンポーネント用のディレクトリ
-│           ├── Button.vue
-│           └── index.ts
-├── composables                   # コンポーザブル関数用のディレクトリ
-├── features                      # 各ページごとの機能用のディレクトリ
-│   └── sample                    # サンプルページ用のディレクトリ
-│       ├── api                   # サンプルページ固有のAPI呼び出し用のディレクトリ
-│       └── components            # サンプルページ固有のコンポーネント用のディレクトリ
-│           ├── CounterDisplay.vue
-│           ├── Index.vue
-│           └── Title.vue
-├── lib                           # ライブラリに依存した関数用のディレクトリ
-│   └── tailwind.ts
-├── pages                         # ルーティングページ用のディレクトリ
-│   ├── index.vue
-│   └── sample                    # サンプルページ用のディレクトリ
-│       └── index.vue
-├── server                        # サーバーサイドの処理用のディレクトリ
-│   ├── api                       # サーバーサイドのAPI用のディレクトリ
-│   │   └── title.ts
-│   └── tsconfig.json
-├── store                         # 状態管理（Pinia）用のディレクトリ
-│   └── sampleStore.ts
-├── test                          # テスト用のディレクトリ
-│   ├── e2e                       # E2Eテスト用のディレクトリ
-│   ├── integration               # 統合テスト用のディレクトリ
-│   └── unit                      # ユニットテスト用のディレクトリ
-│       └── lib
-│           ├── sample.spec.ts
-│           └── tailwind.spec.ts
-├── types                         # 型定義用のディレクトリ
-└── utils                         # ユーティリティ関数用のディレクトリ
-    └── sample.ts
-
+src/
+├── assets/                 # 静的リソース
+│   ├── css/               # グローバルCSS、Tailwind設定
+│   └── image/             # 画像ファイル
+│
+├── components/            # コンポーネント
+│   ├── features/          # 機能単位のコンポーネント
+│   │   └── sample/        # 機能固有のコンポーネント
+│   ├── layout/           # レイアウトコンポーネント（ヘッダー、フッターなど）
+│   └── ui/               # 共通UIコンポーネント
+│       └── button/       # 汎用的なUIパーツ
+│
+├── composables/          # 再利用可能なロジック
+│   ├── useAuth.ts        # 認証関連のロジック
+│   └── useForm.ts        # フォーム関連のロジック
+│
+├── constants/            # 定数定義
+│   ├── config.ts         # アプリケーション設定
+│   ├── routes.ts         # ルート定義
+│   └── messages.ts       # メッセージ定義
+│
+├── lib/                  # 外部ライブラリの設定
+│   └── tailwind.ts       # Tailwindの設定
+│
+├── middleware/           # ルートミドルウェア
+│   ├── auth.ts           # 認証ミドルウェア
+│   └── logger.ts         # ロギングミドルウェア
+│
+├── pages/                # ページコンポーネント
+│   └── sample/           # 機能単位のページ
+│
+├── public/               # 静的ファイル
+│   └── favicon.ico       # ファビコン
+│
+├── server/               # サーバーサイド処理
+│   └── api/              # APIエンドポイント
+│
+├── services/             # 外部サービスとの通信
+│   ├── api.ts            # APIクライアント
+│
+├── store/                # 状態管理
+│   └── sample/           # 機能単位のストア
+│
+├── test/                 # テストファイル
+│   ├── e2e/              # E2Eテスト
+│   ├── integration/      # 統合テスト
+│   └── unit/             # ユニットテスト
+│       ├── components/   # コンポーネントのテスト
+│       ├── lib/          # ライブラリのテスト
+│       ├── store/        # ストアのテスト
+│       └── utils/        # ユーティリティのテスト
+│
+├── types/                # 型定義
+│   ├── components/      # コンポーネントの型
+│   ├── services/        # APIクライアントの型
+│   └── store/           # storeの型
+│
+└── utils/                # ユーティリティ関数
+    ├── format.ts         # フォーマット用関数
+    ├── validation.ts     # バリデーション関数
+    └── helpers.ts        # その他のヘルパー関数
 ```
 
-## GitHub Actionsによる(半)自動テストの実行方法について
+## GitHub Actionsについて
 
-このリポジトリでは、mainブランチへのPRが作成された際に、GitHub Actionsによるテストが実行されます。
+mainブランチに対してPRを作成すると、静的解析とテスト、ビルドが実行されます。
 
-### 注意事項
+1. 型チェック
+2. ESLint/Prettierの静的解析
+3. テスト
+4. ビルド
 
-- mainブランチ以外へのPRに対しては、GitHub Actionsによるテストは実行されません。
-- 過度にテストを実行すると、GitHub Actionsの無料枠を使い切る可能性があります。詳しくは[こちら](https://docs.github.com/ja/actions/reference/usage-limits-billing)をご確認ください。
-  - もし心配な場合は、GitHub Actionsの設定を変更してください。
+成功したかどうかはプルリクエストのステータスを御覧ください。
 
 ## 実装されているESLintカスタムルール
 

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import Index from '@/features/sample/components/Index.vue';
+import Index from '@/components/features/sample/Index.vue';
 import { useSampleStore } from '@/store/sampleStore';
 import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
 import type { TestingPinia } from '@pinia/testing';

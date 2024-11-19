@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Index from '@/features/sample/components/Index.vue';
+import Index from '@/components/features/sample/Index.vue';
 
 useHead({
   title: 'サンプルページ',

@@ -1,6 +1,6 @@
 import { flushPromises } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import Title from '@/features/sample/components/Title.vue';
+import Title from '@/components/features/sample/Title.vue';
 import { useSampleStore } from '@/store/sampleStore';
 import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
 import type { TestingPinia } from '@pinia/testing';
