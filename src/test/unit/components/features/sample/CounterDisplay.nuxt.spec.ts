@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import CounterDisplay from '@/features/sample/components/CounterDisplay.vue';
+import CounterDisplay from '@/components/features/sample/CounterDisplay.vue';
 import { bindTestingPinia, mountComponent } from '@/test/testHelper';
 import type { TestingPinia } from '@pinia/testing';
 
