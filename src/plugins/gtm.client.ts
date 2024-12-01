@@ -27,8 +27,6 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const gtmID = config.public.GTM_ID as string;
   if (!gtmID) {
-    // eslint-disable-next-line no-console
-    console.warn('GTM_ID is not configured');
     return;
   }
   if (!isValidGtmID(gtmID)) {
@@ -40,8 +38,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   const gtm = createGtm({
     id: gtmID,
     defer: true,
-    enabled: process.env.NODE_ENV === 'production',
-    debug: process.env.NODE_ENV === 'development',
     loadScript: true,
   });
 
