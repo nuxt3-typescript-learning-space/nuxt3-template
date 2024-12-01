@@ -3,11 +3,13 @@ import globals from 'globals';
 import withNuxt from './.nuxt/eslint.config.mjs';
 import eslintCustomRulesPlugin from './settings/rules/index.js';
 import eslintReactiveValueSuffix from 'eslint-plugin-reactive-value-suffix';
+import vueEslintParser from 'vue-eslint-parser';
 
 export default withNuxt([
   {
     ignores: ['.cz-config.cts', 'prettier.config.mjs', 'eslint.config.mjs', 'settings/rules/**/*'],
     languageOptions: {
+      parser: vueEslintParser,
       parserOptions: {
         parser: '@typescript-eslint/parser',
         project: './tsconfig.json',
