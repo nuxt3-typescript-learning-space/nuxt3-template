@@ -4,7 +4,6 @@
 
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import type { TSESLint } from '@typescript-eslint/utils';
 import {
   isStoreToRefsCall,
   hasStateNameWithoutStateSuffix,
@@ -14,6 +13,7 @@ import {
   isObjectPattern,
 } from './helpers/astHelpers.js';
 import type { VariableDeclarator, Property, Node } from './types/eslint.js';
+import type { TSESLint } from '@typescript-eslint/utils';
 
 type MessageId = 'requireStateSuffix';
 type RuleModule = TSESLint.RuleModule<MessageId>;

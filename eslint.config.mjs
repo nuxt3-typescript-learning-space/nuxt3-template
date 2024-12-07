@@ -8,7 +8,7 @@ import eslintCustomRulesPlugin from './settings/rules/index.js';
 
 export default withNuxt([
   {
-    ignores: ['.cz-config.cts', 'prettier.config.mjs', 'settings/rules/**/*'],
+    ignores: ['.cz-config.cts'],
     languageOptions: {
       parser: vueEslintParser,
       parserOptions: {

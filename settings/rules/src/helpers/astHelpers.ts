@@ -1,6 +1,6 @@
-import { addToList } from '../utils/arrayUtils.js';
-import { COMPOSABLES_FUNCTION_PATTERN, REACTIVE_FUNCTIONS } from '../constants/constant.js';
 import { TSESTree } from '@typescript-eslint/utils';
+import { COMPOSABLES_FUNCTION_PATTERN, REACTIVE_FUNCTIONS } from '../constants/constant.js';
+import { addToList } from '../utils/arrayUtils.js';
 import type {
   Node,
   ArrowFunctionExpression,
