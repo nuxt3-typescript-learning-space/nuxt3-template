@@ -3,6 +3,7 @@ import globals from 'globals';
 import withNuxt from './.nuxt/eslint.config.mjs';
 import eslintCustomRulesPlugin from './settings/rules/index.js';
 import eslintReactiveValueSuffix from 'eslint-plugin-reactive-value-suffix';
+import tsEslintParser from '@typescript-eslint/parser';
 import vueEslintParser from 'vue-eslint-parser';
 
 export default withNuxt([
@@ -11,7 +12,7 @@ export default withNuxt([
     languageOptions: {
       parser: vueEslintParser,
       parserOptions: {
-        parser: '@typescript-eslint/parser',
+        parser: tsEslintParser,
         project: './tsconfig.json',
       },
       globals: {
