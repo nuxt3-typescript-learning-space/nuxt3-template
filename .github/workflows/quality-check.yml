@@ -6,7 +6,9 @@ on:
       - main
     types:
       - opened
+      - reopened
       - synchronize
+      - ready_for_review
   workflow_dispatch:
 
 env:
@@ -15,6 +17,7 @@ env:
 
 jobs:
   type-check:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
