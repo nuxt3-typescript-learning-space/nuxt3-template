@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "build:custom-lint": "tsc --project settings/rules/tsconfig.json",
+    "build:custom-rule": "pnpm custom-rule:tsc && pnpm custom-rule:format",
     "dev": "nuxt dev -o",
     "test": "vitest",
     "test:ui": "vitest --ui --coverage",
@@ -12,6 +12,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:rules": "npx @eslint/config-inspector@latest",
+    "custom-rule:tsc": "tsc --project settings/rules/tsconfig.json",
+    "custom-rule:format": "prettier --write settings/rules/dist/**",
     "format:check": "prettier . --check",
     "format:fix": "prettier . --write",
     "lint-and-format": "pnpm lint:fix && pnpm format:fix",
