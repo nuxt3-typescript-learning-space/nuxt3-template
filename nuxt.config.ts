@@ -14,6 +14,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       GTM_ID: process.env.GTM_ID,
+      API_URL: process.env.API_URL,
     },
   },
   shadcn: {
