@@ -3,9 +3,9 @@ import { useSampleStore } from '@/store/sampleStore';
 
 const sampleStore = useSampleStore();
 const { isFetching: isFetchingState, title: titleState } = storeToRefs(sampleStore);
-const { fetchTitle } = sampleStore;
+const { updateTitle } = sampleStore;
 
-await fetchTitle();
+await updateTitle();
 </script>
 <template>
   <template v-if="isFetchingState">
