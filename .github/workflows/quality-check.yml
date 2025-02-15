@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: 22.11.0
-  PNPM_VERSION: 9.13.2
+  NODE_VERSION: 22.14.0
+  PNPM_VERSION: 9.15.5
 
 jobs:
   type-check:
