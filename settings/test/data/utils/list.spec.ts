@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { updateList } from '../../../data/utils/list';
+import { updateList } from '~~/settings/data/utils/list';
 
 describe('settings/data/utils/list.ts', () => {
   describe('updateList', () => {

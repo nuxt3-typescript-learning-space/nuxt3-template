@@ -1,6 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime';
-import { createTestingPinia, type TestingPinia } from '@pinia/testing';
+import { createTestingPinia } from '@pinia/testing';
 import { mount, RouterLinkStub } from '@vue/test-utils';
+import type { TestingPinia } from '@pinia/testing';
 import type { Component } from 'vue';
 
 type InitialState = Record<string, unknown>;

@@ -1,12 +1,12 @@
 import fs from 'fs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { fileExists, readFile, writeFile, safeReadFile, safeWriteFile } from '../../../data/utils/file';
-import { handleError } from '../../../data/utils/logger';
 import type { MockedFunction } from 'vitest';
+import { fileExists, readFile, writeFile, safeReadFile, safeWriteFile } from '~~/settings/data/utils/file';
+import { handleError } from '~~/settings/data/utils/logger';
 
 // fs モジュールのモック
 vi.mock('fs');
-vi.mock('../../../data/utils/logger', () => ({
+vi.mock('~~/settings/data/utils/logger', () => ({
   handleError: vi.fn(),
 }));
 
