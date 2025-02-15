@@ -5,12 +5,37 @@ import type { TestingPinia } from '@pinia/testing';
 import type { Component } from 'vue';
 
 type InitialState = Record<string, unknown>;
+type TestWrapper<T extends Component> = ReturnType<typeof mount<T>>;
+type SuspendedTestWrapper<T extends Component> = Awaited<ReturnType<typeof mountSuspended<T>>>;
+type MountOptions = {
+  attachTo?: Element | string;
+  data?: Record<string, unknown>;
+  props?: Record<string, unknown>;
+  shallow?: boolean;
+  stubs?: Record<string, Component | boolean>;
+  mocks?: Record<string, unknown>;
+  options?: Record<string, unknown>;
+};
+
+const DEFAULT_STUBS = {
+  NuxtLink: RouterLinkStub,
+} as const;
+
+const DEFAULT_MOUNT_OPTIONS: MountOptions = {
+  attachTo: undefined,
+  data: {},
+  props: {},
+  shallow: false,
+  stubs: DEFAULT_STUBS,
+  mocks: {},
+  options: {},
+} as const;
 
 /**
  * テスト用のPiniaストアを設定します。
  *
- * @param {InitialState} [initialState={}] - ストアの初期状態を指定するオブジェクト。
- * @returns {TestingPinia} - テスト用のPiniaインスタンスを返します。
+ * @param - ストアの初期状態を指定するオブジェクト。
+ * @returns - テスト用のPiniaインスタンスを返します。
  */
 export function bindTestingPinia(initialState: InitialState = {}): TestingPinia {
   return createTestingPinia({
@@ -19,13 +44,29 @@ export function bindTestingPinia(initialState: InitialState = {}): TestingPinia 
   });
 }
 
-export function mountComponent<Props extends Record<string, unknown>>(
+/**
+ * Vueコンポーネントをテスト用にマウントします
+ *
+ * @param component - テスト対象のVueコンポーネント
+ * @param testingPinia - テスト用のPiniaインスタンス
+ * @param options - マウントオプション
+ * @returns マウントされたコンポーネントのラッパー
+ *
+ * @example
+ * const wrapper = mountComponent(MyComponent, pinia, {
+ *   props: { message: 'Hello' }
+ * });
+ */
+export function mountComponent(
   component: Component,
   testingPinia: TestingPinia,
-  { attachTo = undefined, data = {}, props = {} as Props, shallow = false, stubs = {}, mocks = {}, options = {} } = {},
-) {
+  options: Partial<MountOptions> = DEFAULT_MOUNT_OPTIONS,
+): TestWrapper<typeof component> {
+  const mergedOptions = { ...DEFAULT_MOUNT_OPTIONS, ...options };
+  const { data, attachTo, props, shallow, stubs, mocks, options: additionalOptions } = mergedOptions;
+
   return mount(component, {
-    ...options,
+    ...additionalOptions,
     data: () => data,
     attachTo,
     props,
@@ -33,7 +74,7 @@ export function mountComponent<Props extends Record<string, unknown>>(
     global: {
       plugins: [testingPinia],
       stubs: {
-        NuxtLink: RouterLinkStub,
+        ...DEFAULT_STUBS,
         ...stubs,
       },
       mocks: { ...mocks },
@@ -41,13 +82,29 @@ export function mountComponent<Props extends Record<string, unknown>>(
   });
 }
 
-export async function mountSuspendedComponent<Props extends Record<string, unknown>>(
+/**
+ * Vueコンポーネントをテスト用に非同期マウントします
+ *
+ * @param component - テスト対象のVueコンポーネント
+ * @param testingPinia - テスト用のPiniaインスタンス
+ * @param options - マウントオプション
+ * @returns マウントされたコンポーネントのラッパー
+ *
+ * @example
+ * const wrapper = await mountSuspendedComponent(MyComponent, pinia, {
+ *   props: { message: 'Hello' }
+ * });
+ */
+export async function mountSuspendedComponent(
   component: Component,
   testingPinia: TestingPinia,
-  { attachTo = undefined, data = {}, props = {} as Props, shallow = false, stubs = {}, mocks = {}, options = {} } = {},
-) {
+  options: Partial<MountOptions> = DEFAULT_MOUNT_OPTIONS,
+): Promise<SuspendedTestWrapper<typeof component>> {
+  const mergedOptions = { ...DEFAULT_MOUNT_OPTIONS, ...options };
+  const { data, attachTo, props, shallow, stubs, mocks, options: additionalOptions } = mergedOptions;
+
   return await mountSuspended(component, {
-    ...options,
+    ...additionalOptions,
     data: () => data,
     attachTo,
     props,
@@ -55,7 +112,7 @@ export async function mountSuspendedComponent<Props extends Record<string, unkno
     global: {
       plugins: [testingPinia],
       stubs: {
-        NuxtLink: RouterLinkStub,
+        ...DEFAULT_STUBS,
         ...stubs,
       },
       mocks: { ...mocks },
