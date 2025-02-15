@@ -1,31 +1,31 @@
 import { globSync } from 'glob';
 import { describe, it, expect, vi } from 'vitest';
-import { updateGetterValues } from '../../data/updateGetterValues';
-import { GETTERS_REGEX_PATTERN, STORE_DIR, STORE_GETTERS_LIST_PATH } from '../../data/utils/constant';
-import { writeJsonFile } from '../../data/utils/json';
-import { updateList } from '../../data/utils/list';
-import { logMessage } from '../../data/utils/logger';
-import { extractValuesByRegex, getUniqueValues } from '../../data/utils/regex';
 import type { MockedFunction } from 'vitest';
+import { updateGetterValues } from '~~/settings/data/updateGetterValues';
+import { GETTERS_REGEX_PATTERN, STORE_DIR, STORE_GETTERS_LIST_PATH } from '~~/settings/data/utils/constant';
+import { writeJsonFile } from '~~/settings/data/utils/json';
+import { updateList } from '~~/settings/data/utils/list';
+import { logMessage } from '~~/settings/data/utils/logger';
+import { extractValuesByRegex, getUniqueValues } from '~~/settings/data/utils/regex';
 
 // モジュールのモックを設定します
 vi.mock('glob', () => ({
   globSync: vi.fn(),
 }));
 
-vi.mock('../../data/utils/json', () => ({
+vi.mock('~~/settings/data/utils/json', () => ({
   writeJsonFile: vi.fn(),
 }));
 
-vi.mock('../../data/utils/list', () => ({
+vi.mock('~~/settings/data/utils/list', () => ({
   updateList: vi.fn(),
 }));
 
-vi.mock('../../data/utils/logger', () => ({
+vi.mock('~~/settings/data/utils/logger', () => ({
   logMessage: vi.fn(),
 }));
 
-vi.mock('../../data/utils/regex', () => ({
+vi.mock('~~/settings/data/utils/regex', () => ({
   extractValuesByRegex: vi.fn(),
   getUniqueValues: vi.fn(),
 }));

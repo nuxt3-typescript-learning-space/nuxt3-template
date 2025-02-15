@@ -1,22 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { STATE_REGEX_PATTERN, GETTERS_REGEX_PATTERN } from '../../../data/utils/constant';
-import { safeReadFile } from '../../../data/utils/file';
-import { logMessage } from '../../../data/utils/logger';
+import type { MockedFunction } from 'vitest';
+import { STATE_REGEX_PATTERN, GETTERS_REGEX_PATTERN } from '~~/settings/data/utils/constant';
+import { safeReadFile } from '~~/settings/data/utils/file';
+import { logMessage } from '~~/settings/data/utils/logger';
 import {
   extractContentByRegex,
   filterStatePropertyName,
   extractValuesByRegex,
   filterGetterPropertyName,
   getUniqueValues,
-} from '../../../data/utils/regex'; // 実際のファイルパスに置き換えてください
-import type { MockedFunction } from 'vitest';
+} from '~~/settings/data/utils/regex'; // 実際のファイルパスに置き換えてください
 
-vi.mock('../../../data/utils/file', () => ({
+vi.mock('~~/settings/data/utils/file', () => ({
   safeReadFile: vi.fn(),
   writeJsonFile: vi.fn(),
 }));
 
-vi.mock('../../../data/utils/logger', () => ({
+vi.mock('~~/settings/data/utils/logger', () => ({
   logMessage: vi.fn(),
 }));
 describe('settings/data/utils/regex.ts', () => {

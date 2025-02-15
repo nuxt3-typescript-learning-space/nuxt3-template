@@ -1,17 +1,17 @@
 import { format } from 'prettier';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { safeWriteFile } from '../../../data/utils/file';
-import { writeJsonFile } from '../../../data/utils/json';
-import { handleError } from '../../../data/utils/logger';
 import type { MockedFunction } from 'vitest';
+import { safeWriteFile } from '~~/settings/data/utils/file';
+import { writeJsonFile } from '~~/settings/data/utils/json';
+import { handleError } from '~~/settings/data/utils/logger';
 
 vi.mock('prettier', () => ({
   format: vi.fn(),
 }));
-vi.mock('../../../data/utils/file', () => ({
+vi.mock('~~/settings/data/utils/file', () => ({
   safeWriteFile: vi.fn(),
 }));
-vi.mock('../../../data/utils/logger', () => ({
+vi.mock('~~/settings/data/utils/logger', () => ({
   handleError: vi.fn(),
 }));
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { logMessage, handleError } from '../../../data/utils/logger';
+import { logMessage, handleError } from '~~/settings/data/utils/logger';
 
 describe('settings/data/utils/logger.ts', () => {
   beforeEach(() => {

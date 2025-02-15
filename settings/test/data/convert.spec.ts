@@ -1,20 +1,20 @@
 import { describe, it, expect, vi } from 'vitest';
-import { updateStoreListData } from '../../data/convert';
-import { updateGetterValues } from '../../data/updateGetterValues';
-import { updateStateValues } from '../../data/updateStateValues';
-import { logMessage } from '../../data/utils/logger';
 import type { MockedFunction } from 'vitest';
+import { updateStoreListData } from '~~/settings/data/convert';
+import { updateGetterValues } from '~~/settings/data/updateGetterValues';
+import { updateStateValues } from '~~/settings/data/updateStateValues';
+import { logMessage } from '~~/settings/data/utils/logger';
 
 // モジュールのモックを設定します
-vi.mock('../../data/updateGetterValues', () => ({
+vi.mock('~~/settings/data/updateGetterValues', () => ({
   updateGetterValues: vi.fn(),
 }));
 
-vi.mock('../../data/updateStateValues', () => ({
+vi.mock('~~/settings/data/updateStateValues', () => ({
   updateStateValues: vi.fn(),
 }));
 
-vi.mock('../../data/utils/logger', () => ({
+vi.mock('~~/settings/data/utils/logger', () => ({
   logMessage: vi.fn(),
 }));
 
