@@ -9,7 +9,7 @@ import {
   extractValuesByRegex,
   filterGetterPropertyName,
   getUniqueValues,
-} from '~~/settings/data/utils/regex'; // 実際のファイルパスに置き換えてください
+} from '~~/settings/data/utils/regex';
 
 vi.mock('~~/settings/data/utils/file', () => ({
   safeReadFile: vi.fn(),
