@@ -26,7 +26,7 @@
     "postinstall": "nuxt prepare",
     "convert": "pnpm dlx vite-node settings/data/convert.ts",
     "ci:typecheck": "pnpm dlx nuxi typecheck .",
-    "ci:test": "vitest --coverage",
+    "ci:test": "vitest --coverage --silent",
     "ci:lint": "eslint .",
     "ci:format": "prettier --check .",
     "predev": "pnpm convert",
