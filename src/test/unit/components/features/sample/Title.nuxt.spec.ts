@@ -12,7 +12,7 @@ describe('src/features/sample/components/Title.vue', () => {
   beforeEach(() => {
     pinia = bindTestingPinia();
     sampleStore = useSampleStore();
-    sampleStore.fetchTitle = vi.fn();
+    sampleStore.updateTitle = vi.fn();
   });
 
   afterEach(() => {
@@ -34,8 +34,8 @@ describe('src/features/sample/components/Title.vue', () => {
     expect(wrapper.find('h1').text()).toBe('test');
   });
 
-  test('コンポーネントマウント時にfetchTitleが呼び出されること', async () => {
+  test('コンポーネントマウント時にupdateTitleが呼び出されること', async () => {
     await mountSuspendedComponent(Title, pinia);
-    expect(sampleStore.fetchTitle).toHaveBeenCalled();
+    expect(sampleStore.updateTitle).toHaveBeenCalled();
   });
 });
