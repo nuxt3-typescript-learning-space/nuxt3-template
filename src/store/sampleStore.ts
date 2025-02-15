@@ -1,7 +1,7 @@
-import type { TitleApi } from '@/server/api/title';
+import { fetchTitle } from '@/services/get/sampleServices';
 
 type State = {
-  title?: string;
+  title: string;
   isFetching: boolean;
   count: number;
 };
@@ -33,18 +33,26 @@ export const useSampleStore = defineStore('sample', {
     },
   },
   actions: {
-    async fetchTitle() {
-      const { data, status } = await useFetch<TitleApi>('api/title');
-      const title = data.value?.title || 'No title available';
-      const isFetching = status.value === 'pending';
-      this.title = title;
-      this.isFetching = isFetching;
-    },
     increment() {
       this.count++;
     },
     decrement() {
       this.count--;
+    },
+    async updateTitle() {
+      try {
+        this.isFetching = true;
+        const response = await fetchTitle();
+        const { title } = response;
+        this.title = title;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log('Error:', error);
+        this.title = 'No title available';
+        throw error;
+      } finally {
+        this.isFetching = false;
+      }
     },
   },
 });

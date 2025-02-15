@@ -1,8 +1,16 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import Index from '@/components/features/sample/Index.vue';
+import { fetchTitle } from '@/services/get/sampleServices';
 import { useSampleStore } from '@/store/sampleStore';
 import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
 import type { TestingPinia } from '@pinia/testing';
+
+vi.mock('@/services/get/sampleServices', () => ({
+  fetchTitle: vi.fn().mockResolvedValue({
+    ok: true,
+    json: () => Promise.resolve({ title: 'Mocked Title' }),
+  }),
+}));
 
 describe('src/features/sample/components/Index.vue', () => {
   let pinia: TestingPinia;
@@ -13,6 +21,8 @@ describe('src/features/sample/components/Index.vue', () => {
     sampleStore = useSampleStore();
     vi.spyOn(sampleStore, 'increment');
     vi.spyOn(sampleStore, 'decrement');
+    sampleStore.updateTitle = vi.fn().mockResolvedValue({ title: 'Mocked Title' });
+    vi.mocked(fetchTitle).mockClear();
   });
 
   afterEach(() => {
@@ -21,7 +31,7 @@ describe('src/features/sample/components/Index.vue', () => {
 
   test('Titleコンポーネントがレンダリングされているか', async () => {
     const Title = {
-      template: '<h1></h1>',
+      template: '<h1>Mocked Title</h1>',
     };
     const stubs = { Title };
     const wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
