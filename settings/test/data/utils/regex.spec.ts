@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, type MockedFunction } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { STATE_REGEX_PATTERN, GETTERS_REGEX_PATTERN } from '../../../data/utils/constant';
 import { safeReadFile } from '../../../data/utils/file';
 import { logMessage } from '../../../data/utils/logger';
@@ -9,6 +9,7 @@ import {
   filterGetterPropertyName,
   getUniqueValues,
 } from '../../../data/utils/regex'; // 実際のファイルパスに置き換えてください
+import type { MockedFunction } from 'vitest';
 
 vi.mock('../../../data/utils/file', () => ({
   safeReadFile: vi.fn(),

@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { Primitive, type PrimitiveProps } from 'radix-vue';
+import { Primitive } from 'radix-vue';
 import { cn } from '@/lib/tailwind';
-import { type ButtonVariants, buttonVariants } from '.';
+import { buttonVariants } from '.';
+import type { ButtonVariants } from '.';
+import type { PrimitiveProps } from 'radix-vue';
 import type { HTMLAttributes } from 'vue';
 
 interface Props extends PrimitiveProps {
