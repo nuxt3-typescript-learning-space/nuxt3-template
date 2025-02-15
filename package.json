@@ -2,6 +2,10 @@
   "name": "nuxt-app",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "22.14.0",
+    "pnpm": "9.15.5"
+  },
   "scripts": {
     "build": "nuxt build",
     "build:custom-rule": "pnpm custom-rule:tsc && pnpm custom-rule:format",
