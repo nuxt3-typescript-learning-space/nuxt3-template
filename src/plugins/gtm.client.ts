@@ -13,7 +13,7 @@ type GtmIdType = string | string[] | GtmIdContainer[];
  * GTM IDのバリデーションパターン
  * GTM-XXXXXXX or G-XXXXXXX の形式
  */
-const GTM_ID_PATTERN = /^(GTM|G)-[0-9A-Z]+$/;
+const GTM_ID_PATTERN = /^(GTM|G)-[0-9A-Z]{6,12}$/;
 
 /**
  * GTM IDコンテナオブジェクトの型ガード
