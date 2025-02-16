@@ -1,11 +1,7 @@
-import { afterEach, describe, expect, suite, test, vi } from 'vitest';
+import { describe, expect, suite, test } from 'vitest';
 import { isValidGtmId } from '@/plugins/gtm.client';
 
 suite('src/plugins/gtm.client.ts', () => {
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('isValidGtmId', () => {
     test('正しい形式のGTM IDを検証できること', () => {
       expect(isValidGtmId('GTM-123')).toBe(true);
