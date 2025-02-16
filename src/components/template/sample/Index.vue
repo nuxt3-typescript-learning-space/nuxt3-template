@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import CounterDisplay from '@/components/features/sample/CounterDisplay.vue';
+import Title from '@/components/features/sample/Title.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { useSampleStore } from '@/store/sampleStore';
-import CounterDisplay from './CounterDisplay.vue';
-import Title from './Title.vue';
 
 const sampleStore = useSampleStore();
 const { count: countState } = storeToRefs(sampleStore);
