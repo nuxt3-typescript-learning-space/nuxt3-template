@@ -1,10 +1,14 @@
-## このリポジトリについて
+# パッと始めるNuxt3用テンプレート
 
-**パッと始めるNuxt3用テンプレート**
+## 概要
 
-## 開発環境の立ち上げ方
+Nuxt3 Composition APIと TypeScript, Hono を使用した開発のためのテンプレートプロジェクトです。
 
-このプロジェクトはパッケージマネージャとして`pnpm`を使用しています。
+## 開発環境のセットアップ
+
+### 必要要件
+
+このテンプレートは以下のバージョンで動作確認されています。
 
 ```json
 {
@@ -15,22 +19,38 @@
 }
 ```
 
+### インストール
+
+パッケージマネージャとして `pnpm` を使用しています。
+[Volta](https://docs.volta.sh/guide/getting-started)がインストールされていると便利です。
+
 ```bash
 pnpm install
 ```
+
+### 開発サーバーの起動
 
 ```bash
 pnpm dev
 ```
 
-これで開発環境が立ち上がります。
+注意: 初期セットアップ後、サンプルファイルの削除をお忘れなく。
 
-sampleファイルがいくつか用意されているため、それらを削除することを忘れないでください :)
+- src/components/features/sample
+- src/components/template/sample
+- src/pages/sample
+- src/services/get/sampleServices.ts
+- src/store/sampleStore.ts
+- src/test/unit/components/features/sample
+- src/test/unit/store/sampleStore.spec.ts
+- src/test/unit/utils/sample.spec.ts
+- src/utils/sample.ts
 
-## ディレクトリ構造の例
+## プロジェクト構成
 
-お好きなディレクトリ構成で開発してください。
-srcディレクトリ配下のディレクトリの役割は以下です。
+### ディレクトリ構成
+
+srcディレクトリ配下の構成は以下の通りです:
 
 ```bash
 src/
@@ -85,39 +105,42 @@ src/
 └── utils/                  # 純粋なJavaScript/TypeScriptユーティリティを定義
 ```
 
-## GitHub Actionsについて
+## CI/CD
 
-mainブランチに対してPRを作成すると、静的解析とテスト、ビルドが実行されます。
+### GitHub Actions
 
-1. 型チェック
-2. ESLint/Prettierの静的解析
-3. テスト
-4. ビルド
+mainブランチへのプルリクエスト作成時に、以下の自動チェックが実行されます。
 
-成功したかどうかはプルリクエストのステータスを御覧ください。
+1. TypeScriptの型チェック
+2. ESLint/Prettierによるコードフォーマットチェック
+3. テスト実行
+4. ビルド確認
 
-## 実装されているESLintカスタムルール
+チェック結果はプルリクエストのステータスで確認できます。
 
-ご自身の環境にあわせてカスタムルールを`off`にしてください。
+## ESLintカスタムルール
 
-### settings/rules/store-state-suffix.js
+### 実装済みルール
 
-storeに定義されているstateで、`storeToRefs`を使用して分割代入をする時、
+#### store-state-suffix
+
+Piniaで定義されたstateをstoreToRefsを使用して参照するとき、接尾辞に `State` という文字列の使用を強制するルールです。
 
 ```ts
+// ❌ 非推奨
 const { foo } = storeToRefs(fooStore);
-```
 
-とするのではなく
-
-```ts
+// ✅ 推奨
 const { foo: fooState } = storeToRefs(fooStore);
 ```
 
-というように、state名に`State`という接尾辞を付けることを強制したルール。
-（gettersもstoreToRefsを使用して分割代入するので、区別できるように）
+※ gettersもstoreToRefsで取得するため、区別を明確にする目的があります。
 
-### ルールの追加方法
+### 新規ルールの追加方法
 
-`settings/rules/src`配下にルール用のファイルを作成し、`pnpm build:custom-lint`したものが`settings/rules/dist`に出力されます。
-それを`settings/rules/index.js`で読み込み、`eslint.config.mjs`で有効にしてください。
+1. `settings/rules/src` にルール定義ファイルを作成（例: `store-state-suffix.ts`）
+2. `pnpm build:custom-rule`を実行して、`settings/rules/dist`に出力
+3. `settings/rules/index.js` でルールを読み込み
+4. `eslint.config.mjs`で有効化
+
+ご自身のプロジェクトに合わせて、必要に応じてルールをoffにしてください。
