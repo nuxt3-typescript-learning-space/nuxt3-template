@@ -18,7 +18,7 @@ const GTM_ID_PATTERN = /^(GTM|G)-[0-9A-Z]+$/;
 /**
  * GTM IDコンテナオブジェクトの型ガード
  */
-const isGtmContainer = (item: unknown): item is GtmIdContainer => {
+export const isGtmContainer = (item: unknown): item is GtmIdContainer => {
   return typeof item === 'object' && item !== null && 'id' in item && typeof (item as GtmIdContainer).id === 'string';
 };
 
@@ -35,7 +35,7 @@ const isGtmContainer = (item: unknown): item is GtmIdContainer => {
  * isValidGtmId(['GTM-A1B2C3D'])    // => true
  * isValidGtmId([{ id: 'G-A1B2C3D' }]) // => true
  */
-const isValidGtmId = (id: GtmIdType): boolean => {
+export const isValidGtmId = (id: GtmIdType): boolean => {
   // 文字列の場合
   if (typeof id === 'string') {
     return GTM_ID_PATTERN.test(id);
