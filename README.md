@@ -1,124 +1,159 @@
-## このリポジトリについて
+# パッと始めるNuxt3用テンプレート
 
-**パッと始めるNuxt3用テンプレート**
+## 概要
 
-## 開発環境の立ち上げ方
+Nuxt3 Composition APIと TypeScript, Hono を使用した開発のためのテンプレートプロジェクトです。
+
+## 開発環境のセットアップ
+
+### 必要要件
+
+このテンプレートは以下のバージョンで動作確認されています。
+
+```json
+{
+  "engines": {
+    "node": "22.14.0",
+    "pnpm": "9.15.5"
+  }
+}
+```
+
+### インストール
+
+パッケージマネージャとして `pnpm` を使用しています。
+[Volta](https://docs.volta.sh/guide/getting-started)がインストールされていると便利です。
 
 ```bash
 pnpm install
 ```
 
+### 開発サーバーの起動
+
 ```bash
 pnpm dev
 ```
 
-もし`pnpm`以外を使用する場合は、`pnpm-lock.yaml`を削除してください。
+注意: 初期セットアップ後、サンプルファイルの削除をお忘れなく。
 
-## ディレクトリ構造の例
+- src/components/features/sample
+- src/components/template/sample
+- src/pages/sample
+- src/services/get/sampleServices.ts
+- src/store/sampleStore.ts
+- src/test/unit/components/features/sample
+- src/test/unit/store/sampleStore.spec.ts
+- src/test/unit/utils/sample.spec.ts
+- src/utils/sample.ts
+
+## プロジェクト構成
+
+### ディレクトリ構成
+
+srcディレクトリ配下の構成は以下の通りです:
 
 ```bash
 src/
-├── assets/                 # 静的リソース
-│   ├── css/               # グローバルCSS、Tailwind設定
-│   └── image/             # 画像ファイル
+├── app.vue                  # アプリケーションのルートコンポーネント
+│                           # すべてのページで共有されるレイアウトを定義可能
 │
-├── components/            # コンポーネント
-│   ├── features/          # 機能単位のコンポーネント
-│   │   └── sample/        # 機能固有のコンポーネント
-│   ├── layout/           # レイアウトコンポーネント（ヘッダー、フッターなど）
-│   └── ui/               # 共通UIコンポーネント
-│       └── button/       # 汎用的なUIパーツ
+├── assets/                 # 画像やCSSなどの静的ファイルを定義するディレクトリ
+│                           # ビルド時に処理・最適化される
 │
-├── composables/          # 再利用可能なロジック
-│   ├── useAuth.ts        # 認証関連のロジック
-│   └── useForm.ts        # フォーム関連のロジック
+├── components/             # 再利用可能なVueコンポーネントを定義するディレクトリ
 │
-├── constants/            # 定数定義
-│   ├── config.ts         # アプリケーション設定
-│   ├── routes.ts         # ルート定義
-│   └── messages.ts       # メッセージ定義
+├── composables/            # Vue 3 Composition APIを使用した再利用可能なロジックを定義
+│                           # useXxxの形式で命名することが推奨される
 │
-├── lib/                  # 外部ライブラリの設定
-│   └── tailwind.ts       # Tailwindの設定
+├── constants/              # アプリケーション全体で使用される定数を定義
+│                           # 環境変数以外の静的な値を管理
 │
-├── middleware/           # ルートミドルウェア
-│   ├── auth.ts           # 認証ミドルウェア
-│   └── logger.ts         # ロギングミドルウェア
+├── layouts/                # ページレイアウトを定義するディレクトリ
+│                           # default.vueが基本レイアウトとして使用される
 │
-├── pages/                # ページコンポーネント
-│   └── sample/           # 機能単位のページ
+├── lib/                    # サードパーティライブラリに依存するロジックを定義
+│                           # ライブラリのラッパーやカスタム設定を配置
 │
-├── public/               # 静的ファイル
-│   └── favicon.ico       # ファビコン
+├── middleware/             # ページ遷移時に実行されるミドルウェアを定義
+│                           # グローバルミドルウェア（全ルート対象）
+│                           # ページミドルウェア（特定ページ対象）の2種類が利用可能
 │
-├── server/               # サーバーサイド処理
-│   └── api/              # APIエンドポイント
+├── pages/                  # ページコンポーネントを定義するディレクトリ
+│                           # ファイルベースのルーティングにより自動的にルートが生成される
+│                           # 動的ルーティングは[id].vueのような命名で実現
 │
-├── services/             # 外部サービスとの通信
-│   ├── api.ts            # APIクライアント
+├── plugins/                # Vueインスタンス生成時に実行されるプラグインを定義
+│                           # グローバルコンポーネント、関数、変数の登録に使用
 │
-├── store/                # 状態管理
-│   └── sample/           # 機能単位のストア
+├── public/                 # 静的ファイルを配置するディレクトリ
+│                           # favicon.ico, robots.txt等
+│                           # ビルド時に処理されず、そのまま/ルートで配信される
 │
-├── test/                 # テストファイル
-│   ├── e2e/              # E2Eテスト
-│   ├── integration/      # 統合テスト
-│   └── unit/             # ユニットテスト
-│       ├── components/   # コンポーネントのテスト
-│       ├── lib/          # ライブラリのテスト
-│       ├── store/        # ストアのテスト
-│       └── utils/        # ユーティリティのテスト
+├── server/                 # サーバーサイドのロジックを定義
+│                           # APIエンドポイント、サーバーミドルウェア等
+│                           # api/ディレクトリ内のファイルは自動的にAPIエンドポイントとして扱われる
 │
-├── types/                # 型定義
-│   ├── components/      # コンポーネントの型
-│   ├── services/        # APIクライアントの型
-│   └── store/           # storeの型
+├── services/               # APIコールを行うロジックを定義するディレクトリ
 │
-└── utils/                # ユーティリティ関数
-    ├── format.ts         # フォーマット用関数
-    ├── validation.ts     # バリデーション関数
-    └── helpers.ts        # その他のヘルパー関数
+├── store/                  # Piniaを使用した状態管理を定義
+│
+├── test/                   # テストファイルを配置
+│                           # ユニットテスト、E2Eテスト等
+│
+├── types/                  # TypeScriptの型定義ファイルを配置
+│
+└── utils/                  # 純粋なJavaScript/TypeScriptユーティリティを定義
 ```
 
-## GitHub Actionsについて
+## CI/CD
 
-mainブランチに対してPRを作成すると、静的解析とテスト、ビルドが実行されます。
+### GitHub Actions
 
-1. 型チェック
-2. ESLint/Prettierの静的解析
-3. テスト
-4. ビルド
+mainブランチへのプルリクエスト作成時に、以下の自動チェックが実行されます。
 
-成功したかどうかはプルリクエストのステータスを御覧ください。
+1. TypeScriptの型チェック
+2. ESLint/Prettierによるコードフォーマットチェック
+3. テスト実行
+4. ビルド確認
 
-## 実装されているESLintカスタムルール
+チェック結果はプルリクエストのステータスで確認できます。
 
-ご自身の環境にあわせてカスタムルールを`off`にしてください。
+## git commit の方法
 
-### settings/rules/reactive-value-suffix.js
+このプロジェクトでは、コミットメッセージの体裁を整えるため、commitlintを導入しています。
 
-リアクティブな値に対して、`.value`を使用してアクセスすることを強制したルール。
-なお、composablesなどの関数（`useFoo`などのuseから始まる関数）の引数に対してはこのルールはスキップされる。
-また、composablesから分割代入された関数（正確には分割代入されたすべての値）に対してもこのルールはスキップされる。
+`git commit`コマンドを実行すると、コミットメッセージのprefixをCLI上で選択することができます。
 
-### settings/rules/store-state-suffix.js
+コミットメッセージのprefixをカスタマイズする場合は、以下のファイルを編集してください。
 
-storeに定義されているstateで、`storeToRefs`を使用して分割代入をする時、
+- .cz-config.cts
+- commitlint.config.cts
+
+**注意**: CLIの対話形式でコミットメッセージの体裁が決まるため、sourceTreeなどのGUIツールを使用する場合は想定されていません。
+
+## ESLintカスタムルール
+
+### 実装済みルール
+
+#### store-state-suffix
+
+Piniaで定義されたstateをstoreToRefsを使用して参照するとき、接尾辞に `State` という文字列の使用を強制するルールです。
 
 ```ts
+// ❌ 非推奨
 const { foo } = storeToRefs(fooStore);
-```
 
-とするのではなく
-
-```ts
+// ✅ 推奨
 const { foo: fooState } = storeToRefs(fooStore);
 ```
 
-というように、state名に`State`という接尾辞を付けることを強制したルール。
-（gettersもstoreToRefsを使用して分割代入するので、区別できるように）
+※ gettersもstoreToRefsで取得するため、区別を明確にする目的があります。
 
-### ルールの追加方法
+### 新規ルールの追加方法
 
-`settings/rules/src`配下にルール用のファイルを作成し、`pnpm build:custom-lint`したものが`settings/rules/dist`に出力されます。
-それを`settings/rules/index.js`で読み込み、`eslint.config.mjs`で有効にしてください。
+1. `settings/rules/src` にルール定義ファイルを作成（例: `store-state-suffix.ts`）
+2. `pnpm build:custom-rule`を実行して、`settings/rules/dist`に出力
+3. `settings/rules/index.js` でルールを読み込み
+4. `eslint.config.mjs`で有効化
+
+ご自身のプロジェクトに合わせて、必要に応じてルールをoffにしてください。

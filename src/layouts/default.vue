@@ -1,5 +1,5 @@
 <template>
-  <main>
-    <NuxtPage />
+  <main id="nuxt-default-layout">
+    <slot />
   </main>
 </template>
