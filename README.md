@@ -2,7 +2,22 @@
 
 ## 概要
 
-Nuxt3 Composition APIと TypeScript, Hono を使用した開発のためのテンプレートプロジェクトです。
+このプロジェクトは以下の技術スタックを使用した開発のためのテンプレートプロジェクトです。
+
+| カテゴリ                     | 技術                    | 備考                                                 |
+| ---------------------------- | ----------------------- | ---------------------------------------------------- |
+| フロントエンドフレームワーク | Nuxt3 (Composition API) | nuxt@3.15.4 vue@3.5.13, vue-router@4.5.0             |
+| 状態管理ライブラリ           | Pinia                   | Pinia@3.0.1 @pinia/nuxt@0.10.1, @pinia/testing@1.0.0 |
+| 言語                         | TypeScript/JavaScript   | typescript@5.7.3                                     |
+| バックエンド(BFF)            | Hono                    | hono@4.7.1                                           |
+| スタイリング                 | TailwindCSS             | shadcn-nuxt@0.11.3, class-variance-authority@0.7.1   |
+| テスティングフレームワーク   | Vitest                  | happy-dom@16.8.1 jsdom@26.0.0                        |
+| コード品質                   | ESLint/Prettier         | カスタムルール対応                                   |
+| Git フロー                   | husky/lint-staged       | commitlint@19.7.1, commitizen@4.3.1                  |
+| パッケージマネージャ         | pnpm                    | pnpm@9.15.5                                          |
+| ランタイム                   | Node.js                 | node@22.14.0                                         |
+| UI コンポーネント            | radix-vue               | radix-vue@1.9.14, shadcn-nuxt@0.11.3                 |
+| アイコン                     | Lucide                  | lucide-vue-next@0.475.0                              |
 
 ## 開発環境のセットアップ
 
@@ -21,8 +36,11 @@ Nuxt3 Composition APIと TypeScript, Hono を使用した開発のためのテ�
 
 ### インストール
 
-パッケージマネージャとして `pnpm` を使用しています。
-[Volta](https://docs.volta.sh/guide/getting-started)がインストールされていると便利です。
+このプロジェクトでは、パッケージマネージャとして `pnpm` を使用しています。
+
+また、Node.jsのバージョン管理ツールとして[Volta](https://docs.volta.sh/guide/getting-started)を採用しています。
+
+まだ `pnpm` がインストールされていない場合は、[インストール](https://pnpm.io/ja/9.x/installation#volta%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8B)を行ってから以下の手順を実行してください。
 
 ```bash
 pnpm install
