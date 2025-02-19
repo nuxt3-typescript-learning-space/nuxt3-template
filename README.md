@@ -4,20 +4,24 @@
 
 このプロジェクトは以下の技術スタックを使用した開発のためのテンプレートプロジェクトです。
 
-| カテゴリ                     | 技術                    | 備考                                                 |
-| ---------------------------- | ----------------------- | ---------------------------------------------------- |
-| フロントエンドフレームワーク | Nuxt3 (Composition API) | nuxt@3.15.4 vue@3.5.13, vue-router@4.5.0             |
-| 状態管理ライブラリ           | Pinia                   | Pinia@3.0.1 @pinia/nuxt@0.10.1, @pinia/testing@1.0.0 |
-| 言語                         | TypeScript/JavaScript   | typescript@5.7.3                                     |
-| バックエンド(BFF)            | Hono                    | hono@4.7.1                                           |
-| スタイリング                 | TailwindCSS             | shadcn-nuxt@0.11.3, class-variance-authority@0.7.1   |
-| テスティングフレームワーク   | Vitest                  | happy-dom@16.8.1 jsdom@26.0.0                        |
-| コード品質                   | ESLint/Prettier         | カスタムルール対応                                   |
-| Git フロー                   | husky/lint-staged       | commitlint@19.7.1, commitizen@4.3.1                  |
-| パッケージマネージャ         | pnpm                    | pnpm@9.15.5                                          |
-| ランタイム                   | Node.js                 | node@22.14.0                                         |
-| UI コンポーネント            | radix-vue               | radix-vue@1.9.14, shadcn-nuxt@0.11.3                 |
-| アイコン                     | Lucide                  | lucide-vue-next@0.475.0                              |
+| カテゴリ                        | 技術                                  |
+| ------------------------------- | ------------------------------------- |
+| フロントエンドフレームワーク    | Nuxt3                                 |
+| 状態管理ライブラリ              | Pinia                                 |
+| 言語                            | TypeScript/JavaScript                 |
+| バックエンドフレームワーク(BFF) | Hono                                  |
+| スタイリング                    | TailwindCSS                           |
+| テスティングフレームワーク      | Vitest (happy-dom, jsdom環境サポート) |
+| コード品質                      | ESLint/Prettier                       |
+| Git hooks                       | husky/lint-staged                     |
+| コミット管理                    | Commitizen/commitlint (gitmoji対応)   |
+| パッケージマネージャ            | pnpm                                  |
+| ランタイム                      | Node.js                               |
+| UI コンポーネントライブラリ     | shadcn-vue/shadcn-nuxt                |
+| アイコン                        | Lucide                                |
+| CI/CD                           | GitHub Actions                        |
+| アナリティクス                  | Google Tag Manager (Vue GTM)          |
+| テーマ                          | カラーモード対応 (@nuxtjs/color-mode) |
 
 ## 開発環境のセットアップ
 
