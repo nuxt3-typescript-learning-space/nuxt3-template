@@ -6,7 +6,7 @@
 
 | カテゴリ                        | 技術                                  |
 | ------------------------------- | ------------------------------------- |
-| フロントエンドフレームワーク    | Nuxt3                                 |
+| フロントエンドフレームワーク    | Nuxt3/Vue3                            |
 | 状態管理ライブラリ              | Pinia                                 |
 | 言語                            | TypeScript/JavaScript                 |
 | バックエンドフレームワーク(BFF) | Hono                                  |
@@ -44,6 +44,8 @@
 
 また、Node.jsのバージョン管理ツールとして[Volta](https://docs.volta.sh/guide/getting-started)を採用しています。
 
+インストールされていない場合は、[インストール](https://docs.volta.sh/guide/getting-started)を行うと便利です。
+
 まだ `pnpm` がインストールされていない場合は、[インストール](https://pnpm.io/ja/9.x/installation#volta%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8B)を行ってから以下の手順を実行してください。
 
 ```bash
@@ -56,17 +58,21 @@ pnpm install
 pnpm dev
 ```
 
-注意: 初期セットアップ後、サンプルファイルの削除をお忘れなく。
-
-- src/components/features/sample
-- src/components/template/sample
-- src/pages/sample
-- src/services/get/sampleServices.ts
-- src/store/sampleStore.ts
-- src/test/unit/components/features/sample
-- src/test/unit/store/sampleStore.spec.ts
-- src/test/unit/utils/sample.spec.ts
-- src/utils/sample.ts
+> [!CAUTION]
+> このリポジトリにはサンプルファイルが追加されています。
+> 開発を開始する前に、不要なファイルを削除してください。
+>
+> - src/components/features/sample
+> - src/components/template/sample
+> - src/pages/sample
+> - src/services/get/sampleServices.ts
+> - src/store/sampleStore.ts
+> - src/test/unit/components/features/sample
+> - src/test/unit/store/sampleStore.spec.ts
+> - src/test/unit/utils/sample.spec.ts
+> - src/utils/sample.ts
+>
+> など
 
 ## プロジェクト構成
 
@@ -84,8 +90,8 @@ src/
 │
 ├── components/             # 再利用可能なVueコンポーネントを定義するディレクトリ
 │
-├── composables/            # Vue 3 Composition APIを使用した再利用可能なロジックを定義
-│                           # useXxxの形式で命名することが推奨される
+├── composables/            # Composition APIを使用した再利用可能なロジックを定義
+│                           # useXxxの形式で命名することが慣習的
 │
 ├── constants/              # アプリケーション全体で使用される定数を定義
 │                           # 環境変数以外の静的な値を管理
@@ -131,7 +137,7 @@ src/
 
 ### GitHub Actions
 
-mainブランチへのプルリクエスト作成時に、以下の自動チェックが実行されます。
+mainもしくはmasterブランチへのプルリクエスト作成時に、以下の自動チェックが実行されます。
 
 1. TypeScriptの型チェック
 2. ESLint/Prettierによるコードフォーマットチェック
@@ -146,12 +152,16 @@ mainブランチへのプルリクエスト作成時に、以下の自動チェ�
 
 `git commit`コマンドを実行すると、コミットメッセージのprefixをCLI上で選択することができます。
 
-コミットメッセージのprefixをカスタマイズする場合は、以下のファイルを編集してください。
+> [!NOTE]
+>
+> コミットメッセージのprefixをカスタマイズする場合は、以下のファイルを編集してください。
+>
+> - .cz-config.cts
+> - commitlint.config.cts
 
-- .cz-config.cts
-- commitlint.config.cts
-
-**注意**: CLIの対話形式でコミットメッセージの体裁が決まるため、sourceTreeなどのGUIツールを使用する場合は想定されていません。
+> [!WARNING]
+>
+> **注意**: CLIの対話形式でコミットメッセージの体裁が決まるため、sourceTreeなどのGUIツールを使用する場合は想定されていません。
 
 ## ESLintカスタムルール
 
