@@ -153,14 +153,12 @@ mainもしくはmasterブランチへのプルリクエスト作成時に、以�
 `git commit`コマンドを実行すると、コミットメッセージのprefixをCLI上で選択することができます。
 
 > [!NOTE]
->
 > コミットメッセージのprefixをカスタマイズする場合は、以下のファイルを編集してください。
 >
 > - .cz-config.cts
 > - commitlint.config.cts
 
 > [!WARNING]
->
 > **注意**: CLIの対話形式でコミットメッセージの体裁が決まるため、sourceTreeなどのGUIツールを使用する場合は想定されていません。
 
 ## ESLintカスタムルール
