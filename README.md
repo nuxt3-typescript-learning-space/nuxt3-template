@@ -4,20 +4,24 @@
 
 このプロジェクトは以下の技術スタックを使用した開発のためのテンプレートプロジェクトです。
 
-| カテゴリ                     | 技術                    | 備考                                                 |
-| ---------------------------- | ----------------------- | ---------------------------------------------------- |
-| フロントエンドフレームワーク | Nuxt3 (Composition API) | nuxt@3.15.4 vue@3.5.13, vue-router@4.5.0             |
-| 状態管理ライブラリ           | Pinia                   | Pinia@3.0.1 @pinia/nuxt@0.10.1, @pinia/testing@1.0.0 |
-| 言語                         | TypeScript/JavaScript   | typescript@5.7.3                                     |
-| バックエンド(BFF)            | Hono                    | hono@4.7.1                                           |
-| スタイリング                 | TailwindCSS             | shadcn-nuxt@0.11.3, class-variance-authority@0.7.1   |
-| テスティングフレームワーク   | Vitest                  | happy-dom@16.8.1 jsdom@26.0.0                        |
-| コード品質                   | ESLint/Prettier         | カスタムルール対応                                   |
-| Git フロー                   | husky/lint-staged       | commitlint@19.7.1, commitizen@4.3.1                  |
-| パッケージマネージャ         | pnpm                    | pnpm@9.15.5                                          |
-| ランタイム                   | Node.js                 | node@22.14.0                                         |
-| UI コンポーネント            | radix-vue               | radix-vue@1.9.14, shadcn-nuxt@0.11.3                 |
-| アイコン                     | Lucide                  | lucide-vue-next@0.475.0                              |
+| カテゴリ                        | 技術                                  |
+| ------------------------------- | ------------------------------------- |
+| フロントエンドフレームワーク    | Nuxt3/Vue3                            |
+| 状態管理ライブラリ              | Pinia                                 |
+| 言語                            | TypeScript/JavaScript                 |
+| バックエンドフレームワーク(BFF) | Hono                                  |
+| スタイリング                    | TailwindCSS                           |
+| テスティングフレームワーク      | Vitest (happy-dom, jsdom環境サポート) |
+| コード品質                      | ESLint/Prettier                       |
+| Git hooks                       | husky/lint-staged                     |
+| コミット管理                    | Commitizen/commitlint (gitmoji対応)   |
+| パッケージマネージャ            | pnpm                                  |
+| ランタイム                      | Node.js                               |
+| UI コンポーネントライブラリ     | shadcn-vue/shadcn-nuxt                |
+| アイコン                        | Lucide                                |
+| CI/CD                           | GitHub Actions                        |
+| アナリティクス                  | Google Tag Manager (Vue GTM)          |
+| テーマ                          | カラーモード対応 (@nuxtjs/color-mode) |
 
 ## 開発環境のセットアップ
 
@@ -40,6 +44,8 @@
 
 また、Node.jsのバージョン管理ツールとして[Volta](https://docs.volta.sh/guide/getting-started)を採用しています。
 
+インストールされていない場合は、[インストール](https://docs.volta.sh/guide/getting-started)を行うと便利です。
+
 まだ `pnpm` がインストールされていない場合は、[インストール](https://pnpm.io/ja/9.x/installation#volta%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8B)を行ってから以下の手順を実行してください。
 
 ```bash
@@ -52,17 +58,21 @@ pnpm install
 pnpm dev
 ```
 
-注意: 初期セットアップ後、サンプルファイルの削除をお忘れなく。
-
-- src/components/features/sample
-- src/components/template/sample
-- src/pages/sample
-- src/services/get/sampleServices.ts
-- src/store/sampleStore.ts
-- src/test/unit/components/features/sample
-- src/test/unit/store/sampleStore.spec.ts
-- src/test/unit/utils/sample.spec.ts
-- src/utils/sample.ts
+> [!CAUTION]
+> このリポジトリにはサンプルファイルが追加されています。
+> 開発を開始する前に、不要なファイルを削除してください。
+>
+> - src/components/features/sample
+> - src/components/template/sample
+> - src/pages/sample
+> - src/services/get/sampleServices.ts
+> - src/store/sampleStore.ts
+> - src/test/unit/components/features/sample
+> - src/test/unit/store/sampleStore.spec.ts
+> - src/test/unit/utils/sample.spec.ts
+> - src/utils/sample.ts
+>
+> など
 
 ## プロジェクト構成
 
@@ -80,8 +90,8 @@ src/
 │
 ├── components/             # 再利用可能なVueコンポーネントを定義するディレクトリ
 │
-├── composables/            # Vue 3 Composition APIを使用した再利用可能なロジックを定義
-│                           # useXxxの形式で命名することが推奨される
+├── composables/            # Composition APIを使用した再利用可能なロジックを定義
+│                           # useXxxの形式で命名することが慣習的
 │
 ├── constants/              # アプリケーション全体で使用される定数を定義
 │                           # 環境変数以外の静的な値を管理
@@ -127,7 +137,7 @@ src/
 
 ### GitHub Actions
 
-mainブランチへのプルリクエスト作成時に、以下の自動チェックが実行されます。
+mainもしくはmasterブランチへのプルリクエスト作成時に、以下の自動チェックが実行されます。
 
 1. TypeScriptの型チェック
 2. ESLint/Prettierによるコードフォーマットチェック
@@ -142,12 +152,17 @@ mainブランチへのプルリクエスト作成時に、以下の自動チェ�
 
 `git commit`コマンドを実行すると、コミットメッセージのprefixをCLI上で選択することができます。
 
-コミットメッセージのprefixをカスタマイズする場合は、以下のファイルを編集してください。
+> [!NOTE]
+> コミットメッセージのprefixをカスタマイズする場合は、以下のファイルを編集してください。
+>
+> - .cz-config.cts
+> - commitlint.config.cts
 
-- .cz-config.cts
-- commitlint.config.cts
+---
 
-**注意**: CLIの対話形式でコミットメッセージの体裁が決まるため、sourceTreeなどのGUIツールを使用する場合は想定されていません。
+> [!WARNING]
+>
+> **注意**: CLIの対話形式でコミットメッセージの体裁が決まるため、sourceTreeなどのGUIツールを使用する場合は想定されていません。
 
 ## ESLintカスタムルール
 
