@@ -159,6 +159,7 @@ mainもしくはmasterブランチへのプルリクエスト作成時に、以�
 > - commitlint.config.cts
 
 > [!WARNING]
+>
 > **注意**: CLIの対話形式でコミットメッセージの体裁が決まるため、sourceTreeなどのGUIツールを使用する場合は想定されていません。
 
 ## ESLintカスタムルール
