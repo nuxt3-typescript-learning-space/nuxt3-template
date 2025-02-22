@@ -1,16 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import Index from '@/components/template/sample/Index.vue';
-import { fetchTitle } from '@/services/get/sampleServices';
 import { useSampleStore } from '@/store/sampleStore';
 import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
 import type { TestingPinia } from '@pinia/testing';
-
-vi.mock('@/services/get/sampleServices', () => ({
-  fetchTitle: vi.fn().mockResolvedValue({
-    ok: true,
-    json: () => Promise.resolve({ title: 'Mocked Title' }),
-  }),
-}));
 
 describe('src/features/sample/components/Index.vue', () => {
   let pinia: TestingPinia;
@@ -19,8 +11,6 @@ describe('src/features/sample/components/Index.vue', () => {
   beforeEach(() => {
     pinia = bindTestingPinia();
     sampleStore = useSampleStore();
-    sampleStore.updateTitle = vi.fn().mockResolvedValue({ title: 'Mocked Title' });
-    vi.mocked(fetchTitle).mockClear();
   });
 
   afterEach(() => {
@@ -30,10 +20,10 @@ describe('src/features/sample/components/Index.vue', () => {
 
   test('Titleコンポーネントがレンダリングされているか', async () => {
     const Title = {
-      template: '<h1>Mocked Title</h1>',
+      template: '<h1></h1>',
     };
     const stubs = { Title };
-    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
+    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs, shallow: true });
     expect(wrapper.findComponent(Title).exists()).toBe(true);
   });
 
@@ -42,7 +32,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<button></button>',
     };
     const stubs = { Button };
-    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
+    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs, shallow: true });
     const incrementButton = wrapper.findAllComponents(Button)[0];
     const decrementButton = wrapper.findAllComponents(Button)[1];
 
@@ -57,7 +47,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<button></button>',
     };
     const stubs = { Button };
-    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
+    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs, shallow: true });
     const incrementButton = wrapper.findAllComponents(Button)[0];
     await incrementButton.trigger('click');
     expect(sampleStore.count).toBe(1);
@@ -68,7 +58,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<button></button>',
     };
     const stubs = { Button };
-    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
+    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs, shallow: true });
     const decrementButton = wrapper.findAllComponents(Button)[1];
     await decrementButton.trigger('click');
     expect(sampleStore.count).toBe(-1);
@@ -80,7 +70,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<button></button>',
     };
     const stubs = { CounterDisplay };
-    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs });
+    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs, shallow: true });
     expect(wrapper.findComponent(CounterDisplay).props('count')).toBe(sampleStore.count);
   });
 });
