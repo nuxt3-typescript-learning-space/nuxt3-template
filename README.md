@@ -268,6 +268,15 @@ describe('TestTargetComponentPath', () => {
       expect(firstButton.exists()).toBe(true);
       expect(secondButton.exists()).toBe(true);
     });
+
+    it('slotsのコンテンツが正しくレンダリングされるか', async () => {
+      const slots = {
+        default: () => h('div', { id: 'slot-test' }, [h('p', 'slot content')]),
+      };
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia, { slots });
+      expect(wrapper.find('#slot-test').exists()).toBe(true);
+      expect(wrapper.find('p').text()).toBe('slot content');
+    });
   });
 
   describe('イベント発火', () => {
