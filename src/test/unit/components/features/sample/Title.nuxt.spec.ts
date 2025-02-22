@@ -1,4 +1,3 @@
-import { flushPromises } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import Title from '@/components/features/sample/Title.vue';
 import { useSampleStore } from '@/store/sampleStore';
@@ -17,12 +16,13 @@ describe('src/features/sample/components/Title.vue', () => {
 
   afterEach(() => {
     vi.resetAllMocks();
+    vi.restoreAllMocks();
   });
 
   test('isFetchingStateがtrueのとき、ローディング文言が表示されること', async () => {
     sampleStore.isFetching = true;
+    sampleStore.title = 'test';
     const wrapper = await mountSuspendedComponent(Title, pinia);
-    await flushPromises();
     expect(wrapper.find('p').text()).toBe('Loading...');
   });
 
@@ -30,7 +30,6 @@ describe('src/features/sample/components/Title.vue', () => {
     sampleStore.isFetching = false;
     sampleStore.title = 'test';
     const wrapper = await mountSuspendedComponent(Title, pinia);
-    await flushPromises();
     expect(wrapper.find('h1').text()).toBe('test');
   });
 

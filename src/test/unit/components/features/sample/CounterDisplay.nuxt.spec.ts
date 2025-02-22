@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import CounterDisplay from '@/components/features/sample/CounterDisplay.vue';
-import { bindTestingPinia, mountComponent } from '@/test/testHelper';
+import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
 import type { TestingPinia } from '@pinia/testing';
 
 describe('src/features/sample/components/CounterDisplay.vue', () => {
@@ -12,11 +12,12 @@ describe('src/features/sample/components/CounterDisplay.vue', () => {
 
   afterEach(() => {
     vi.resetAllMocks();
+    vi.restoreAllMocks();
   });
 
-  test('コンポーネントに渡されたPropsが適切に表示されていること', () => {
+  test('コンポーネントに渡されたPropsが適切に表示されていること', async () => {
     const testProps = { count: 999 };
-    const wrapper = mountComponent(CounterDisplay, pinia, { props: testProps });
+    const wrapper = await mountSuspendedComponent(CounterDisplay, pinia, { props: testProps });
     expect(wrapper.find('div').text()).toBe('counter: 999');
   });
 });
