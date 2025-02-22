@@ -12,6 +12,7 @@ describe('src/features/sample/components/CounterDisplay.vue', () => {
 
   afterEach(() => {
     vi.resetAllMocks();
+    vi.restoreAllMocks();
   });
 
   test('コンポーネントに渡されたPropsが適切に表示されていること', () => {

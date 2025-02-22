@@ -16,6 +16,7 @@ describe('src/features/sample/components/Title.vue', () => {
 
   afterEach(() => {
     vi.resetAllMocks();
+    vi.restoreAllMocks();
   });
 
   test('isFetchingStateがtrueのとき、ローディング文言が表示されること', async () => {

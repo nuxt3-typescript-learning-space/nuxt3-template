@@ -19,14 +19,13 @@ describe('src/features/sample/components/Index.vue', () => {
   beforeEach(() => {
     pinia = bindTestingPinia();
     sampleStore = useSampleStore();
-    vi.spyOn(sampleStore, 'increment');
-    vi.spyOn(sampleStore, 'decrement');
     sampleStore.updateTitle = vi.fn().mockResolvedValue({ title: 'Mocked Title' });
     vi.mocked(fetchTitle).mockClear();
   });
 
   afterEach(() => {
     vi.resetAllMocks();
+    vi.restoreAllMocks();
   });
 
   test('Titleコンポーネントがレンダリングされているか', async () => {
