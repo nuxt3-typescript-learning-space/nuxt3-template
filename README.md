@@ -213,6 +213,7 @@ describe('TestTargetComponentPath', () => {
 
   afterEach(() => {
     vi.resetAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('マウント時の初期表示', () => {
