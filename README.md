@@ -190,3 +190,144 @@ const { foo: fooState } = storeToRefs(fooStore);
 4. `eslint.config.mjs`で有効化
 
 ご自身のプロジェクトに合わせて、必要に応じてルールをoffにしてください。
+
+## テスト実装の雛形
+
+### コンポーネントテスト実装例
+
+```ts
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import TestTargetComponent from '@/components/your/test/target/component/path.vue';
+import { useTestStore } from '@/store/your/test/store/path';
+import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
+import type { TestingPinia } from '@pinia/testing';
+
+describe('TestTargetComponentPath', () => {
+  let pinia: TestingPinia;
+  let testStore: ReturnType<typeof useTestStore>;
+
+  beforeEach(() => {
+    pinia = bindTestingPinia();
+    testStore = useTestStore();
+  });
+
+  afterEach(() => {
+    vi.resetAllMocks();
+    vi.restoreAllMocks();
+  });
+
+  describe('マウント時の初期表示', () => {
+    it('コンポーネントが正しくマウントされるか', async () => {
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia);
+      expect(wrapper.exists()).toBe(true);
+    });
+  });
+
+  describe('Props', () => {
+    it('propsの値が正しく表示されるか', async () => {
+      const testProps = {
+        propsName: 'propsValue',
+      };
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia, { props: testProps });
+      expect(wrapper.exists()).toBe(true);
+      expect(wrapper.find('div').text()).toBe('propsValue');
+    });
+  });
+
+  describe('子コンポーネントの表示', () => {
+    it('子コンポーネントが正しくレンダリングされるか', async () => {
+      const ChildComponent = {
+        template: '<div></div>',
+      };
+      const stubs = { ChildComponent };
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia, { stubs });
+      expect(wrapper.findComponent(ChildComponent).exists()).toBe(true);
+    });
+
+    it('子コンポーネントに正しいpropsが渡されるか', async () => {
+      const ChildComponent = {
+        props: ['test'],
+        template: '<div></div>',
+      };
+      const stubs = { ChildComponent };
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia, { stubs });
+      expect(wrapper.findComponent(ChildComponent).props('test')).toBe('期待値');
+    });
+
+    it('複数ある同じ名前の子コンポーネントがレンダリングされているか', async () => {
+      const ButtonComponent = {
+        template: '<button></button>',
+      };
+      const stubs = { ButtonComponent };
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia, { stubs });
+
+      const buttons = wrapper.findAllComponents(ButtonComponent);
+      const firstButton = buttons[0];
+      const secondButton = buttons[1];
+
+      expect(firstButton.exists()).toBe(true);
+      expect(secondButton.exists()).toBe(true);
+    });
+
+    it('slotsのコンテンツが正しくレンダリングされるか', async () => {
+      const slots = {
+        default: () => h('div', { id: 'slot-test' }, [h('p', 'slot content')]),
+      };
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia, { slots });
+      expect(wrapper.find('#slot-test').exists()).toBe(true);
+      expect(wrapper.find('p').text()).toBe('slot content');
+    });
+  });
+
+  describe('イベント発火', () => {
+    it('ボタンクリック時にclickイベントが発火するか', async () => {
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia);
+      const target = wrapper.find('button');
+      await target.trigger('click');
+      expect(wrapper.emitted('click')).toHaveBeenCalledOnce();
+    });
+
+    it('ボタンクリック時にclickイベントが1回emitされる', async () => {
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia);
+      const target = wrapper.find('button');
+      await target.trigger('click');
+      expect(wrapper.emitted('click')).toHaveLength(1);
+    });
+  });
+
+  describe('Store', () => {
+    it('storeの値が正しく表示されるか', async () => {
+      testStore.testValue = 'test';
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia);
+      expect(wrapper.find('div').text()).toBe('test');
+    });
+
+    it('storeの値が変更されたときに表示が更新されるか', async () => {
+      testStore.testValue = 'test';
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia);
+      expect(wrapper.find('div').text()).toBe('test');
+      testStore.testValue = 'updated';
+      expect(wrapper.find('div').text()).toBe('updated');
+    });
+
+    it('storeの関数が正しく呼び出されるか', async () => {
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia);
+      const target = wrapper.find('button');
+      await target.trigger('click');
+      expect(testStore.testFunction).toHaveBeenCalled();
+    });
+  });
+});
+```
+
+### `vi.spyOn()` と `vi.fn()` の使い分け
+
+`vi.spyOn()` を使用するケース：
+
+- 既存の実装を保持したまま関数の呼び出しを監視したい場合
+- `mockImplementation()`で一時的に実装を上書きする場合も可能
+
+`vi.fn()` を使用するケース：
+
+- 完全に新しいモック実装に置き換えたい場合
+- テストケースごとに異なる振る舞いを定義したい場合
