@@ -13,6 +13,7 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public: {
+      NUXT_ENV: process.env.NUXT_ENV,
       GTM_ID: process.env.GTM_ID,
       API_URL: process.env.API_URL,
     },
