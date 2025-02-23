@@ -11,14 +11,14 @@ const honoApp = new Hono().basePath('/api').get('/title', async (context) => {
 export type APIResponseType = typeof honoApp;
 
 export default defineEventHandler(async (event) => {
+  const { $logger } = useNuxtApp();
   try {
     const request = toWebRequest(event);
     const response = await honoApp.fetch(request);
 
     return response;
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('API Error:', error);
+    $logger.error('API Error:', error);
 
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       status: 500,

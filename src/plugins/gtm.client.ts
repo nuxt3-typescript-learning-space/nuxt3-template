@@ -65,6 +65,7 @@ export const isValidGtmId = (id: GtmIdType): boolean => {
 };
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const { $logger } = useNuxtApp();
   const config = useRuntimeConfig();
   const gtmId: GtmIdType | undefined = config.public.GTM_ID;
 
@@ -75,8 +76,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   // GTM IDが無効な場合は警告を出して早期リターン
   if (!isValidGtmId(gtmId)) {
-    // eslint-disable-next-line no-console
-    console.warn('[GTM Plugin] Invalid GTM_ID format:', JSON.stringify(gtmId));
+    $logger.warn('[GTM Plugin] Invalid GTM_ID format:', JSON.stringify(gtmId));
     return;
   }
 
