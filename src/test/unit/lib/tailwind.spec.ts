@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { cn } from '@/lib/tailwind';
+import { cn } from '@/lib/utils';
 
-describe('app/lib/tailwind.ts', () => {
+describe('app/lib/utils.ts', () => {
   it('偽値を無視する', () => {
     const result = cn('btn', '', null, undefined, false, 'btn-primary');
     expect(result).toBe('btn btn-primary');
