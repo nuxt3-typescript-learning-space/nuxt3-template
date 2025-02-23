@@ -18,8 +18,14 @@ export default defineEventHandler(async (event) => {
 
     return response;
   } catch (error) {
-    $logger.error('API Error:', error);
-
+    $logger.error(
+      {
+        err: error,
+        path: event.path,
+        method: event.method,
+      },
+      'API Error occurred',
+    );
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },

@@ -76,7 +76,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   // GTM IDが無効な場合は警告を出して早期リターン
   if (!isValidGtmId(gtmId)) {
-    $logger.warn('[GTM Plugin] Invalid GTM_ID format:', JSON.stringify(gtmId));
+    $logger.warn({ plugin: 'GTM', gtmId }, 'Invalid GTM_ID format');
     return;
   }
 
