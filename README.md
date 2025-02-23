@@ -69,7 +69,7 @@ API_URL=http://localhost:3000/ # Hono Clientが使用するベースURL
 
 ```bash
 NUXT_ENV=production
-API_URL=http://your-production-domain.com/ # デプロイ先のドメインを設定
+API_URL=https://your-production-domain.com/ # デプロイ先のドメインを設定
 ```
 
 ローカル開発から始めると思うので、ひとまず `.env` ファイルの作成のみで良いです。
