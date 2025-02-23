@@ -52,6 +52,34 @@
 pnpm install
 ```
 
+### 環境変数の設定
+
+1. プロジェクトのルートディレクトリに`.env`ファイルを作成してください。
+
+2. 環境に応じて以下の値を設定してください（`env.example`を参考に）：
+
+開発環境の場合（`.env`）:
+
+```bash
+NUXT_ENV=development
+API_URL=http://localhost:3000/ # Hono Clientが使用するベースURL
+```
+
+本番環境の場合（`.env.prod`）:
+
+```bash
+NUXT_ENV=production
+API_URL=http://your-production-domain.com/ # デプロイ先のドメインを設定
+```
+
+ローカル開発から始めると思うので、ひとまず `.env` ファイルの作成のみで良いです。
+
+> [!NOTE]
+>
+> - API_URLには、開発環境ではローカルホストを、本番環境では実際のデプロイ先のドメインを設定してください。
+> - この設定は、クライアントサイドでのHono ClientによるAPI呼び出しに使用されます。
+> - APIのベースパスは /api に設定されており、例えば /api/title のようなエンドポイントにアクセスできます。
+
 ### 開発サーバーの起動
 
 ```bash
