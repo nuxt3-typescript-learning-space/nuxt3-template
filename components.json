@@ -11,9 +11,10 @@
   },
   "aliases": {
     "components": "@/components",
-    "ui": "@/components/ui",
     "composables": "@/composables",
-    "utils": "@/lib/tailwind"
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib"
   },
   "iconLibrary": "lucide"
 }
