@@ -40,14 +40,14 @@ export const useSampleStore = defineStore('sample', {
       this.count--;
     },
     async updateTitle() {
+      const { $logger } = useNuxtApp();
       try {
         this.isFetching = true;
         const response = await fetchTitle();
         const { title } = response;
         this.title = title;
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log('Error:', error);
+        $logger.warn('Error:', error);
         this.title = 'No title available';
         throw error;
       } finally {
