@@ -58,13 +58,23 @@ export default defineNuxtPlugin((nuxtApp) => {
   };
 
   nuxtApp.vueApp.config.errorHandler = (error, instance, info) => {
-    $logger.warn('Vue Error occurred');
+    if (isDevelopment) {
+      $logger.warn('Vue Error:', error);
+    } else {
+      $logger.warn('Vue Error occurred');
+    }
+
     const errorInfo = createErrorInfo(error, instance as ErrorInstance | null, info);
     logError(error, errorInfo);
   };
 
   nuxtApp.hook('vue:error', (error, instance, info) => {
-    $logger.warn('Vue Hook Error:', error);
+    if (isDevelopment) {
+      $logger.warn('Vue Hook Error:', error);
+    } else {
+      $logger.warn('Vue Hook Error occurred');
+    }
+
     const errorInfo = createErrorInfo(error, instance as ErrorInstance | null, info);
     logError(error, errorInfo);
   });
