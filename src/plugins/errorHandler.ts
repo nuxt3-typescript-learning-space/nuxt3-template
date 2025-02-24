@@ -28,6 +28,11 @@ export default defineNuxtPlugin((nuxtApp) => {
     date: new Date().toISOString(),
     environment: config.public.NUXT_ENV,
     errorInfo: info,
+    userMessage: isDevelopment
+      ? error instanceof Error
+        ? error.message
+        : String(error)
+      : 'エラーが発生しました。時間をおいて再度お試しください。',
   });
 
   const logError = (error: unknown, errorInfo: ErrorInfo) => {
