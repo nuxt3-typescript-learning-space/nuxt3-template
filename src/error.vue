@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import Button from '@/components/ui/button/Button.vue';
+import { STATUS_CODE } from '@/constants/error';
 import { clearError, type NuxtError } from '#app';
 
-defineProps<{
+const props = defineProps<{
   error: NuxtError;
 }>();
 
+const { error } = toRefs(props);
+
 const handleError = () => {
-  clearError({ redirect: '/' });
+  if (error.value.statusCode === STATUS_CODE.NOT_FOUND) {
+    clearError({ redirect: '/' });
+  } else {
+    clearError({ redirect: 'back' });
+  }
 };
 </script>
 
