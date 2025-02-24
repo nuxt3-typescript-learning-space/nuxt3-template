@@ -1,3 +1,6 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { includeIgnoreFile } from '@eslint/compat';
 import tsEslintParser from '@typescript-eslint/parser';
 import vuePrettierConfig from '@vue/eslint-config-prettier';
 import eslintReactiveValueSuffix from 'eslint-plugin-reactive-value-suffix';
@@ -6,7 +9,12 @@ import vueEslintParser from 'vue-eslint-parser';
 import withNuxt from './.nuxt/eslint.config.mjs';
 import eslintCustomRulesPlugin from './settings/rules/index.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const gitignorePath = path.resolve(__dirname, '.gitignore');
+
 export default withNuxt([
+  includeIgnoreFile(gitignorePath),
   {
     ignores: ['.cz-config.cts'],
     languageOptions: {
