@@ -13,9 +13,13 @@ const statusCode = computed(() => error.value.statusCode || 'Unknown');
 const statusMessage = computed(
   () => error.value.statusMessage || 'エラーが発生しました。時間をおいて再度お試しください。',
 );
+const isNotFoundStatus = computed(() => statusCode.value === STATUS_CODE.NOT_FOUND);
+
+const buttonLabel = computed(() => (isNotFoundStatus.value ? 'ホームへ移動' : '前のページに戻る'));
+const buttonText = computed(() => (isNotFoundStatus.value ? 'ホームへ' : '戻る'));
 
 const handleError = () => {
-  if (statusCode.value === STATUS_CODE.NOT_FOUND) {
+  if (isNotFoundStatus.value) {
     clearError({ redirect: '/' });
   } else {
     clearError({ redirect: 'back' });
@@ -30,7 +34,9 @@ const handleError = () => {
       <p class="mb-8 text-gray-600">
         {{ statusMessage }}
       </p>
-      <Button aria-label="ホームへ移動" @click="handleError">ホームへ</Button>
+      <Button :aria-label="buttonLabel" @click="handleError">
+        {{ buttonText }}
+      </Button>
     </main>
   </div>
 </template>
