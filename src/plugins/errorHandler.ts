@@ -47,7 +47,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   };
 
   nuxtApp.vueApp.config.errorHandler = (error, instance, info) => {
-    $logger.warn('Vue Error:', error);
+    $logger.warn('Vue Error occurred');
     const errorInfo = createErrorInfo(error, instance as ErrorInstance | null, info);
     logError(error, errorInfo);
   };
