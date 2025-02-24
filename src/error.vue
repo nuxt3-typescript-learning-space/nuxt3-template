@@ -30,7 +30,7 @@ const handleError = () => {
       <p class="mb-8 text-gray-600">
         {{ statusMessage }}
       </p>
-      <Button aria-label="前のページに戻る" @click="handleError">戻る</Button>
+      <Button aria-label="ホームへ移動" @click="handleError">ホームへ</Button>
     </main>
   </div>
 </template>
