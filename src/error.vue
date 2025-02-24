@@ -13,10 +13,12 @@ const handleError = () => {
 
 <template>
   <div class="flex min-h-screen flex-col items-center justify-center p-4">
-    <h1 class="mb-4 text-4xl font-bold">Error: {{ error.statusCode || 'Unknown' }}</h1>
-    <p class="mb-8 text-gray-600">
-      {{ error.statusMessage || 'エラーが発生しました。時間をおいて再度お試しください。' }}
-    </p>
-    <Button @click="handleError">戻る</Button>
+    <main role="main" aria-labelledby="error-title">
+      <h1 id="error-title" class="mb-4 text-4xl font-bold">Error: {{ error.statusCode || 'Unknown' }}</h1>
+      <p class="mb-8 text-gray-600">
+        {{ error.statusMessage || 'エラーが発生しました。時間をおいて再度お試しください。' }}
+      </p>
+      <Button aria-label="前のページに戻る" @click="handleError">戻る</Button>
+    </main>
   </div>
 </template>
