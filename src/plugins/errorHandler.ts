@@ -42,6 +42,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       $logger.error({
         message: errorInfo.message,
         componentName: errorInfo.componentName,
+        date: errorInfo.date,
+        errorInfo: errorInfo.errorInfo,
       });
     }
   };
