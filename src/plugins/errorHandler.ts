@@ -21,19 +21,23 @@ export default defineNuxtPlugin((nuxtApp) => {
   const { $logger } = useNuxtApp();
   const isDevelopment = config.public.NUXT_ENV !== 'production';
 
-  const createErrorInfo = (error: unknown, instance: ErrorInstance | null, info: string): ErrorInfo => ({
-    message: error instanceof Error ? error.message : String(error),
-    stack: error instanceof Error ? error.stack : undefined,
-    componentName: instance?.$.type?.name ?? 'Unknown',
-    date: new Date().toISOString(),
-    environment: config.public.NUXT_ENV,
-    errorInfo: info,
-    userMessage: isDevelopment
-      ? error instanceof Error
-        ? error.message
-        : String(error)
-      : 'エラーが発生しました。時間をおいて再度お試しください。',
-  });
+  const createErrorInfo = (error: unknown, instance: ErrorInstance | null, info: string): ErrorInfo => {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    const componentName = instance?.$.type?.name ?? 'Unknown';
+
+    const userMessage = isDevelopment ? errorMessage : 'エラーが発生しました。時間をおいて再度お試しください。';
+
+    return {
+      message: errorMessage,
+      stack: errorStack,
+      componentName,
+      date: new Date().toISOString(),
+      environment: config.public.NUXT_ENV,
+      errorInfo: info,
+      userMessage,
+    };
+  };
 
   const logError = (error: unknown, errorInfo: ErrorInfo) => {
     if (isDevelopment) {
