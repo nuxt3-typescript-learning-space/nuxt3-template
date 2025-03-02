@@ -22,7 +22,8 @@ const handleError = () => {
   if (isNotFoundStatus.value) {
     clearError({ redirect: '/' });
   } else {
-    clearError({ redirect: 'back' });
+    clearError();
+    history.back();
   }
 };
 </script>
