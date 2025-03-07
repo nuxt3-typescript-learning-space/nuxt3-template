@@ -21,7 +21,7 @@ const DEFAULT_STUBS = {
   NuxtLink: RouterLinkStub,
 } as const;
 
-const DEFAULT_OPTIONS: MountOptions = {
+const DEFAULT_OPTIONS: Readonly<MountOptions> = {
   attachTo: undefined,
   data: {},
   props: {},
