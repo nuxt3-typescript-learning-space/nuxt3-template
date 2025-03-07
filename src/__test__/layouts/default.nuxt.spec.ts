@@ -1,13 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { bindTestingPinia, mountSuspendedComponent } from '@/__test__/testHelper';
 import DefaultLayout from '@/layouts/default.vue';
-import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
-import type { TestingPinia } from '@pinia/testing';
 
 describe('src/layouts/default.vue', () => {
-  let pinia: TestingPinia;
+  let testingPinia: ReturnType<typeof bindTestingPinia>;
 
   beforeEach(() => {
-    pinia = bindTestingPinia();
+    testingPinia = bindTestingPinia();
   });
 
   afterEach(() => {
@@ -16,7 +15,7 @@ describe('src/layouts/default.vue', () => {
   });
 
   it('コンポーネントが正しくレンダリングされるか', async () => {
-    const wrapper = await mountSuspendedComponent(DefaultLayout, pinia);
+    const wrapper = await mountSuspendedComponent(DefaultLayout, testingPinia);
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.find('#nuxt-default-layout').exists()).toBe(true);
   });
@@ -25,7 +24,7 @@ describe('src/layouts/default.vue', () => {
     const slots = {
       default: () => h('div', { id: 'slot-test' }, [h('p', 'slot content')]),
     };
-    const wrapper = await mountSuspendedComponent(DefaultLayout, pinia, { slots });
+    const wrapper = await mountSuspendedComponent(DefaultLayout, testingPinia, { slots });
     expect(wrapper.find('#slot-test').exists()).toBe(true);
     expect(wrapper.find('p').text()).toBe('slot content');
   });

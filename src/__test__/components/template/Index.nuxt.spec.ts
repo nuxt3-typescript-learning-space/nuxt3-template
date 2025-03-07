@@ -1,15 +1,14 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { bindTestingPinia, mountSuspendedComponent } from '@/__test__/testHelper';
 import Index from '@/components/template/sample/Index.vue';
 import { useSampleStore } from '@/store/sampleStore';
-import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
-import type { TestingPinia } from '@pinia/testing';
 
 describe('src/features/sample/components/Index.vue', () => {
-  let pinia: TestingPinia;
+  let testingPinia: ReturnType<typeof bindTestingPinia>;
   let sampleStore: ReturnType<typeof useSampleStore>;
 
   beforeEach(() => {
-    pinia = bindTestingPinia();
+    testingPinia = bindTestingPinia();
     sampleStore = useSampleStore();
   });
 
@@ -23,7 +22,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<h1></h1>',
     };
     const stubs = { Title };
-    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs, shallow: true });
+    const wrapper = await mountSuspendedComponent(Index, testingPinia, { stubs, shallow: true });
     expect(wrapper.findComponent(Title).exists()).toBe(true);
   });
 
@@ -32,7 +31,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<button></button>',
     };
     const stubs = { Button };
-    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs, shallow: true });
+    const wrapper = await mountSuspendedComponent(Index, testingPinia, { stubs, shallow: true });
     const incrementButton = wrapper.findAllComponents(Button)[0];
     const decrementButton = wrapper.findAllComponents(Button)[1];
 
@@ -47,7 +46,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<button></button>',
     };
     const stubs = { Button };
-    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs, shallow: true });
+    const wrapper = await mountSuspendedComponent(Index, testingPinia, { stubs, shallow: true });
     const incrementButton = wrapper.findAllComponents(Button)[0];
     await incrementButton.trigger('click');
     expect(sampleStore.count).toBe(1);
@@ -58,7 +57,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<button></button>',
     };
     const stubs = { Button };
-    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs, shallow: true });
+    const wrapper = await mountSuspendedComponent(Index, testingPinia, { stubs, shallow: true });
     const decrementButton = wrapper.findAllComponents(Button)[1];
     await decrementButton.trigger('click');
     expect(sampleStore.count).toBe(-1);
@@ -70,7 +69,7 @@ describe('src/features/sample/components/Index.vue', () => {
       template: '<button></button>',
     };
     const stubs = { CounterDisplay };
-    const wrapper = await mountSuspendedComponent(Index, pinia, { stubs, shallow: true });
+    const wrapper = await mountSuspendedComponent(Index, testingPinia, { stubs, shallow: true });
     expect(wrapper.findComponent(CounterDisplay).props('count')).toBe(sampleStore.count);
   });
 });
