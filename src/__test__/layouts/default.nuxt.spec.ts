@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { bindTestingPinia, mountSuspendedComponent } from '@/__test__/testHelper';
 import DefaultLayout from '@/layouts/default.vue';
-import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
 import type { TestingPinia } from '@pinia/testing';
 
 describe('src/layouts/default.vue', () => {

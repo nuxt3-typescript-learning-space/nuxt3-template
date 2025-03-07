@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { bindTestingPinia, mountSuspendedComponent } from '@/__test__/testHelper';
 import Index from '@/components/template/sample/Index.vue';
 import { useSampleStore } from '@/store/sampleStore';
-import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
 import type { TestingPinia } from '@pinia/testing';
 
 describe('src/features/sample/components/Index.vue', () => {

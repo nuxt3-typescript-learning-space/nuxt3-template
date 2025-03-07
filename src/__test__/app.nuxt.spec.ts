@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { bindTestingPinia, mountSuspendedComponent } from '@/__test__/testHelper';
 import NuxtAppVue from '@/app.vue';
-import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
 import type { TestingPinia } from '@pinia/testing';
 
 describe('src/app.vue', () => {
