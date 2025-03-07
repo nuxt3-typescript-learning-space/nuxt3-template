@@ -2,10 +2,10 @@ import { mountSuspended } from '@nuxt/test-utils/runtime';
 import { createTestingPinia } from '@pinia/testing';
 import { RouterLinkStub } from '@vue/test-utils';
 import type { TestingPinia } from '@pinia/testing';
-import type { Component, Slots, VNode } from 'vue';
+import type { VueWrapper } from '@vue/test-utils';
+import type { StateTree } from 'pinia';
+import type { Component, ComponentPublicInstance, Slots, VNode } from 'vue';
 
-type InitialState = Record<string, unknown>;
-type SuspendedTestWrapper<T extends Component> = Awaited<ReturnType<typeof mountSuspended<T>>>;
 type MountOptions = {
   attachTo?: Element | string;
   data?: Record<string, unknown>;
@@ -21,7 +21,7 @@ const DEFAULT_STUBS = {
   NuxtLink: RouterLinkStub,
 } as const;
 
-const DEFAULT_MOUNT_OPTIONS: MountOptions = {
+const DEFAULT_OPTIONS: MountOptions = {
   attachTo: undefined,
   data: {},
   props: {},
@@ -38,7 +38,7 @@ const DEFAULT_MOUNT_OPTIONS: MountOptions = {
  * @param - ストアの初期状態を指定するオブジェクト。
  * @returns - テスト用のPiniaインスタンスを返します。
  */
-export function bindTestingPinia(initialState: InitialState = {}): TestingPinia {
+export function bindTestingPinia(initialState: StateTree = {}): TestingPinia {
   return createTestingPinia({
     stubActions: false,
     initialState: { ...initialState },
@@ -54,16 +54,17 @@ export function bindTestingPinia(initialState: InitialState = {}): TestingPinia 
  * @returns マウントされたコンポーネントのラッパー
  *
  * @example
- * const wrapper = await mountSuspendedComponent(MyComponent, pinia, {
+ * const wrapper = await mountSuspendedComponent<{ computedProperty: string }>(MyComponent, pinia, {
  *   props: { message: 'Hello' }
  * });
+ * expect(wrapper.vm.computedProperty).toBe('computedValue');
  */
-export async function mountSuspendedComponent(
+export async function mountSuspendedComponent<VMValue>(
   component: Component,
-  testingPinia: TestingPinia,
-  options: Partial<MountOptions> = DEFAULT_MOUNT_OPTIONS,
-): Promise<SuspendedTestWrapper<typeof component>> {
-  const mergedOptions = { ...DEFAULT_MOUNT_OPTIONS, ...options };
+  testingPinia: ReturnType<typeof bindTestingPinia>,
+  options: Partial<MountOptions> = DEFAULT_OPTIONS,
+): Promise<VueWrapper<ComponentPublicInstance & VMValue>> {
+  const mergedOptions = { ...DEFAULT_OPTIONS, ...options };
   const { data, attachTo, props, slots, shallow, stubs, mocks, options: additionalOptions } = mergedOptions;
 
   return await mountSuspended(component, {
