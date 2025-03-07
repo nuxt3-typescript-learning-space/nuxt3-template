@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, expect, vi, beforeEach, test } from 'vitest';
 import type { MockedFunction } from 'vitest';
 import { STATE_REGEX_PATTERN, GETTERS_REGEX_PATTERN } from '~~/settings/data/utils/constant';
 import { safeReadFile } from '~~/settings/data/utils/file';
@@ -60,7 +60,7 @@ describe('settings/data/utils/regex.ts', () => {
       vi.clearAllMocks();
     });
 
-    it('正規表現に一致する state の内容を抽出する', () => {
+    test('正規表現に一致する state の内容を抽出する', () => {
       (safeReadFile as MockedFunction<typeof safeReadFile>).mockReturnValue(fileContent);
 
       const result = extractContentByRegex(testFilePath, STATE_REGEX_PATTERN);
@@ -68,7 +68,7 @@ describe('settings/data/utils/regex.ts', () => {
       expect(result.trim()).toBe('count: 0,');
     });
 
-    it('正規表現に一致する getters の内容を抽出する', () => {
+    test('正規表現に一致する getters の内容を抽出する', () => {
       (safeReadFile as MockedFunction<typeof safeReadFile>).mockReturnValue(fileContent);
 
       const result = extractContentByRegex(testFilePath, GETTERS_REGEX_PATTERN);
@@ -97,7 +97,7 @@ describe('settings/data/utils/regex.ts', () => {
       );
     });
 
-    it('正規表現に一致しない場合に空文字列を返す', () => {
+    test('正規表現に一致しない場合に空文字列を返す', () => {
       (safeReadFile as MockedFunction<typeof safeReadFile>).mockReturnValue('no match content');
 
       const result = extractContentByRegex(testFilePath, STATE_REGEX_PATTERN);
@@ -112,7 +112,7 @@ describe('settings/data/utils/regex.ts', () => {
     count: 0,
   `;
 
-    it('stateのトップレベルのプロパティ名を抽出する', () => {
+    test('stateのトップレベルのプロパティ名を抽出する', () => {
       const result = filterStatePropertyName(content.trim());
 
       expect(result).toEqual(['count']);
@@ -141,7 +141,7 @@ describe('settings/data/utils/regex.ts', () => {
     },
   `;
 
-    it('gettersのトップレベルのプロパティ名を抽出する', () => {
+    test('gettersのトップレベルのプロパティ名を抽出する', () => {
       const result = filterGetterPropertyName(content.trim());
 
       expect(result).toEqual(['getCount', 'getCount2', 'getCount3', 'getCount4', 'getCount5', 'getCount6']);
@@ -187,7 +187,7 @@ describe('settings/data/utils/regex.ts', () => {
       vi.clearAllMocks();
     });
 
-    it('stateのプロパティ名を抽出する', () => {
+    test('stateのプロパティ名を抽出する', () => {
       (safeReadFile as MockedFunction<typeof safeReadFile>).mockReturnValue(stateContent);
 
       const result = extractValuesByRegex(testFilePath, STATE_REGEX_PATTERN, false);
@@ -195,7 +195,7 @@ describe('settings/data/utils/regex.ts', () => {
       expect(result).toEqual(['count', 'user']);
     });
 
-    it('gettersのプロパティ名を抽出する', () => {
+    test('gettersのプロパティ名を抽出する', () => {
       (safeReadFile as MockedFunction<typeof safeReadFile>).mockReturnValue(gettersContent);
 
       const result = extractValuesByRegex(testFilePath, GETTERS_REGEX_PATTERN, true);
@@ -205,7 +205,7 @@ describe('settings/data/utils/regex.ts', () => {
   });
 
   describe('getUniqueValues', () => {
-    it('配列から一意の値を取得する', () => {
+    test('配列から一意の値を取得する', () => {
       const values = ['apple', 'banana', 'apple', 'orange', 'banana'];
       const result = getUniqueValues(values);
 

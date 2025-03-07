@@ -21,7 +21,7 @@ const DEFAULT_STUBS = {
   NuxtLink: RouterLinkStub,
 } as const;
 
-const DEFAULT_OPTIONS: MountOptions = {
+const DEFAULT_OPTIONS = {
   attachTo: undefined,
   data: {},
   props: {},
@@ -30,7 +30,7 @@ const DEFAULT_OPTIONS: MountOptions = {
   stubs: DEFAULT_STUBS,
   mocks: {},
   options: {},
-} as const;
+} as const satisfies MountOptions;
 
 /**
  * テスト用のPiniaストアを設定します。

@@ -1,5 +1,5 @@
 import { format } from 'prettier';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, expect, vi, beforeEach, test } from 'vitest';
 import type { MockedFunction } from 'vitest';
 import { safeWriteFile } from '~~/settings/data/utils/file';
 import { writeJsonFile } from '~~/settings/data/utils/json';
@@ -25,7 +25,7 @@ describe('settings/data/utils/json.ts', () => {
       vi.clearAllMocks();
     });
 
-    it('JSONデータを整形してファイルに書き込む', async () => {
+    test('JSONデータを整形してファイルに書き込む', async () => {
       (format as MockedFunction<typeof format>).mockResolvedValue(formattedJson);
 
       await writeJsonFile(testFilePath, testJson);
@@ -34,7 +34,7 @@ describe('settings/data/utils/json.ts', () => {
       expect(safeWriteFile).toHaveBeenCalledWith(testFilePath, formattedJson);
     });
 
-    it('整形中にエラーが発生した場合にエラーハンドリングを行う', async () => {
+    test('整形中にエラーが発生した場合にエラーハンドリングを行う', async () => {
       const error = new Error('整形エラー');
       (format as MockedFunction<typeof format>).mockRejectedValue(error);
 

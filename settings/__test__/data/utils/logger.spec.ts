@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, expect, vi, beforeEach, test } from 'vitest';
 import { logMessage, handleError } from '~~/settings/data/utils/logger';
 
 describe('settings/data/utils/logger.ts', () => {
@@ -7,7 +7,7 @@ describe('settings/data/utils/logger.ts', () => {
   });
 
   describe('logMessage', () => {
-    it('ログメッセージを出力する', () => {
+    test('ログメッセージを出力する', () => {
       const consoleLogMock = vi.spyOn(console, 'log').mockImplementation(() => {});
       const testMessage = 'これはテストメッセージです';
 
@@ -19,7 +19,7 @@ describe('settings/data/utils/logger.ts', () => {
   });
 
   describe('handleError', () => {
-    it('エラーメッセージを出力し、詳細を含める', () => {
+    test('エラーメッセージを出力し、詳細を含める', () => {
       const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
       const testMessage = 'エラーメッセージ';
       const testError = new Error('テストエラー');
@@ -30,7 +30,7 @@ describe('settings/data/utils/logger.ts', () => {
       consoleErrorMock.mockRestore();
     });
 
-    it('エラーメッセージを出力し、unknown型のエラーを含める', () => {
+    test('エラーメッセージを出力し、unknown型のエラーを含める', () => {
       const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
       const testMessage = 'エラーメッセージ';
       const testError = 'テストエラー';

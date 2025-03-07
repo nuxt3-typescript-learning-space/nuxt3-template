@@ -2,6 +2,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { includeIgnoreFile } from '@eslint/compat';
 import tsEslintParser from '@typescript-eslint/parser';
+import vitest from '@vitest/eslint-plugin';
 import vuePrettierConfig from '@vue/eslint-config-prettier';
 import eslintReactiveValueSuffix from 'eslint-plugin-reactive-value-suffix';
 import globals from 'globals';
@@ -62,6 +63,27 @@ export default withNuxt([
     files: ['src/components/ui/**/*'],
     rules: {
       'vue/require-default-prop': 'off',
+    },
+  },
+  {
+    files: ['**/__test__/**', '**/__tests__/**', '**/tests/**', '**/test/**'],
+    plugins: {
+      vitest,
+    },
+    rules: {
+      ...vitest.configs.recommended.rules,
+      'vitest/consistent-test-it': ['error', { fn: 'test', withinDescribe: 'test' }],
+      'vitest/no-conditional-expect': 'error',
+      'vitest/no-conditional-in-test': 'error',
+      'vitest/no-conditional-tests': 'error',
+      'vitest/no-disabled-tests': 'error',
+      'vitest/no-duplicate-hooks': 'error',
+      'vitest/no-identical-title': 'error',
+      'vitest/no-test-return-statement': 'error',
+      'vitest/prefer-mock-promise-shorthand': 'error',
+      'vitest/require-hook': 'error',
+      'vitest/require-to-throw-message': 'error',
+      'vitest/require-top-level-describe': ['error', { maxNumberOfTopLevelDescribes: 2 }],
     },
   },
   vuePrettierConfig,
