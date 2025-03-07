@@ -1,5 +1,5 @@
 import { globSync } from 'glob';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import type { MockedFunction } from 'vitest';
 import { updateStateValues } from '~~/settings/data/updateStateValues';
 import { STATE_REGEX_PATTERN, STORE_DIR, STORE_STATE_LIST_PATH } from '~~/settings/data/utils/constant';
@@ -31,7 +31,7 @@ vi.mock('~~/settings/data/utils/regex', () => ({
 }));
 
 describe('settings/data/updateStateValues.ts', () => {
-  it('必要な関数が正しく呼び出され、STATE_REGEX_PATTERNが使用されるべき', async () => {
+  test('必要な関数が正しく呼び出され、STATE_REGEX_PATTERNが使用されるべき', async () => {
     // モックの設定
     const mockFiles = ['file1.ts', 'file2.ts'];
     const mockValuesFile1 = ['state1', 'state2'];

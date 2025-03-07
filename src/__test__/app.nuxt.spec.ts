@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { bindTestingPinia, mountSuspendedComponent } from '@/__test__/testHelper';
 import NuxtAppVue from '@/app.vue';
 
@@ -14,7 +14,7 @@ describe('src/app.vue', () => {
     vi.restoreAllMocks();
   });
 
-  it('基本的なレイアウト構造が正しくレンダリングされるか', async () => {
+  test('基本的なレイアウト構造が正しくレンダリングされるか', async () => {
     const wrapper = await mountSuspendedComponent(NuxtAppVue, testingPinia, { shallow: true });
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.find('#nuxt-app-vue').exists()).toBe(true);
