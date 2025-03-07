@@ -231,11 +231,11 @@ import { bindTestingPinia, mountSuspendedComponent } from '@/test/testHelper';
 import type { TestingPinia } from '@pinia/testing';
 
 describe('TestTargetComponentPath', () => {
-  let pinia: TestingPinia;
+  let testingPinia: ReturnType<typeof bindTestingPinia>;
   let testStore: ReturnType<typeof useTestStore>;
 
   beforeEach(() => {
-    pinia = bindTestingPinia();
+    testingPinia = bindTestingPinia();
     testStore = useTestStore();
   });
 
@@ -246,7 +246,7 @@ describe('TestTargetComponentPath', () => {
 
   describe('マウント時の初期表示', () => {
     it('コンポーネントが正しくマウントされるか', async () => {
-      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia);
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, testingPinia);
       expect(wrapper.exists()).toBe(true);
     });
   });
@@ -256,7 +256,7 @@ describe('TestTargetComponentPath', () => {
       const testProps = {
         propsName: 'propsValue',
       };
-      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia, { props: testProps });
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, testingPinia, { props: testProps });
       expect(wrapper.exists()).toBe(true);
       expect(wrapper.find('div').text()).toBe('propsValue');
     });
@@ -268,7 +268,7 @@ describe('TestTargetComponentPath', () => {
         template: '<div></div>',
       };
       const stubs = { ChildComponent };
-      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia, { stubs });
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, testingPinia, { stubs });
       expect(wrapper.findComponent(ChildComponent).exists()).toBe(true);
     });
 
@@ -278,7 +278,7 @@ describe('TestTargetComponentPath', () => {
         template: '<div></div>',
       };
       const stubs = { ChildComponent };
-      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia, { stubs });
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, testingPinia, { stubs });
       expect(wrapper.findComponent(ChildComponent).props('test')).toBe('期待値');
     });
 
@@ -287,7 +287,7 @@ describe('TestTargetComponentPath', () => {
         template: '<button></button>',
       };
       const stubs = { ButtonComponent };
-      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia, { stubs });
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, testingPinia, { stubs });
 
       const buttons = wrapper.findAllComponents(ButtonComponent);
       const firstButton = buttons[0];
@@ -301,7 +301,7 @@ describe('TestTargetComponentPath', () => {
       const slots = {
         default: () => h('div', { id: 'slot-test' }, [h('p', 'slot content')]),
       };
-      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia, { slots });
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, testingPinia, { slots });
       expect(wrapper.find('#slot-test').exists()).toBe(true);
       expect(wrapper.find('p').text()).toBe('slot content');
     });
@@ -309,14 +309,14 @@ describe('TestTargetComponentPath', () => {
 
   describe('イベント発火', () => {
     it('ボタンクリック時にclickイベントが発火するか', async () => {
-      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia);
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, testingPinia);
       const target = wrapper.find('button');
       await target.trigger('click');
       expect(wrapper.emitted('click')).toHaveBeenCalledOnce();
     });
 
     it('ボタンクリック時にclickイベントが1回emitされる', async () => {
-      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia);
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, testingPinia);
       const target = wrapper.find('button');
       await target.trigger('click');
       expect(wrapper.emitted('click')).toHaveLength(1);
@@ -326,20 +326,20 @@ describe('TestTargetComponentPath', () => {
   describe('Store', () => {
     it('storeの値が正しく表示されるか', async () => {
       testStore.testValue = 'test';
-      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia);
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, testingPinia);
       expect(wrapper.find('div').text()).toBe('test');
     });
 
     it('storeの値が変更されたときに表示が更新されるか', async () => {
       testStore.testValue = 'test';
-      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia);
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, testingPinia);
       expect(wrapper.find('div').text()).toBe('test');
       testStore.testValue = 'updated';
       expect(wrapper.find('div').text()).toBe('updated');
     });
 
     it('storeの関数が正しく呼び出されるか', async () => {
-      const wrapper = await mountSuspendedComponent(TestTargetComponent, pinia);
+      const wrapper = await mountSuspendedComponent(TestTargetComponent, testingPinia);
       const target = wrapper.find('button');
       await target.trigger('click');
       expect(testStore.testFunction).toHaveBeenCalled();
