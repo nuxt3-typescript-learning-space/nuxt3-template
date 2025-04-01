@@ -14,9 +14,41 @@ on:
 
 env:
   NODE_VERSION: 22.14.0
-  PNPM_VERSION: 9.15.5
+  PNPM_VERSION: 9.15.7
 
 jobs:
+  eslint:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and install dependencies
+        uses: ./.github/actions/install
+        with:
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Execute ESLint
+        run: pnpm ci:eslint
+
+  prettier:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and install dependencies
+        uses: ./.github/actions/install
+        with:
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Execute Prettier
+        run: pnpm ci:prettier
+
   type-check:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
@@ -30,12 +62,12 @@ jobs:
           pnpm-version: ${{ env.PNPM_VERSION }}
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Run TypeScript type check
+      - name: Execute Type Check
         run: pnpm ci:typecheck
 
-  test:
+  vitest:
     runs-on: ubuntu-latest
-    needs: type-check
+    needs: [type-check, eslint, prettier]
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
@@ -46,46 +78,12 @@ jobs:
           pnpm-version: ${{ env.PNPM_VERSION }}
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Run Vitest and coverage
-        run: pnpm ci:test
-        env:
-          CI: true
-
-  eslint:
-    runs-on: ubuntu-latest
-    needs: type-check
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js and install dependencies
-        uses: ./.github/actions/install
-        with:
-          pnpm-version: ${{ env.PNPM_VERSION }}
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Run ESLint
-        run: pnpm ci:lint
-
-  prettier:
-    runs-on: ubuntu-latest
-    needs: type-check
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js and install dependencies
-        uses: ./.github/actions/install
-        with:
-          pnpm-version: ${{ env.PNPM_VERSION }}
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Run Prettier
-        run: pnpm ci:format
+      - name: Execute Vitest
+        run: pnpm ci:vitest
 
   build:
     runs-on: ubuntu-latest
-    needs: [type-check, test, eslint, prettier]
+    needs: [type-check, eslint, prettier, vitest]
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
@@ -96,5 +94,5 @@ jobs:
           pnpm-version: ${{ env.PNPM_VERSION }}
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Run Build
+      - name: Execute Build
         run: pnpm build
