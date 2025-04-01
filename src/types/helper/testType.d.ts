@@ -1,5 +1,5 @@
 import type { bindTestingPinia } from '@/helper/test';
-import type { SlotsType } from 'vue';
+import type { Component, SlotsType, VNode } from 'vue';
 
 export interface MountOptions {
   /** テスト用のPiniaインスタンス（bindTestingPinia関数で作成したもの） */
