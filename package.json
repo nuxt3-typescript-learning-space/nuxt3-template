@@ -109,5 +109,10 @@
   "volta": {
     "node": "22.14.0",
     "pnpm": "9.15.7"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@pinia/testing@1.0.0": "patches/@pinia__testing@1.0.0.patch"
+    }
   }
 }
