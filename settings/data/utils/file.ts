@@ -1,59 +1,84 @@
-import fs from 'fs';
-import { handleError } from './logger';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { format, resolveConfig } from 'prettier';
+import { PROJECT_ROOT } from './constant';
 
 /**
- * ファイルの存在確認関数
- * @param {string} filePath - チェックするファイルのパス
- * @returns {boolean} - ファイルが存在するかどうか
+ * ファイルの存在をチェックする関数
+ * @param filePath - チェックするファイルのパス
+ * @returns ファイルが存在する場合はtrue、存在しない場合やエラーの場合はfalse
  */
-export const fileExists = (filePath: string): boolean => fs.existsSync(filePath);
+export const checkFileExists = (filePath: string): boolean => {
+  try {
+    return existsSync(filePath);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.warn(`File existence check failed: ${error.message}`, error); // eslint-disable-line no-console
+    } else {
+      console.warn(`Unexpected file existence check error occurred: ${String(error)}`); // eslint-disable-line no-console
+    }
+    return false;
+  }
+};
 
 /**
  * ファイルを読み込む関数
- * @param {string} filePath - 読み込むファイルのパス
- * @returns {string} - ファイルの内容
- * @throws {Error} - ファイルが存在しない場合にエラーをスロー
+ * @param filePath - 読み込むファイルのパス
+ * @returns ファイルの内容
+ * @throws エラーが発生した場合はErrorをスロー
  */
 export const readFile = (filePath: string): string => {
-  if (!fileExists(filePath)) {
-    throw new Error(`ファイルが存在しません: ${filePath}`);
+  const hasFile = checkFileExists(filePath);
+
+  if (!hasFile) {
+    throw new Error(`File not found: ${filePath}`);
   }
-  return fs.readFileSync(filePath, 'utf8');
+
+  try {
+    return readFileSync(filePath, 'utf-8');
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`File read error: ${error.message}`);
+    } else {
+      throw new Error(`Unexpected file read error occurred: ${String(error)}`);
+    }
+  }
 };
 
 /**
- * ファイルを書き込む関数
- * @param {string} filePath - 書き込むファイルのパス
- * @param {string} data - 書き込むデータ
+ * ファイルにデータを書き込む関数
+ * @param filePath - 書き込むファイルのパス
+ * @param data - 書き込むデータ
+ * @throws エラーが発生した場合はErrorをスロー
  */
 export const writeFile = (filePath: string, data: string): void => {
-  fs.writeFileSync(filePath, data);
-};
-
-/**
- * ファイルを安全に読み込む関数（エラーハンドリング込み）
- * @param {string} filePath - 読み込むファイルのパス
- * @returns {string} - ファイルの内容
- */
-export const safeReadFile = (filePath: string): string => {
   try {
-    return readFile(filePath);
+    writeFileSync(filePath, data, 'utf-8');
   } catch (error) {
-    handleError(`ファイルの読み込み中にエラーが発生しました: ${filePath}`, error);
-    throw error;
+    if (error instanceof Error) {
+      throw new Error(`File write error: ${error.message}`);
+    } else {
+      throw new Error(`Unexpected file write error occurred: ${String(error)}`);
+    }
   }
 };
 
 /**
- * ファイルを安全に書き込む関数（エラーハンドリング込み）
- * @param {string} filePath - 書き込むファイルのパス
- * @param {string} data - 書き込むデータ
+ * JSONファイルにデータを書き込む関数
+ * @param filePath - 書き込み先のJSONファイルのパス
+ * @param data - 書き込むデータ
+ * @throws エラーが発生した場合はErrorをスロー
  */
-export const safeWriteFile = (filePath: string, data: string): void => {
+export const writeJsonFile = async <T>(filePath: string, data: T): Promise<void> => {
   try {
-    writeFile(filePath, data);
+    const options = await resolveConfig(join(PROJECT_ROOT, 'prettier.config.mjs'));
+    const formattedJson = await format(JSON.stringify(data), { ...options, parser: 'json' });
+    writeFile(filePath, formattedJson);
   } catch (error) {
-    handleError(`ファイルの書き込み中にエラーが発生しました: ${filePath}`, error);
-    throw error;
+    if (error instanceof Error) {
+      throw new Error(`JSON file write error: ${error.message}`);
+    } else {
+      throw new Error(`Unexpected JSON file write error occurred: ${String(error)}`);
+    }
   }
 };

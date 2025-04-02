@@ -1,6 +1,6 @@
 import { globSync } from 'glob';
 import { GETTERS_REGEX_PATTERN, STORE_DIR, STORE_GETTERS_LIST_PATH } from './utils/constant';
-import { writeJsonFile } from './utils/json';
+import { writeJsonFile } from './utils/file';
 import { updateList } from './utils/list';
 import { logMessage } from './utils/logger';
 import { extractValuesByRegex, getUniqueValues } from './utils/regex';
