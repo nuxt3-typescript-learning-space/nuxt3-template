@@ -91,10 +91,7 @@
     "vue-tsc": "2.2.8"
   },
   "lint-staged": {
-    "**/*.{js,mjs,cjs,ts,cts,mts,vue}": [
-      "pnpm convert",
-      "eslint --fix"
-    ],
+    "**/*.{js,mjs,cjs,ts,cts,mts,vue}": "eslint --fix",
     "**/*.{js,mjs,cjs,ts,cts,mts,vue,json}": "prettier --write",
     "**/*.{ts,cts,mts,vue}": "nuxi typecheck ."
   },
