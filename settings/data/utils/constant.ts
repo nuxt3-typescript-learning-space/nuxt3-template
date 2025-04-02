@@ -1,6 +1,10 @@
-import path from 'path';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-export const PROJECT_ROOT = process.cwd();
+export const __filename = fileURLToPath(import.meta.url);
+export const __dirname = path.dirname(__filename);
+
+export const PROJECT_ROOT = path.join(__dirname, '../../../');
 export const STORE_DIR = path.join(PROJECT_ROOT, 'src/store');
 
 export const STORE_DATA_DIR = path.join(PROJECT_ROOT, 'settings/data/json');
