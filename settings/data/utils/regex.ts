@@ -1,4 +1,4 @@
-import { safeReadFile } from './file';
+import { readFile } from './file';
 import { logMessage } from './logger';
 
 /**
@@ -8,7 +8,7 @@ import { logMessage } from './logger';
  * @returns {string} - 一致した内容の最初のグループ、または空文字列
  */
 export const extractContentByRegex = (filePath: string, patterns: RegExp[]): string => {
-  const fileContent = safeReadFile(filePath);
+  const fileContent = readFile(filePath);
 
   for (const regex of patterns) {
     const match = regex.exec(fileContent);
