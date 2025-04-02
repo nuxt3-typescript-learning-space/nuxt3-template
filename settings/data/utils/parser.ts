@@ -1,9 +1,29 @@
-import fs from 'fs';
-import ts from 'typescript';
+import { readFileSync } from 'fs';
+import {
+  createSourceFile,
+  forEachChild,
+  isArrowFunction,
+  isBlock,
+  isCallExpression,
+  isIdentifier,
+  isObjectLiteralExpression,
+  isParenthesizedExpression,
+  isPropertyAssignment,
+  isReturnStatement,
+  isSpreadAssignment,
+  isVariableDeclaration,
+  ScriptTarget,
+  type ArrowFunction,
+  type CallExpression,
+  type Expression,
+  type Node,
+  type ObjectLiteralExpression,
+  type SourceFile,
+} from 'typescript';
 
 export const extractStateProperties = (filePath: string): string[] => {
-  const fileContent = fs.readFileSync(filePath, 'utf-8');
-  const sourceFile = ts.createSourceFile(filePath, fileContent, ts.ScriptTarget.Latest, true);
+  const fileContent = readFileSync(filePath, 'utf-8');
+  const sourceFile = createSourceFile(filePath, fileContent, ScriptTarget.Latest, true);
   const properties: string[] = [];
 
   findDefineStoreCalls(sourceFile, properties);
@@ -11,46 +31,42 @@ export const extractStateProperties = (filePath: string): string[] => {
   return properties;
 };
 
-const findDefineStoreCalls = (sourceFile: ts.SourceFile, properties: string[]) => {
-  const visit = (node: ts.Node) => {
+const findDefineStoreCalls = (sourceFile: SourceFile, properties: string[]) => {
+  const visit = (node: Node) => {
     if (!isDefineStoreCall(node)) {
-      ts.forEachChild(node, visit);
+      forEachChild(node, visit);
       return;
     }
 
-    const callExpr = node as ts.CallExpression;
+    const callExpr = node as CallExpression;
     const optionsArg = callExpr.arguments[1];
 
-    if (!optionsArg || !ts.isObjectLiteralExpression(optionsArg)) {
+    if (!optionsArg || !isObjectLiteralExpression(optionsArg)) {
       return;
     }
 
     processStateProperty(sourceFile, optionsArg, properties);
 
-    ts.forEachChild(node, visit);
+    forEachChild(node, visit);
   };
 
   visit(sourceFile);
 };
 
-const isDefineStoreCall = (node: ts.Node): node is ts.CallExpression => {
-  return ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.expression.text === 'defineStore';
+const isDefineStoreCall = (node: Node): node is CallExpression => {
+  return isCallExpression(node) && isIdentifier(node.expression) && node.expression.text === 'defineStore';
 };
 
-const processStateProperty = (
-  sourceFile: ts.SourceFile,
-  optionsObj: ts.ObjectLiteralExpression,
-  properties: string[],
-) => {
+const processStateProperty = (sourceFile: SourceFile, optionsObj: ObjectLiteralExpression, properties: string[]) => {
   const stateProp = optionsObj.properties.find(
-    (prop) => ts.isPropertyAssignment(prop) && ts.isIdentifier(prop.name) && prop.name.text === 'state',
+    (prop) => isPropertyAssignment(prop) && isIdentifier(prop.name) && prop.name.text === 'state',
   );
 
-  if (!stateProp || !ts.isPropertyAssignment(stateProp)) {
+  if (!stateProp || !isPropertyAssignment(stateProp)) {
     return;
   }
 
-  if (!ts.isArrowFunction(stateProp.initializer)) {
+  if (!isArrowFunction(stateProp.initializer)) {
     return;
   }
 
@@ -63,13 +79,13 @@ const processStateProperty = (
   extractPropertiesFromReturnExpression(sourceFile, returnExpr, properties);
 };
 
-const extractReturnExpression = (arrowFunc: ts.ArrowFunction): ts.Expression | undefined => {
-  if (ts.isParenthesizedExpression(arrowFunc.body) && ts.isObjectLiteralExpression(arrowFunc.body.expression)) {
+const extractReturnExpression = (arrowFunc: ArrowFunction): Expression | undefined => {
+  if (isParenthesizedExpression(arrowFunc.body) && isObjectLiteralExpression(arrowFunc.body.expression)) {
     return arrowFunc.body.expression;
   }
 
-  if (ts.isBlock(arrowFunc.body)) {
-    const returnStatement = arrowFunc.body.statements.find(ts.isReturnStatement);
+  if (isBlock(arrowFunc.body)) {
+    const returnStatement = arrowFunc.body.statements.find(isReturnStatement);
     if (returnStatement && returnStatement.expression) {
       return returnStatement.expression;
     }
@@ -79,18 +95,18 @@ const extractReturnExpression = (arrowFunc: ts.ArrowFunction): ts.Expression | u
 };
 
 const extractPropertiesFromReturnExpression = (
-  sourceFile: ts.SourceFile,
-  returnExpr: ts.Expression,
+  sourceFile: SourceFile,
+  returnExpr: Expression,
   properties: string[],
 ) => {
-  if (!ts.isObjectLiteralExpression(returnExpr)) {
+  if (!isObjectLiteralExpression(returnExpr)) {
     return;
   }
 
-  const spreadElement = returnExpr.properties.find((prop) => ts.isSpreadAssignment(prop));
+  const spreadElement = returnExpr.properties.find((prop) => isSpreadAssignment(prop));
 
-  if (spreadElement && ts.isSpreadAssignment(spreadElement)) {
-    if (ts.isIdentifier(spreadElement.expression)) {
+  if (spreadElement && isSpreadAssignment(spreadElement)) {
+    if (isIdentifier(spreadElement.expression)) {
       const variableName = spreadElement.expression.text;
       findVariableProperties(sourceFile, variableName, properties);
     }
@@ -99,28 +115,28 @@ const extractPropertiesFromReturnExpression = (
   }
 };
 
-const findVariableProperties = (sourceFile: ts.SourceFile, variableName: string, properties: string[]): void => {
-  const findVariable = (node: ts.Node): boolean => {
+const findVariableProperties = (sourceFile: SourceFile, variableName: string, properties: string[]): void => {
+  const findVariable = (node: Node): boolean => {
     if (
-      ts.isVariableDeclaration(node) &&
-      ts.isIdentifier(node.name) &&
+      isVariableDeclaration(node) &&
+      isIdentifier(node.name) &&
       node.name.text === variableName &&
       node.initializer &&
-      ts.isObjectLiteralExpression(node.initializer)
+      isObjectLiteralExpression(node.initializer)
     ) {
       extractPropertiesFromObjectLiteral(node.initializer, properties);
       return true;
     }
 
-    return ts.forEachChild(node, findVariable) || false;
+    return forEachChild(node, findVariable) || false;
   };
 
-  ts.forEachChild(sourceFile, findVariable);
+  forEachChild(sourceFile, findVariable);
 };
 
-const extractPropertiesFromObjectLiteral = (obj: ts.ObjectLiteralExpression, properties: string[]): void => {
+const extractPropertiesFromObjectLiteral = (obj: ObjectLiteralExpression, properties: string[]): void => {
   for (const prop of obj.properties) {
-    if (ts.isPropertyAssignment(prop) && ts.isIdentifier(prop.name)) {
+    if (isPropertyAssignment(prop) && isIdentifier(prop.name)) {
       properties.push(prop.name.text);
     }
   }

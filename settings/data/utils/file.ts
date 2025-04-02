@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs';
-import path from 'path';
+import { join } from 'path';
 import { format, resolveConfig } from 'prettier';
 import { PROJECT_ROOT } from './constant';
 
@@ -71,7 +71,7 @@ export const writeFile = (filePath: string, data: string): void => {
  */
 export const writeJsonFile = async <T>(filePath: string, data: T): Promise<void> => {
   try {
-    const options = await resolveConfig(path.join(PROJECT_ROOT, 'prettier.config.mjs'));
+    const options = await resolveConfig(join(PROJECT_ROOT, 'prettier.config.mjs'));
     const formattedJson = await format(JSON.stringify(data), { ...options, parser: 'json' });
     writeFile(filePath, formattedJson);
   } catch (error) {
