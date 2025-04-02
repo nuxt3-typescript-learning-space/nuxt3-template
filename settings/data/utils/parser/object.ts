@@ -94,7 +94,7 @@ const extractSpreadPropertyNames = (sourceFile: SourceFile, objectLiteral: Objec
 
   return flattenArraysOfStrings(
     spreadElements.map((spreadElement) => {
-      if (isSpreadAssignment(spreadElement) && isIdentifier(spreadElement.expression)) {
+      if (isIdentifier(spreadElement.expression)) {
         return findPropertyNamesFromVariable(sourceFile, spreadElement.expression.text);
       }
       return [];
