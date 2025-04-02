@@ -11,7 +11,8 @@ export const updateStateValues = async (): Promise<void> => {
     const storeFiles = globSync(`${STORE_DIR}/**/*.ts`);
 
     if (storeFiles.length === 0) {
-      throw new Error(`No ".ts" files found in ${STORE_DIR} directory.`);
+      console.info(`No ".ts" files found in ${STORE_DIR} directory.`); // eslint-disable-line no-console
+      return;
     }
 
     const allStateValues = storeFiles.flatMap((filePath) => {
