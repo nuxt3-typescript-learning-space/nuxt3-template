@@ -1,4 +1,4 @@
-import { updateGettersValues } from './updateGetterValues';
+import { updateGettersValues } from './updateGettersValues';
 import { updateStateValues } from './updateStateValues';
 
 /**
