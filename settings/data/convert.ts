@@ -1,4 +1,4 @@
-import { updateGetterValues } from './updateGetterValues';
+import { updateGettersValues } from './updateGetterValues';
 import { updateStateValues } from './updateStateValues';
 
 /**
@@ -7,7 +7,7 @@ import { updateStateValues } from './updateStateValues';
 export const updateStoreListData = async (): Promise<void> => {
   try {
     await updateStateValues();
-    await updateGetterValues();
+    await updateGettersValues();
   } catch (error) {
     if (error instanceof Error) {
       console.warn(`An error occurred: ${error.message}`, error); // eslint-disable-line no-console

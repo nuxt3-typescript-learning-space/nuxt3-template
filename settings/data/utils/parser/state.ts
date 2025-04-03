@@ -1,26 +1,16 @@
 import {
   isArrowFunction,
-  isCallExpression,
   isIdentifier,
   isObjectLiteralExpression,
   isPropertyAssignment,
   type CallExpression,
-  type Node,
   type ObjectLiteralElementLike,
   type ObjectLiteralExpression,
   type SourceFile,
 } from 'typescript';
 import { processNodeRecursively } from './astUtils';
 import { extractPropertyNamesFromReturnExpression, extractReturnExpressionFromArrowFunction } from './object';
-
-/**
- * ノードがdefineStore関数の呼び出しかどうかを判定する純粋関数（型ガード）
- *
- * @param node 判定対象のノード
- * @returns ノードがdefineStore関数の呼び出しかどうか
- */
-const isDefineStoreFunctionCall = (node: Node): node is CallExpression =>
-  isCallExpression(node) && isIdentifier(node.expression) && node.expression.text === 'defineStore';
+import { isDefineStoreFunctionCall } from './pinia';
 
 /**
  * オブジェクトリテラルからstateプロパティを見つける純粋関数
@@ -83,7 +73,8 @@ const extractPropertyNamesFromDefineStoreCall = (sourceFile: SourceFile, callExp
  * @returns 抽出されたステートプロパティ名の配列
  */
 export const findDefineStoreCallsAndExtractStateProperties = (sourceFile: SourceFile): string[] => {
-  return processNodeRecursively(sourceFile, isDefineStoreFunctionCall, (callExpression) =>
+  const stateList = processNodeRecursively(sourceFile, isDefineStoreFunctionCall, (callExpression) =>
     extractPropertyNamesFromDefineStoreCall(sourceFile, callExpression),
   );
+  return stateList;
 };
