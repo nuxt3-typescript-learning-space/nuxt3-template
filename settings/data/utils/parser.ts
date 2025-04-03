@@ -1,5 +1,6 @@
 import { readFile } from './file';
 import { createSourceFileFromContent } from './parser/astUtils';
+import { findDefineStoreCallsAndExtractGettersProperties } from './parser/getters';
 import { findDefineStoreCallsAndExtractStateProperties } from './parser/state';
 
 /**
@@ -11,5 +12,19 @@ import { findDefineStoreCallsAndExtractStateProperties } from './parser/state';
 export const extractStateProperties = (filePath: string): string[] => {
   const fileContent = readFile(filePath);
   const sourceFile = createSourceFileFromContent(filePath, fileContent);
-  return findDefineStoreCallsAndExtractStateProperties(sourceFile);
+  const stateList = findDefineStoreCallsAndExtractStateProperties(sourceFile);
+  return stateList;
+};
+
+/**
+ * 指定されたファイルからgettersプロパティを抽出するエントリ関数
+ *
+ * @param filePath ゲッタープロパティを抽出するファイルのパス
+ * @returns 抽出されたゲッタープロパティ名の配列
+ */
+export const extractGettersProperties = (filePath: string) => {
+  const fileContent = readFile(filePath);
+  const sourceFile = createSourceFileFromContent(filePath, fileContent);
+  const gettersList = findDefineStoreCallsAndExtractGettersProperties(sourceFile);
+  return gettersList;
 };
