@@ -26,12 +26,10 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "convert": "vite-node settings/data/convert.ts",
     "ci:typecheck": "nuxi typecheck .",
     "ci:vitest": "vitest --coverage --silent",
     "ci:eslint": "eslint .",
     "ci:prettier": "prettier --check .",
-    "predev": "pnpm convert",
     "prepare": "husky"
   },
   "dependencies": {
