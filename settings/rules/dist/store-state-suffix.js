@@ -1,6 +1,36 @@
 import { ESLintUtils } from '@typescript-eslint/utils';
 import { isIdentifier, isObjectPattern, isProperty, isStoreToRefsCall } from './helpers/astHelpers.js';
+const MESSAGE_ID = 'requireStateSuffix';
 const createRule = ESLintUtils.RuleCreator((name) => name);
+const isEligibleProperty = (property) => {
+  if (!isProperty(property)) {
+    return false;
+  }
+  return isIdentifier(property.key) && isIdentifier(property.value);
+};
+const hasStateSuffix = (name) => name.endsWith('State');
+const isNonComputedRef = (typeString) => typeString.includes('Ref') && !typeString.includes('ComputedRef');
+const getTypeString = (node, typeChecker, parserServices) => {
+  const tsNode = parserServices.esTreeNodeToTSNodeMap.get(node);
+  const type = typeChecker.getTypeAtLocation(tsNode);
+  return typeChecker.typeToString(type);
+};
+const needsStateSuffix = (property, typeChecker, parserServices) =>
+  !hasStateSuffix(property.value.name) && isNonComputedRef(getTypeString(property.value, typeChecker, parserServices));
+const createReportData = (property) => ({
+  node: property.value,
+  messageId: MESSAGE_ID,
+  data: { name: property.value.name },
+});
+const processStoreToRefsDestructuring = (node, context, typeChecker, parserServices) => {
+  if (!isStoreToRefsCall(node) || !isObjectPattern(node.id)) {
+    return;
+  }
+  node.id.properties
+    .filter(isEligibleProperty)
+    .filter((property) => needsStateSuffix(property, typeChecker, parserServices))
+    .forEach((property) => context.report(createReportData(property)));
+};
 export const storeStateSuffix = createRule({
   name: 'store-state-suffix',
   meta: {
@@ -19,37 +49,7 @@ export const storeStateSuffix = createRule({
     const parserServices = ESLintUtils.getParserServices(context);
     const typeChecker = parserServices.program.getTypeChecker();
     return {
-      VariableDeclarator(node) {
-        if (isStoreToRefsCall(node)) {
-          if (isObjectPattern(node.id)) {
-            node.id.properties.forEach((property) => {
-              if (isProperty(property) && isIdentifier(property.key)) {
-                let variableName = '';
-                if (isIdentifier(property.value)) {
-                  variableName = property.value.name;
-                } else {
-                  return;
-                }
-                if (variableName.endsWith('State')) {
-                  return;
-                }
-                const tsNode = parserServices.esTreeNodeToTSNodeMap.get(property.value);
-                const type = typeChecker.getTypeAtLocation(tsNode);
-                const typeString = typeChecker.typeToString(type);
-                if (typeString.includes('Ref') && !typeString.includes('ComputedRef')) {
-                  context.report({
-                    node: property.value,
-                    messageId: 'requireStateSuffix',
-                    data: {
-                      name: variableName,
-                    },
-                  });
-                }
-              }
-            });
-          }
-        }
-      },
+      VariableDeclarator: (node) => processStoreToRefsDestructuring(node, context, typeChecker, parserServices),
     };
   },
 });
