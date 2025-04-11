@@ -8,7 +8,7 @@ import eslintReactiveValueSuffix from 'eslint-plugin-reactive-value-suffix';
 import globals from 'globals';
 import vueEslintParser from 'vue-eslint-parser';
 import withNuxt from './.nuxt/eslint.config.mjs';
-import eslintCustomRulesPlugin from './settings/rules/index.js';
+import eslintCustomRulesPlugin from './settings/rules/dist/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

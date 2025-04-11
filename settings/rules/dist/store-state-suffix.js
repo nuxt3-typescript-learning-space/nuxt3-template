@@ -1,36 +1,25 @@
 import { ESLintUtils } from '@typescript-eslint/utils';
-import { isIdentifier, isObjectPattern, isProperty, isStoreToRefsCall } from './helpers/astHelpers.js';
+import { isObjectPattern } from './helpers/ast-helper.js';
+import { isIdentifierPropertyPair, isStoreToRefsDeclaration } from './helpers/function-checks.js';
+import { createReportData, getTypeCheckingServices, getTypeString } from './helpers/types.js';
 const MESSAGE_ID = 'requireStateSuffix';
-const createRule = ESLintUtils.RuleCreator((name) => name);
-const isEligibleProperty = (property) => {
-  if (!isProperty(property)) {
-    return false;
-  }
-  return isIdentifier(property.key) && isIdentifier(property.value);
+const needsStateSuffix = (property, typeChecker, parserServices) => {
+  const typeString = getTypeString(property.value, typeChecker, parserServices);
+  const hasStateSuffix = property.value.name.endsWith('State');
+  const isNonComputedRef = typeString.includes('Ref') && !typeString.includes('ComputedRef');
+  return !hasStateSuffix && isNonComputedRef;
 };
-const hasStateSuffix = (name) => name.endsWith('State');
-const isNonComputedRef = (typeString) => typeString.includes('Ref') && !typeString.includes('ComputedRef');
-const getTypeString = (node, typeChecker, parserServices) => {
-  const tsNode = parserServices.esTreeNodeToTSNodeMap.get(node);
-  const type = typeChecker.getTypeAtLocation(tsNode);
-  return typeChecker.typeToString(type);
-};
-const needsStateSuffix = (property, typeChecker, parserServices) =>
-  !hasStateSuffix(property.value.name) && isNonComputedRef(getTypeString(property.value, typeChecker, parserServices));
-const createReportData = (property) => ({
-  node: property.value,
-  messageId: MESSAGE_ID,
-  data: { name: property.value.name },
-});
-const processStoreToRefsDestructuring = (node, context, typeChecker, parserServices) => {
-  if (!isStoreToRefsCall(node) || !isObjectPattern(node.id)) {
-    return;
-  }
+const processVariableDeclarator = (node, context) => {
+  if (!isStoreToRefsDeclaration(node) || !isObjectPattern(node.id)) return;
+  const { typeChecker, parserServices } = getTypeCheckingServices(context);
   node.id.properties
-    .filter(isEligibleProperty)
+    .filter(isIdentifierPropertyPair)
     .filter((property) => needsStateSuffix(property, typeChecker, parserServices))
-    .forEach((property) => context.report(createReportData(property)));
+    .forEach((property) => {
+      context.report(createReportData(property.value, MESSAGE_ID));
+    });
 };
+const createRule = ESLintUtils.RuleCreator((name) => name);
 export const storeStateSuffix = createRule({
   name: 'store-state-suffix',
   meta: {
@@ -39,17 +28,15 @@ export const storeStateSuffix = createRule({
       description: 'Require "State" suffix for state values destructured from storeToRefs',
     },
     messages: {
-      requireStateSuffix:
+      [MESSAGE_ID]:
         'State variables should have "State" suffix when used with storeToRefs. Please rename "{{name}}" to "{{name}}: {{name}}State"',
     },
     schema: [],
   },
   defaultOptions: [],
   create(context) {
-    const parserServices = ESLintUtils.getParserServices(context);
-    const typeChecker = parserServices.program.getTypeChecker();
     return {
-      VariableDeclarator: (node) => processStoreToRefsDestructuring(node, context, typeChecker, parserServices),
+      VariableDeclarator: (node) => processVariableDeclarator(node, context),
     };
   },
 });
