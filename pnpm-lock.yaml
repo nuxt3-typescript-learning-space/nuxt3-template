@@ -123,8 +123,8 @@ importers:
         specifier: 9.23.0
         version: 9.23.0(jiti@2.4.2)
       eslint-plugin-reactive-value-suffix:
-        specifier: 2.0.1
-        version: 2.0.1
+        specifier: 3.0.0
+        version: 3.0.0
       glob:
         specifier: 11.0.1
         version: 11.0.1
@@ -2629,8 +2629,8 @@ packages:
       eslint-config-prettier:
         optional: true
 
-  eslint-plugin-reactive-value-suffix@2.0.1:
-    resolution: {integrity: sha512-nOxcoeaaUCz273x9dvj/VvAn9fftvQZMe9wBJ26ST7ouIA9OR/B39QfK/U50P4rLNyRRKGgY2R+9kNBPfe44dw==}
+  eslint-plugin-reactive-value-suffix@3.0.0:
+    resolution: {integrity: sha512-1nZIjKcDdDL/vxDcnN72NDfYxFjtusVbX37jCjTzoAZOx7baCs8aGsSndjEAh+Z0AHpl3QESILoGdqQKgemLcg==}
     engines: {node: '>=20.0.0'}
 
   eslint-plugin-regexp@2.7.0:
@@ -8339,7 +8339,7 @@ snapshots:
       '@types/eslint': 9.6.1
       eslint-config-prettier: 10.1.1(eslint@9.23.0(jiti@2.4.2))
 
-  eslint-plugin-reactive-value-suffix@2.0.1: {}
+  eslint-plugin-reactive-value-suffix@3.0.0: {}
 
   eslint-plugin-regexp@2.7.0(eslint@9.23.0(jiti@2.4.2)):
     dependencies:
